@@ -1,4 +1,4 @@
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 INCLUDES = ../includes
 NAME = lexer
 LIBS = ../libs/libft.a

@@ -14,26 +14,28 @@ t_lexer		new_lexer(const char *input)
 	l.read_number = &read_number;
 	l.read_char = &read_char;
 	l.next_token = &next_token;
+	l.trim = &trim;
 	l.read_char(&l);
 	return (l);
 }
 
 
 t_return	trim(t_lexer *lexer, const char delim) {
-	char	*trimed;
 	int 	len;
 	int		i;
 	int		start;
 
-	start = lexer->read_position;
+	start = lexer->position;
 	i = 0;
 	len = ft_strlen(lexer->input);
 	while (i < len) {
-		if (lexer->peak_char(&lexer) == '\\')
-			lexer->read_char(&lexer);
-		if (lexer->input[lexer->read_position] == delim)
+		if (lexer->peak_char(lexer) == '\\') {
+			lexer->read_char(lexer);
+			lexer->read_char(lexer);
+		}
+		if (lexer->ch == delim)
 			break ;
-		lexer->read_char(&lexer);
+		lexer->read_char(lexer);
 		i++;
 	}
 	t_return ret;
@@ -60,8 +62,11 @@ char						*read_identifier(struct s_lexer *lexer)
 	int position;
 
 	position = lexer->position;
-	while (ft_isalpha(lexer->ch))
+	while (ft_isalpha(lexer->ch)) {
 		lexer->read_char(lexer);
+		if (lexer->peak_char(lexer) == '\'' || lexer->peak_char(lexer) == '\"')
+			break ;
+	}
 	return (ft_substr(lexer->input, position, lexer->position - position));
 }
 
@@ -87,62 +92,50 @@ t_token		next_token(t_lexer *lexer)
 	t_token tok;
 	lexer->skip_white_spaces(lexer);
 	if (lexer->ch == '"') {
-		t_return ret;
-		ret = trim(lexer->input[lexer->read_position], '"');
-		
-		tok.type = g_arg;
+		tok.literal = "\"";
+		tok.type = g_dquote;
+		// lexer->read_char(lexer);
+		// t_return ret;
+		// ret = trim(lexer, '"');
+		// tok.literal = ret.data;
+		// tok.type = g_arg;
 	}
-	else if (lexer->ch == ';')
-		tok = new_token(g_semmicolon, ";");
-	else if (lexer->ch == '(')
-		tok = new_token(g_lparen, "(");
-	else if (lexer->ch == ')')
-		tok = new_token(g_rparen, ")");
-	else if (lexer->ch == ',')
-		tok = new_token(g_comma, ",");
-	else if (lexer->ch == '+')
-		tok = new_token(g_plus, "+");
-	else if (lexer->ch == '-')
-		tok = new_token(g_minus, "-");
-	else if (lexer->ch == '{')
-		tok = new_token(g_lbrace, "{");
-	else if (lexer->ch == '}')
-		tok = new_token(g_rbrace, "}");
-	else if (lexer->ch == '!')
-	{
-		if (lexer->peak_char(lexer) == '=') {
-			lexer->read_char(lexer);
-			tok.literal = "!=";
-			tok.type = g_not_eq;
+	else if (lexer->ch == '\'') {
+		tok.literal = "\'";
+		tok.type = g_squote;
+	}
+	else if (lexer->ch == '-') {
+		if (lexer->peak_char(lexer) != ' ') {
+			tok.literal = "-";
+			tok.type = g_option;
 		}
-		else
-			tok = new_token(g_bang, "!");
+		else {
+			tok.literal = "-";
+			tok.type = g_arg;
+		}
 	}
-	else if (lexer->ch == '/')
-		tok = new_token(g_slash, "/");
-	else if (lexer->ch == '*')
-		tok = new_token(g_asterik, "*");
-	else if (lexer->ch == '<')
-		tok = new_token(g_lt, "<");
-	else if (lexer->ch == '>')
-		tok = new_token(g_gt, ">");
+	else if (lexer->ch == '$') {
+		tok.literal = lexer->read_identifier(lexer);
+		tok.type = g_param;
+	}
+	else if (lexer->ch == '|') {
+		tok.literal = "|";
+		tok.type = g_pipe;
+	}
+	else if (lexer->ch == '>' || lexer->ch == '<') {
+		//TODO: must use > as string not char
+		tok.literal = (lexer->ch == '>' ? ">" : "<");
+		tok.type = g_redirection;
+	}
+	else if (lexer->ch == '\\') {
+		tok.literal = "\\";
+		tok.type = g_blash;
+	}
 	else if (lexer->ch == '\0')
 		tok = new_token(g_eof, "\0");
-	else
-	{
-		if (ft_isalpha(lexer->ch))
-		{
-			tok.literal = lexer->read_identifier(lexer);
-			tok.type = lookup_ident(tok.literal);
-			return (tok);
-		}
-		else if (ft_isdigit(lexer->ch))
-		{
-			tok.literal = lexer->read_number(lexer);
-			tok.type = g_int;
-			return (tok);
-		}
-		tok = new_token(g_illegal, "");
+	else {
+		tok.literal = lexer->read_identifier(lexer);
+		tok.type = lookup_ident(tok.literal);
 	}
 	lexer->read_char(lexer);
 	return (tok);

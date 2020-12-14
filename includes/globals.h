@@ -30,7 +30,8 @@ extern const char	*g_eq;
 extern const char	*g_not_eq;
 extern const char	*keys[];
 
-extern const char *g_built_in[];
+extern const char *g_built_in;
+extern const char *built_ins[];
 extern const char *g_arg;
 extern const char *g_param;
 extern const char *g_option;
@@ -44,6 +45,8 @@ extern const char *g_rbrace;
 extern const char *g_blash;
 extern const char *g_slash;
 extern const char *g_eof;
+extern const char *g_dquote;
+extern const char *g_squote;
 
 typedef struct		s_token {
 	const char *type;
