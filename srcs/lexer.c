@@ -60,14 +60,25 @@ char						*read_number(t_lexer *lexer)
 char						*read_identifier(struct s_lexer *lexer)
 {
 	int position;
+	int exist;
+	char *ident;
 
+	ident = 0;
+	exist = 0;
 	position = lexer->position;
-	while (ft_isalpha(lexer->ch)) {
-		lexer->read_char(lexer);
-		if (lexer->peak_char(lexer) == '\'' || lexer->peak_char(lexer) == '\"')
+	while (ft_isalpha(lexer->ch) || lexer->ch == '\\') {
+
+		if (lexer->ch == '\\') {
+			lexer->read_char(lexer);
+			ident = ft_strjoin(ident, char_to_string(lexer->ch));
+		}
+		else if (lexer->ch == '\'' || lexer->ch == '"')
 			break ;
+		else
+			ident = ft_strjoin(ident, char_to_string(lexer->ch));
+		lexer->read_char(lexer);
 	}
-	return (ft_substr(lexer->input, position, lexer->position - position));
+	return (ident);
 }
 
 void			read_char(t_lexer *lexer)
@@ -115,8 +126,18 @@ t_token		next_token(t_lexer *lexer)
 		}
 	}
 	else if (lexer->ch == '$') {
-		tok.literal = lexer->read_identifier(lexer);
-		tok.type = g_param;
+		if (lexer->peak_char(lexer) == ' ')
+		{
+			tok.literal = "$";
+			tok.type = g_arg;
+		}
+		else
+		{
+			lexer->read_char(lexer);
+			tok.literal = lexer->read_identifier(lexer);
+			tok.type = g_param;
+			return (tok);
+		}
 	}
 	else if (lexer->ch == '|') {
 		tok.literal = "|";
@@ -127,15 +148,12 @@ t_token		next_token(t_lexer *lexer)
 		tok.literal = (lexer->ch == '>' ? ">" : "<");
 		tok.type = g_redirection;
 	}
-	else if (lexer->ch == '\\') {
-		tok.literal = "\\";
-		tok.type = g_blash;
-	}
 	else if (lexer->ch == '\0')
 		tok = new_token(g_eof, "\0");
 	else {
 		tok.literal = lexer->read_identifier(lexer);
 		tok.type = lookup_ident(tok.literal);
+		return (tok);
 	}
 	lexer->read_char(lexer);
 	return (tok);

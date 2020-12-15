@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mobaz <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/11 23:07:06 by mobaz             #+#    #+#             */
-/*   Updated: 2019/10/22 17:34:57 by mobaz            ###   ########.fr       */
+/*   Updated: 2020/12/15 20:36:23 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,3 +36,4 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	*(ptr + i) = '\0';
 	return (ptr);
 }
+

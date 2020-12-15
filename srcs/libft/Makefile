@@ -6,11 +6,11 @@
 #    By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/14 15:45:00 by mobaz             #+#    #+#              #
-#    Updated: 2020/11/18 12:36:12 by mobaz            ###   ########.fr        #
+#    Updated: 2020/12/15 20:12:51 by mobaz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 NAME = libft.a
 LIBPATH = ../../libs/libft.a
 SRCS = 	ft_substr.c \
@@ -47,7 +47,9 @@ SRCS = 	ft_substr.c \
 		ft_calloc.c \
 		ft_strncmp.c \
 		ft_strdup.c \
-		ft_memmove.c
+		ft_memmove.c \
+		find_and_remove.c \
+		char_to_string.c
 
 
 BONUS = ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c ft_lstlast_bonus.c ft_lstadd_back_bonus.c ft_lstdelone_bonus.c ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c
