@@ -150,6 +150,8 @@ t_token		next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '\0')
 		tok = new_token(g_eof, "\0");
+	else if (lexer->ch == ';') 
+		tok = new_token(g_seperator, ";");
 	else {
 		tok.literal = lexer->read_identifier(lexer);
 		tok.type = lookup_ident(tok.literal);
