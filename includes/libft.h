@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 13:38:53 by mobaz             #+#    #+#             */
-/*   Updated: 2020/11/18 18:19:42 by mobaz            ###   ########.fr       */
+/*   Updated: 2020/12/15 20:12:12 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ typedef struct	s_list
 	struct s_list	*next;
 }				t_list;
 
+
+char	*char_to_string(const char ch);
+char			*find_and_remove(const char ch, char *arr);
 void			*ft_memmove(void *dst, const void *src, size_t len);
 char			*ft_strdup(const char *str);
 t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
