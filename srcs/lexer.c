@@ -167,13 +167,19 @@ t_token		next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '|') {
 		if (lexer->peak_char(lexer) == '|')
+		{
+			lexer->read_char(lexer);
 			tok = new_token(g_or, "||");
+		}
 		else
 			tok = new_token(g_pipe, "|");
 	}
 	else if (lexer->ch == '&') {
 		if (lexer->peak_char(lexer) == '&')
-		 tok = new_token(g_and, "&&");
+		{
+			tok = new_token(g_and, "&&");
+			lexer->read_char(lexer);
+		}
 		else
 		{
 			tok.literal = lexer->read_arg_no_quotes(lexer);

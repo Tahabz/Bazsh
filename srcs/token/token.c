@@ -27,7 +27,6 @@ const char *g_option = "OPTION";
 const char *g_redirection = "REDIRECTION";
 const char *g_pipe = "|";
 const char *g_and = "&&";
-const char *g_or = "||";
 const char *g_exec = "EXECUTABLE";
 const char *g_lbrace = "{";
 const char *g_rbrace = "}";
