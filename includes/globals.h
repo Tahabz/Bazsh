@@ -47,6 +47,9 @@ extern const char *g_slash;
 extern const char *g_eof;
 extern const char *g_dquote;
 extern const char *g_squote;
+extern const char *g_seperator;
+extern const char *g_space;
+
 
 typedef struct		s_token {
 	const char *type;
