@@ -73,6 +73,7 @@ char						*read_arg_dquotes(t_lexer *lexer)
 {
 	char *ident;
 
+	ident = 0;
 	while (lexer->ch != '\0')
 	{
 		if (lexer->ch == '\\' && lexer->peak_char(lexer) == '\"') {
@@ -88,6 +89,13 @@ char						*read_arg_dquotes(t_lexer *lexer)
 	return (ident);
 }
 
+int		is_seperator(const char ch)
+{
+	if (ch == '|' || ch == '&' || ch == ';')
+		return (1);
+	return (0);
+}
+
 char						*read_arg_no_quotes(t_lexer *lexer)
 {
 	char *ident;
@@ -99,6 +107,8 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
+		else if (is_seperator(lexer->ch))
+			break ;
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		lexer->read_char(lexer);
@@ -141,16 +151,17 @@ t_token		next_token(t_lexer *lexer)
 		tok.literal = read_arg_squotes(lexer);
 		tok.type = g_arg;
 	}
-	else if (lexer->ch == '-') {
-		if (lexer->peak_char(lexer) != ' ') {
-			tok.literal = "-";
-			tok.type = g_option;
-		}
-		else {
-			tok.literal = "-";
-			tok.type = g_arg;
-		}
-	}
+	// TO THINK ABOUT: Do I need to include - as option or as argument
+	// else if (lexer->ch == '-') {
+	// 	if (lexer->peak_char(lexer) != ' ') {
+	// 		tok.literal = "-";
+	// 		tok.type = g_option;
+	// 	}
+	// 	else {
+	// 		tok.literal = "-";
+	// 		tok.type = g_arg;
+	// 	}
+	// }
 	else if (lexer->ch == '$') {
 		// TODO: the behavior of params inside dbl quotes is a little different without them; when escaping a char
 		if (lexer->peak_char(lexer) == ' ')
