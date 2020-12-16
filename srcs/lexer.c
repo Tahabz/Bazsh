@@ -93,14 +93,12 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 	char *ident;
 
 	ident = 0;
-	while (ft_isalpha(lexer->ch) || lexer->ch == '\\')
+	while (lexer->ch != '\0' && lexer->ch != ' ')
 	{
 		if (lexer->ch == '\\') {
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
-		else if (lexer->ch == ' ')
-			break ;
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		lexer->read_char(lexer);
@@ -183,8 +181,7 @@ t_token		next_token(t_lexer *lexer)
 		else
 		{
 			tok.literal = lexer->read_arg_no_quotes(lexer);
-			tok.type = lookup_ident(tok.literal);
-			return (tok);
+			tok.type = g_arg;
 		}
 	}
 	else if (lexer->ch == '>' || lexer->ch == '<') {
