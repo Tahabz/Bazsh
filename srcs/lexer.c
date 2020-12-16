@@ -71,13 +71,8 @@ char						*read_arg_squotes(t_lexer *lexer)
 
 char						*read_arg_dquotes(t_lexer *lexer)
 {
-	int position;
-	int exist;
 	char *ident;
 
-	ident = 0;
-	exist = 0;
-	position = lexer->position;
 	while (lexer->ch != '\0')
 	{
 		if (lexer->ch == '\\' && lexer->peak_char(lexer) == '\"') {
@@ -95,13 +90,9 @@ char						*read_arg_dquotes(t_lexer *lexer)
 
 char						*read_arg_no_quotes(t_lexer *lexer)
 {
-	int position;
-	int exist;
 	char *ident;
 
 	ident = 0;
-	exist = 0;
-	position = lexer->position;
 	while (ft_isalpha(lexer->ch) || lexer->ch == '\\')
 	{
 		if (lexer->ch == '\\') {
@@ -165,10 +156,7 @@ t_token		next_token(t_lexer *lexer)
 	else if (lexer->ch == '$') {
 		// TODO: the behavior of params inside dbl quotes is a little different without them; when escaping a char
 		if (lexer->peak_char(lexer) == ' ')
-		{
-			tok.literal = "$";
-			tok.type = g_arg;
-		}
+			tok = new_token(g_arg, "$");
 		else
 		{
 			lexer->read_char(lexer);
@@ -178,8 +166,20 @@ t_token		next_token(t_lexer *lexer)
 		}
 	}
 	else if (lexer->ch == '|') {
-		tok.literal = "|";
-		tok.type = g_pipe;
+		if (lexer->peak_char(lexer) == '|')
+			tok = new_token(g_or, "||");
+		else
+			tok = new_token(g_pipe, "|");
+	}
+	else if (lexer->ch == '&') {
+		if (lexer->peak_char(lexer) == '&')
+		 tok = new_token(g_and, "&&");
+		else
+		{
+			tok.literal = lexer->read_arg_no_quotes(lexer);
+			tok.type = lookup_ident(tok.literal);
+			return (tok);
+		}
 	}
 	else if (lexer->ch == '>' || lexer->ch == '<') {
 		//TODO: must use > as string not char
