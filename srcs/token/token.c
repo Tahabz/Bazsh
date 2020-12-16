@@ -37,6 +37,7 @@ const char *g_eof = "EOF";
 const char *g_dquote = "\"";
 const char *g_squote = "\'";
 const char *g_seperator = ";";
+const char *g_space = " ";
 
 // const char *get_key_type(const char *literal) {
 // 	if (strcmp(literal, "echo") == 0)

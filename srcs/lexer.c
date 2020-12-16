@@ -10,7 +10,9 @@ t_lexer		new_lexer(const char *input)
 	l.position = 0;
 	l.skip_white_spaces = &skip_white_spaces;
 	l.peak_char = &peak_char;
-	l.read_identifier = &read_identifier;
+	l.read_arg_dquotes = &read_arg_dquotes;
+	l.read_arg_squotes = &read_arg_squotes;
+	l.read_arg_no_quotes = &read_arg_no_quotes;
 	l.read_number = &read_number;
 	l.read_char = &read_char;
 	l.next_token = &next_token;
@@ -57,7 +59,17 @@ char						*read_number(t_lexer *lexer)
 	return (ft_substr(lexer->input, position, lexer->position - position));
 }
 
-char						*read_identifier(struct s_lexer *lexer)
+char						*read_arg_squotes(t_lexer *lexer)
+{
+	int position;
+
+	position = lexer->position;
+	while (lexer->ch != '\'' && lexer->ch != '\0')
+		lexer->read_char(lexer);
+	return (ft_substr(lexer->input, position, lexer->position - position));
+}
+
+char						*read_arg_dquotes(t_lexer *lexer)
 {
 	int position;
 	int exist;
@@ -66,13 +78,37 @@ char						*read_identifier(struct s_lexer *lexer)
 	ident = 0;
 	exist = 0;
 	position = lexer->position;
-	while (ft_isalpha(lexer->ch) || lexer->ch == '\\') {
+	while (lexer->ch != '\0')
+	{
+		if (lexer->ch == '\\' && lexer->peak_char(lexer) == '\"') {
+			lexer->read_char(lexer);
+			ident = ft_strjoin(ident, char_to_string(lexer->ch));
+		}
+		else if (lexer->ch == '\"')
+			break ;
+		else
+			ident = ft_strjoin(ident, char_to_string(lexer->ch));
+		lexer->read_char(lexer);
+	}
+	return (ident);
+}
 
+char						*read_arg_no_quotes(t_lexer *lexer)
+{
+	int position;
+	int exist;
+	char *ident;
+
+	ident = 0;
+	exist = 0;
+	position = lexer->position;
+	while (ft_isalpha(lexer->ch) || lexer->ch == '\\')
+	{
 		if (lexer->ch == '\\') {
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
-		else if (lexer->ch == '\'' || lexer->ch == '"')
+		else if (lexer->ch == ' ')
 			break ;
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
@@ -101,19 +137,20 @@ char			peak_char(t_lexer *lexer)
 t_token		next_token(t_lexer *lexer)
 {
 	t_token tok;
-	lexer->skip_white_spaces(lexer);
 	if (lexer->ch == '"') {
-		tok.literal = "\"";
-		tok.type = g_dquote;
-		// lexer->read_char(lexer);
-		// t_return ret;
-		// ret = trim(lexer, '"');
-		// tok.literal = ret.data;
-		// tok.type = g_arg;
+		lexer->read_char(lexer);
+		tok.literal = read_arg_dquotes(lexer);
+		tok.type = lookup_ident(tok.literal);
+	}
+	else if (lexer->ch == ' ')
+	{
+		tok.literal = " ";
+		tok.type = 	g_space;
 	}
 	else if (lexer->ch == '\'') {
-		tok.literal = "\'";
-		tok.type = g_squote;
+		lexer->read_char(lexer);
+		tok.literal = read_arg_squotes(lexer);
+		tok.type = g_arg;
 	}
 	else if (lexer->ch == '-') {
 		if (lexer->peak_char(lexer) != ' ') {
@@ -126,6 +163,7 @@ t_token		next_token(t_lexer *lexer)
 		}
 	}
 	else if (lexer->ch == '$') {
+		// TODO: the behavior of params inside dbl quotes is a little different without them; when escaping a char
 		if (lexer->peak_char(lexer) == ' ')
 		{
 			tok.literal = "$";
@@ -134,7 +172,7 @@ t_token		next_token(t_lexer *lexer)
 		else
 		{
 			lexer->read_char(lexer);
-			tok.literal = lexer->read_identifier(lexer);
+			tok.literal = lexer->read_arg_no_quotes(lexer);
 			tok.type = g_param;
 			return (tok);
 		}
@@ -153,7 +191,7 @@ t_token		next_token(t_lexer *lexer)
 	else if (lexer->ch == ';') 
 		tok = new_token(g_seperator, ";");
 	else {
-		tok.literal = lexer->read_identifier(lexer);
+		tok.literal = lexer->read_arg_no_quotes(lexer);
 		tok.type = lookup_ident(tok.literal);
 		return (tok);
 	}
