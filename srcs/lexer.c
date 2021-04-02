@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "token/token.h"
 
 t_lexer		new_lexer(const char *input)
 {
@@ -99,7 +100,7 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 	char *ident;
 
 	ident = 0;
-	while (lexer->ch != '\0' && lexer->ch != ' ')
+	while (lexer->ch != '\0' && lexer->ch != ' ' && lexer->ch != '=')
 	{
 		if (lexer->ch == '\\') {
 			lexer->read_char(lexer);
@@ -138,6 +139,11 @@ t_token		next_token(t_lexer *lexer)
 		lexer->read_char(lexer);
 		tok.literal = read_arg_dquotes(lexer);
 		tok.type = lookup_ident(tok.literal);
+	}
+	else if (lexer->ch == '=')
+	{
+		tok.literal = "=";
+		tok.type = g_equal;
 	}
 	else if (lexer->ch == ' ')
 	{

@@ -28,6 +28,7 @@ static const char *g_squote = "\'";
 static const char *g_seperator = ";";
 static const char *g_space = " ";
 static const char *g_or = "||";
+static const char *g_equal = "=";
 
 static const char *built_ins[]		= {
 	"echo",
