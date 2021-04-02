@@ -1,6 +1,4 @@
-#include "globals.h"
 #include "lexer.h"
-#include "libft.h"
 
 t_lexer		new_lexer(const char *input)
 {
@@ -202,7 +200,7 @@ t_token		next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '\0')
 		tok = new_token(g_eof, "\0");
-	else if (lexer->ch == ';') 
+	else if (lexer->ch == ';')
 		tok = new_token(g_seperator, ";");
 	else {
 		tok.literal = lexer->read_arg_no_quotes(lexer);

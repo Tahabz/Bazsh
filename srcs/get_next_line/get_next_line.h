@@ -12,9 +12,10 @@
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define MAXINT 2147483647
 # include <stdlib.h>
 # include <unistd.h>
+# include <ctype.h>
+# include "../libft/libft.h"
 
 # define BUFFER_SIZE 32
 

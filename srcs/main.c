@@ -1,7 +1,4 @@
-#include "globals.h"
-#include "get_next_line.h"
 #include "lexer.h"
-#include "libft.h"
 
 int		main(void)
 {

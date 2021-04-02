@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include "libft.h"
+#include <stdint.h>
 
 void		*ft_char_calloc(size_t count)
 {
@@ -81,7 +81,7 @@ int		get_next_line(int fd, char **line)
 	state = 1;
 	if (!str)
 		str = ft_char_calloc(1);
-	if (BUFFER_SIZE <= 0 || BUFFER_SIZE > MAXINT || !line)
+	if (BUFFER_SIZE <= 0 || BUFFER_SIZE > INT32_MAX || !line)
 		return (-1);
 	if (!(*line = malloc(BUFFER_SIZE + 1)))
 		return (-1);

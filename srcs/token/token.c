@@ -1,43 +1,5 @@
-#include "globals.h"
+#include "token.h"
 
-const char *keys[]			= {
-	"let",
-	"fn",
-	"true",
-	"false",
-	"if",
-	"else",
-	"return"
-};
-
-const char *built_ins[]		= {
-	"echo",
-	"cd",
-	"pwd",
-	"export",
-	"unset",
-	"env",
-	"exit"
-};
-
-const char *g_built_in = "BUILT_IN";
-const char *g_arg = "ARGUMENT";
-const char *g_param = "PARAMETER";
-const char *g_option = "OPTION";
-const char *g_redirection = "REDIRECTION";
-const char *g_pipe = "|";
-const char *g_and = "&&";
-const char *g_exec = "EXECUTABLE";
-const char *g_lbrace = "{";
-const char *g_rbrace = "}";
-const char *g_blash = "\\";
-const char *g_slash = "/";
-const char *g_eof = "EOF";
-const char *g_dquote = "\"";
-const char *g_squote = "\'";
-const char *g_seperator = ";";
-const char *g_space = " ";
-const char *g_or = "||";
 
 // const char *get_key_type(const char *literal) {
 // 	if (strcmp(literal, "echo") == 0)

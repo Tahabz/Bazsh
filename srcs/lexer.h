@@ -1,5 +1,13 @@
 #ifndef LEXER_H
 # define LEXER_H
+
+#include "token/token.h"
+#include "libft/libft.h"
+#include "get_next_line/get_next_line.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 typedef struct s_return {
 	const char *data;
 	const char *state;
@@ -20,7 +28,6 @@ typedef struct	s_lexer {
 	char					*(*read_number)(struct s_lexer *);
 	t_return				(*trim)(struct s_lexer *, const char delim);
 }				t_lexer;
-t_lexer					l;
 
 t_return					trim(t_lexer *lexer, const char delim);
 void						read_char(t_lexer *lexer);

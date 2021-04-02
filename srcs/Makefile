@@ -1,20 +1,16 @@
 FLAGS = -Wall -Wextra -Werror -g
 INCLUDES = ../includes
 NAME = lexer
-LIBS = ../libs/libft.a
-SRCS = 	lexer.c \
-		main.c \
+LIBS = ./libs/libft.a
+SRCS = 	main.c \
+		lexer.c \
 		token/token.c \
-		get_next_line/*
+		get_next_line/get_next_line.c
 
-all : lib $(NAME)
+all : $(SRCS)
+	make -C libft/
 	@echo "Building up the lexer.."
-
-$(NAME): $(SRCS)
-	gcc -o $(NAME) $(FLAGS) $(SRCS) $(LIBS) -I $(INCLUDES)
-
-lib:
-	cd libft; make
+	gcc $(FLAGS) $(SRCS) $(LIBS) -o $(NAME)
 
 clean:
 	rm -rf lexer

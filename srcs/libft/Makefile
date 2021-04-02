@@ -57,11 +57,11 @@ BONUS = ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c ft_lstlast_
 all : $(LIBPATH)
 	@echo "Building Library."
 
-$(LIBPATH) : 
+$(LIBPATH) :
 	gcc $(FLAGS) -c $(SRCS)
 	ar rc $(NAME) *.o
-	mv $(NAME) ../../libs
-	
+	mv $(NAME) ../libs
+
 clean :
 	rm -rf *.o
 
