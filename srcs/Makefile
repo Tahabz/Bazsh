@@ -10,7 +10,7 @@ SRCS = 	main.c \
 all : $(SRCS)
 	make -C libft/
 	@echo "Building up the lexer.."
-	gcc $(FLAGS) $(SRCS) $(LIBS) -o $(NAME)
+	clang $(FLAGS) $(SRCS) $(LIBS) -o $(NAME)
 
 clean:
 	rm -rf lexer
