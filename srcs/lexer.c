@@ -210,10 +210,7 @@ t_token		next_token(t_lexer *lexer)
 			lexer->read_char(lexer);
 		}
 		else
-		{
-			tok.literal = lexer->read_arg_no_quotes(lexer);
-			tok.type = g_arg;
-		}
+			tok = new_token(g_ampersand, "&");
 	}
 	else if (lexer->ch == '>' || lexer->ch == '<') {
 		//TODO: must use > as string not char
