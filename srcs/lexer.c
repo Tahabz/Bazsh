@@ -68,7 +68,7 @@ char						*read_arg_squotes(t_lexer *lexer)
 	return (ft_substr(lexer->input, position, lexer->position - position));
 }
 
-bool						escapable(char c)
+bool						is_escapable(char c)
 {
 	const size_t n_escapables = 5;
 	const char escapables[n_escapables] = {'$', '\\', '"', '*', '@'};
@@ -91,7 +91,7 @@ char						*read_arg_dquotes(t_lexer *lexer)
 	ident = 0;
 	while (lexer->ch != '\0')
 	{
-		if (lexer->ch == '\\' && escapable(lexer->peak_char(lexer))) {
+		if (lexer->ch == '\\' && is_escapable(lexer->peak_char(lexer))) {
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
