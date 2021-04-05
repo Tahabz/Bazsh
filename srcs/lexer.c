@@ -190,7 +190,7 @@ t_token		next_token(t_lexer *lexer)
 		{
 			lexer->read_char(lexer);
 			tok.literal = lexer->read_arg_no_quotes(lexer);
-			tok.type = g_param;
+			tok.type = g_variable;
 			return (tok);
 		}
 	}

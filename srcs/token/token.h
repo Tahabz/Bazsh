@@ -12,7 +12,7 @@ const char *lookup_ident(const char *literal);
 
 static const char *g_built_in = "BUILT_IN";
 static const char *g_arg = "ARGUMENT";
-static const char *g_param = "PARAMETER";
+static const char *g_variable = "VARIABLE";
 static const char *g_option = "OPTION";
 static const char *g_redirection = "REDIRECTION";
 static const char *g_pipe = "|";
