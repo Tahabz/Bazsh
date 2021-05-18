@@ -58,14 +58,23 @@ char						*read_number(t_lexer *lexer)
 	return (ft_substr(lexer->input, position, lexer->position - position));
 }
 
-char						*read_arg_squotes(t_lexer *lexer)
+t_token						read_arg_squotes(t_lexer *lexer)
 {
 	int position;
+	char *word;
 
 	position = lexer->position;
-	while (lexer->ch != '\'' && lexer->ch != '\0')
+	while (lexer->ch != '\0')
+	{
+		if (lexer->ch == '\'')
+		{
+			word = ft_substr(lexer->input, position, lexer->position - position);
+			return ((t_token) {lookup_ident(word), word});
+		}
 		lexer->read_char(lexer);
-	return (ft_substr(lexer->input, position, lexer->position - position));
+	}
+	word = ft_substr(lexer->input, position, lexer->position - position);
+	return ((t_token) {g_invalid, word});
 }
 
 bool						is_escapable(char c)
@@ -174,8 +183,7 @@ t_token		next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '\'') {
 		lexer->read_char(lexer);
-		tok.literal = read_arg_squotes(lexer);
-		tok.type = g_arg;
+		tok = read_arg_squotes(lexer);
 	}
 	// TO THINK ABOUT: Do I need to include - as option or as argument
 	// else if (lexer->ch == '-') {
