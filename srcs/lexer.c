@@ -226,10 +226,21 @@ t_token		next_token(t_lexer *lexer)
 		else
 			tok = new_token(g_ampersand, "&");
 	}
-	else if (lexer->ch == '>' || lexer->ch == '<') {
+	else if (lexer->ch == '>' && lexer->peak_char(lexer) == '>')
+	{
+		lexer->read_char(lexer);
+		tok.literal = ">>";
+		tok.type = g_a_redirection;
+	}
+	else if (lexer->ch == '>') {
 		//TODO: must use > as string not char
-		tok.literal = (lexer->ch == '>' ? ">" : "<");
-		tok.type = g_redirection;
+		tok.literal = ">";
+		tok.type = g_r_redirection;
+	}
+	else if (lexer->ch == '<') {
+		//TODO: must use > as string not char
+		tok.literal = "<";
+		tok.type = g_l_redirection;
 	}
 	else if (lexer->ch == '\0')
 		tok = new_token(g_eof, "\0");
