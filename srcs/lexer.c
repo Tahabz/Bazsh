@@ -84,9 +84,10 @@ bool						is_escapable(char c)
 	return (false);
 }
 
-char						*read_arg_dquotes(t_lexer *lexer)
+t_token						read_arg_dquotes(t_lexer *lexer)
 {
 	char *ident;
+	t_token tok;
 
 	ident = 0;
 	while (lexer->ch != '\0')
@@ -96,12 +97,18 @@ char						*read_arg_dquotes(t_lexer *lexer)
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
 		else if (lexer->ch == '\"')
-			break ;
+		{
+			tok.type = lookup_ident(ident);
+			tok.literal = ident;
+			return (tok);
+		}
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		lexer->read_char(lexer);
 	}
-	return (ident);
+	tok.type = g_invalid;
+	tok.literal = ident;
+	return (tok);
 }
 
 int		is_seperator(const char ch)
@@ -153,8 +160,7 @@ t_token		next_token(t_lexer *lexer)
 	t_token tok;
 	if (lexer->ch == '"') {
 		lexer->read_char(lexer);
-		tok.literal = read_arg_dquotes(lexer);
-		tok.type = lookup_ident(tok.literal);
+		tok = read_arg_dquotes(lexer);
 	}
 	else if (lexer->ch == '=')
 	{

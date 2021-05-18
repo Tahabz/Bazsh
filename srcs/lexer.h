@@ -23,7 +23,7 @@ typedef struct	s_lexer {
 	t_token					(*next_token)(struct s_lexer *);
 	void					(*skip_white_spaces)(struct s_lexer *);
 	char					(*peak_char)(struct s_lexer *);
-	char					*(*read_arg_dquotes)(struct s_lexer *);
+	t_token					(*read_arg_dquotes)(struct s_lexer *);
 	char					*(*read_arg_squotes)(struct s_lexer *);
 	char					*(*read_arg_no_quotes)(struct s_lexer *);
 	char					*(*read_number)(struct s_lexer *);
@@ -39,6 +39,6 @@ t_lexer						new_lexer(const char *input);
 char						peak_char(t_lexer *lexer);
 char						*read_number(t_lexer *lexer);
 char						*read_arg_no_quotes(t_lexer *lexer);
-char						*read_arg_dquotes(t_lexer *lexer);
+t_token						read_arg_dquotes(t_lexer *lexer);
 char						*read_arg_squotes(t_lexer *lexer);
 #endif
