@@ -54,3 +54,4 @@ dkms.conf
 
 lexer
 .vscode/
+.DS_Store
