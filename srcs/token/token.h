@@ -30,6 +30,7 @@ static const char *g_dquote = "\"";
 static const char *g_squote = "\'";
 static const char *g_seperator = ";";
 static const char *g_space = " ";
+static const char *g_tab = "\t";
 static const char *g_or = "||";
 static const char *g_equal = "=";
 static const char *g_invalid = "INVALID";

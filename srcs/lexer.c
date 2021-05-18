@@ -122,7 +122,7 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 
 int		is_seperator(const char ch)
 {
-	if (ch == '|' || ch == '&' || ch == ';')
+	if (ch == '|' || ch == '&' || ch == ';' || ch == '\t' || ch == '>' || ch == '<' || ch == '=' || ch == ' ')
 		return (1);
 	return (0);
 }
@@ -132,14 +132,12 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 	char *ident;
 
 	ident = 0;
-	while (lexer->ch != '\0' && lexer->ch != ' ' && lexer->ch != '=')
+	while (lexer->ch != '\0' && !is_seperator(lexer->ch))
 	{
 		if (lexer->ch == '\\') {
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
-		else if (is_seperator(lexer->ch))
-			break ;
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		lexer->read_char(lexer);
@@ -180,6 +178,11 @@ t_token		next_token(t_lexer *lexer)
 	{
 		tok.literal = " ";
 		tok.type = 	g_space;
+	}
+	else if (lexer->ch == '\t')
+	{
+		tok.literal = "\t";
+		tok.type = g_tab;
 	}
 	else if (lexer->ch == '\'') {
 		lexer->read_char(lexer);
