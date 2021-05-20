@@ -8,7 +8,7 @@ t_lexer		new_lexer(const char *input)
 	l.read_position = 0;
 	l.position = 0;
 	l.skip_white_spaces = &skip_white_spaces;
-	l.peak_char = &peak_char;
+	l.peek_char = &peek_char;
 	l.read_arg_dquotes = &read_arg_dquotes;
 	l.read_arg_squotes = &read_arg_squotes;
 	l.read_arg_no_quotes = &read_arg_no_quotes;
@@ -30,7 +30,7 @@ t_return	trim(t_lexer *lexer, const char delim) {
 	i = 0;
 	len = ft_strlen(lexer->input);
 	while (i < len) {
-		if (lexer->peak_char(lexer) == '\\') {
+		if (lexer->peek_char(lexer) == '\\') {
 			lexer->read_char(lexer);
 			lexer->read_char(lexer);
 		}
@@ -101,7 +101,7 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	ident = 0;
 	while (lexer->ch != '\0')
 	{
-		if (lexer->ch == '\\' && is_escapable(lexer->peak_char(lexer))) {
+		if (lexer->ch == '\\' && is_escapable(lexer->peek_char(lexer))) {
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
@@ -155,7 +155,7 @@ void			read_char(t_lexer *lexer)
 	lexer->read_position += 1;
 }
 
-char			peak_char(t_lexer *lexer)
+char			peek_char(t_lexer *lexer)
 {
 	if (lexer->read_position <= strlen(lexer->input))
 		return (lexer->input[lexer->read_position]);
@@ -190,7 +190,7 @@ t_token		next_token(t_lexer *lexer)
 	}
 	// TO THINK ABOUT: Do I need to include - as option or as argument
 	// else if (lexer->ch == '-') {
-	// 	if (lexer->peak_char(lexer) != ' ') {
+	// 	if (lexer->peek_char(lexer) != ' ') {
 	// 		tok.literal = "-";
 	// 		tok.type = g_option;
 	// 	}
@@ -200,8 +200,7 @@ t_token		next_token(t_lexer *lexer)
 	// 	}
 	// }
 	else if (lexer->ch == '$') {
-		// TODO: the behavior of params inside dbl quotes is a little different without them; when escaping a char
-		if (lexer->peak_char(lexer) == ' ')
+		if (lexer->peek_char(lexer) == ' ')
 			tok = new_token(g_arg, "$");
 		else
 		{
@@ -212,7 +211,7 @@ t_token		next_token(t_lexer *lexer)
 		}
 	}
 	else if (lexer->ch == '|') {
-		if (lexer->peak_char(lexer) == '|')
+		if (lexer->peek_char(lexer) == '|')
 		{
 			lexer->read_char(lexer);
 			tok = new_token(g_or, "||");
@@ -221,7 +220,7 @@ t_token		next_token(t_lexer *lexer)
 			tok = new_token(g_pipe, "|");
 	}
 	else if (lexer->ch == '&') {
-		if (lexer->peak_char(lexer) == '&')
+		if (lexer->peek_char(lexer) == '&')
 		{
 			tok = new_token(g_and, "&&");
 			lexer->read_char(lexer);
@@ -229,19 +228,17 @@ t_token		next_token(t_lexer *lexer)
 		else
 			tok = new_token(g_ampersand, "&");
 	}
-	else if (lexer->ch == '>' && lexer->peak_char(lexer) == '>')
+	else if (lexer->ch == '>' && lexer->peek_char(lexer) == '>')
 	{
 		lexer->read_char(lexer);
 		tok.literal = ">>";
 		tok.type = g_a_redirection;
 	}
 	else if (lexer->ch == '>') {
-		//TODO: must use > as string not char
 		tok.literal = ">";
 		tok.type = g_r_redirection;
 	}
 	else if (lexer->ch == '<') {
-		//TODO: must use > as string not char
 		tok.literal = "<";
 		tok.type = g_l_redirection;
 	}
