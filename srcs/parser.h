@@ -17,14 +17,12 @@ typedef struct s_program {
     t_command *commands;
 } t_program;
 
-bool curr_tok_is(const char *tok);
-bool peek_tok_is(const char *tok);
-bool expect_peek(const char *tok);
+t_program parse_program(t_parser *parser);
+t_command parse_command(t_parser *parser);
+
+bool curr_tok_is(const t_parser *parser, const char *tok);
+bool peek_tok_is(const t_parser *parser, const char *tok);
+bool expect_peek(t_parser *parser, const char *tok);
 
 void next_tok(t_parser *p);
-t_parser parser_new(t_lexer l) {
-    t_parser p = {l, {NULL, NULL}, {NULL, NULL}};
-    next_tok(&p);
-    next_tok(&p);
-}
-
+t_parser parser_new(t_lexer l);
