@@ -173,14 +173,17 @@ void expand(t_lexer *l, char *ident) {
 
 	ident_l = ft_strlen(ident) + 1;
 	// TODO: to free or not to free
+	// TODO: to protect or not to protect
 	var = getenv(ident);
 	printf("%s\n", var);
+	// TODO: to free or not to free
 	new_input = ft_strjoin(ft_substr(l->input, 0, l->position - ident_l), var);
 	printf("NEW INPUT: %s\n", new_input);
 	/* free(l->input); */
 	l->input = new_input;
 	l->position -= ident_l;
 	l->read_position = l->position + 1;
+	l->ch = l->input[l->position];
 }
 
 t_token		next_token(t_lexer *lexer)
