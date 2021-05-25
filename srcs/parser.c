@@ -20,15 +20,62 @@ t_program parse_program(t_parser *parser) {
 	t_program program;
 	t_command command;
 	program.commands = malloc(sizeof(t_command) + 1);
-	while (strcmp(parser->curr_tok.type, g_eof) != 0) {
+	while (str_match(parser->curr_tok.type, g_eof) != 0) {
 		program.commands = append_command(program.commands, parse_command(parser));
 	}
 	return (program);
 }
 
+bool		str_match(const char *str1, const char *str2) {
+	return (ft_strncmp(str1, str2, ft_strlen(str1)) == 0);
+}
+
+
+t_command	parse_built_in(t_parser *parser) {
+	t_command command;
+
+
+	return command;
+}
+
+t_command	parse_redirection(t_parser *parser) {
+	t_command command;
+
+	
+
+	return command;
+}
+
+t_command	parse_binary(t_parser *parser) {
+	t_command command;
+
+	
+
+	return command;
+}
+
+t_token expand_var(const char *tok_literal) {
+	t_token token;
+	
+	// TO-THINK-ABOUT: TO FREE OR NOT TO FREE????
+	token.literal = getenv(tok_literal);
+	return (token);
+}
+
 t_command parse_command(t_parser *parser) {
 	t_command command;
 
+	if (str_match(parser->curr_tok.type, g_built_in))
+		command = parse_built_in(parser);
+	else if (str_match(parser->curr_tok.type, g_r_redirection))
+		command = parse_redirection(parser);
+	else if (str_match(parser->curr_tok.type, g_arg))
+		command = parse_binary(parser);
+	else if (str_match(parser->curr_tok.type, g_variable)) {
+		parser->curr_tok = expand_var(parser->curr_tok.literal);
+	}
+	else
+		command.type = "error";
 	return (command);
 }
 

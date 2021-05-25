@@ -7,9 +7,9 @@ typedef struct s_parser {
 } t_parser;
 
 typedef struct s_command {
-	const char *command_literal;
+	const char *literal;
     char *args;
-    const char *command_type;
+    const char *type;
 	// built-in
 	// text file
 	// binary
