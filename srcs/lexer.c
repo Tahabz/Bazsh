@@ -170,6 +170,8 @@ void expand(t_lexer *l, char *ident) {
 	char *var;
 	size_t ident_l;
 	char *new_input;
+	char *temp_sub;
+	char *temp_join;
 
 	ident_l = ft_strlen(ident) + 1;
 	// TODO: to free or not to free
@@ -177,7 +179,14 @@ void expand(t_lexer *l, char *ident) {
 	var = getenv(ident);
 	printf("%s\n", var);
 	// TODO: to free or not to free
-	new_input = ft_strjoin(ft_substr(l->input, 0, l->position - ident_l), var);
+	temp_sub = ft_substr(l->input, 0, l->position - ident_l);
+	temp_join = ft_strjoin(temp_sub, var);
+	free(temp_sub);
+	// TODO: to free or not to free
+	temp_sub = ft_substr(l->input,l->position + ident_l - 2, ft_strlen(l->input));
+	new_input = ft_strjoin(temp_join, temp_sub);
+	free(temp_sub);
+	free(temp_join);
 	printf("NEW INPUT: %s\n", new_input);
 	/* free(l->input); */
 	l->input = new_input;
