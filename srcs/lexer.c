@@ -1,7 +1,11 @@
 #include "lexer.h"
+#include "libft/libft.h"
 #include "token/token.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-t_lexer		new_lexer(const char *input)
+t_lexer		new_lexer(char *input)
 {
 	t_lexer l;
 	l.input = input;
@@ -162,10 +166,40 @@ char			peek_char(t_lexer *lexer)
 	return ('\0');
 }
 
+void expand(t_lexer *l, char *ident) {
+	char *var;
+	size_t ident_l;
+	char *new_input;
+
+	ident_l = ft_strlen(ident) + 1;
+	// TODO: to free or not to free
+	var = getenv(ident);
+	printf("%s\n", var);
+	new_input = ft_strjoin(ft_substr(l->input, 0, l->position - ident_l), var);
+	printf("NEW INPUT: %s\n", new_input);
+	/* free(l->input); */
+	l->input = new_input;
+	l->position -= ident_l;
+	l->read_position = l->position + 1;
+}
+
 t_token		next_token(t_lexer *lexer)
 {
 	t_token tok;
+	
+
+	if (lexer->ch == '$') {
+		if (lexer->peek_char(lexer) == ' ')
+			tok = new_token(g_arg, "$");
+		else
+		{
+			lexer->read_char(lexer);
+			expand(lexer, lexer->read_arg_no_quotes(lexer));
+		}
+	}
+
 	if (lexer->ch == '"') {
+		// TODO: Expand
 		lexer->read_char(lexer);
 		tok = read_arg_dquotes(lexer);
 	}
@@ -199,17 +233,6 @@ t_token		next_token(t_lexer *lexer)
 	// 		tok.type = g_arg;
 	// 	}
 	// }
-	else if (lexer->ch == '$') {
-		if (lexer->peek_char(lexer) == ' ')
-			tok = new_token(g_arg, "$");
-		else
-		{
-			lexer->read_char(lexer);
-			tok.literal = lexer->read_arg_no_quotes(lexer);
-			tok.type = g_variable;
-			return (tok);
-		}
-	}
 	else if (lexer->ch == '|') {
 		if (lexer->peek_char(lexer) == '|')
 		{
