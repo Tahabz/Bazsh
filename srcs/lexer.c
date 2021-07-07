@@ -83,8 +83,8 @@ t_token						read_arg_squotes(t_lexer *lexer)
 
 bool						is_escapable(char c)
 {
-	const size_t n_escapables = 5;
-	const char escapables[n_escapables] = {'$', '\\', '"', '*', '@'};
+	const char escapables[] = {'$', '\\', '"', '*', '@'};
+	const size_t n_escapables = sizeof(escapables)/sizeof(escapables[0]);
 	size_t i;
 
 	i = 0;
