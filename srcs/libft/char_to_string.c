@@ -1,5 +1,8 @@
 #include "libft.h"
 
+/*
+** CAUTION: returns a new string (heap allocated) which needs to be freed later
+*/
 char	*char_to_string(const char ch)
 {
 	char *str;
