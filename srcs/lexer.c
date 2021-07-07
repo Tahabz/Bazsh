@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// TODO: create a new version of str_join() that consumes its arguments
+// NOTE: almost every call of str_join() causes a memory leak
+
 t_lexer		new_lexer(char *input)
 {
 	t_lexer l;
