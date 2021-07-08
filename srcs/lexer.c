@@ -7,6 +7,9 @@
 
 // TODO: create a new version of str_join() that consumes its arguments
 // NOTE: almost every call of str_join() causes a memory leak
+// TODO: handle "$VAR" (double quoted variable)
+// TODO: handle "something$VAR" (double quoted variable with a prefixed token)
+// TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
 
 t_lexer		new_lexer(char *input)
 {
@@ -144,7 +147,7 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 	char *ident;
 
 	ident = 0;
-	while (lexer->ch != '\0' && !is_separator(lexer->ch))
+	while (lexer->ch != '\0' && !is_separator(lexer->ch) && lexer->ch != '$')
 	{
 		if (lexer->ch == '\\') {
 			lexer->read_char(lexer);
