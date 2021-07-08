@@ -129,9 +129,14 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 
 int		is_seperator(const char ch)
 {
-	if (ch == '|' || ch == '&' || ch == ';' || ch == '\t' || ch == '>' || ch == '<' || ch == '=' || ch == ' ')
-		return (1);
-	return (0);
+	return (ch == '|'
+			|| ch == '&'
+			|| ch == ';'
+			|| ch == '\t'
+			|| ch == '>'
+			|| ch == '<'
+			|| ch == '='
+			|| ch == ' ');
 }
 
 char						*read_arg_no_quotes(t_lexer *lexer)
