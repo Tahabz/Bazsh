@@ -192,6 +192,10 @@ void expand(t_lexer *l, char *ident) {
 	free(temp_join);
 	printf("NEW INPUT: %s\n", new_input);
 	/* free(l->input); */
+	/* 
+	* NOTE: It's actually a bad idea to free l->input here 
+	*		because it will be freed later as line in main.c
+	*/
 	l->input = new_input;
 	l->position -= ident_l;
 	l->read_position = l->position + 1;
