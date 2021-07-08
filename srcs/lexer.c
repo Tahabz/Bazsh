@@ -127,7 +127,7 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	return (tok);
 }
 
-int		is_seperator(const char ch)
+int		is_separator(const char ch)
 {
 	return (ch == '|'
 			|| ch == '&'
@@ -144,7 +144,7 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 	char *ident;
 
 	ident = 0;
-	while (lexer->ch != '\0' && !is_seperator(lexer->ch))
+	while (lexer->ch != '\0' && !is_separator(lexer->ch))
 	{
 		if (lexer->ch == '\\') {
 			lexer->read_char(lexer);
