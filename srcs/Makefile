@@ -1,4 +1,5 @@
-FLAGS = -Wall -Wextra -Werror -g
+FLAGS = -Wall -Wextra -Werror
+DFLAGS = -fsanitize=address -g
 INCLUDES = ../includes
 NAME = lexer
 LIBS = ./libs/libft.a
@@ -10,7 +11,7 @@ SRCS = 	main.c \
 all : $(SRCS)
 	make -C libft/
 	@echo "Building up the lexer.."
-	clang $(FLAGS) $(SRCS) $(LIBS) -o $(NAME)
+	clang $(DFLAGS) $(FLAGS) $(SRCS) $(LIBS) -o $(NAME)
 
 clean:
 	rm -rf lexer
