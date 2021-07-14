@@ -1,5 +1,6 @@
 #include "lexer.h"
 
+// TODO: Handle the case of non-closed quotes (eg. "hello, 'hello)
 int		main(void)
 {
 	int 	i;
