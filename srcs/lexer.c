@@ -11,6 +11,7 @@
 // TODO: handle "something$VAR" (double quoted variable with a prefixed token)
 // TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
 // TODO: handle double quotes surrounded by tokens with spaces inside (eg: hello"hello " -> "hellohello ")
+// TODO: try to replace str_join with substr wherever it's possible
 
 t_lexer		new_lexer(char *input)
 {
