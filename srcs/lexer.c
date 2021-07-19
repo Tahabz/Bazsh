@@ -110,7 +110,7 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	char *ident;
 	t_token tok;
 
-	ident = "";
+	ident = NULL;
 	while (lexer->ch != '\0')
 	{
 		if (lexer->ch == '\\' && is_escapable(lexer->peek_char(lexer))) {
