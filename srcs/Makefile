@@ -8,7 +8,9 @@ SRCS = 	main.c \
 		token/token.c \
 		get_next_line/get_next_line.c
 
-all : $(SRCS)
+all : $(NAME)
+
+$(NAME): $(SRCS)
 	make -C libft/
 	@echo "Building up the lexer.."
 	clang $(DFLAGS) $(FLAGS) $(SRCS) $(LIBS) -o $(NAME)
