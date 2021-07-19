@@ -34,7 +34,7 @@ t_lexer		new_lexer(char *input)
 
 
 t_return	trim(t_lexer *lexer, const char delim) {
-	int 	len;
+	int		len;
 	int		i;
 	int		start;
 
@@ -159,14 +159,15 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 			lexer->read_char(lexer); // To advance beyond the closing "
 			ident = ft_strjoin(ident, (char *)temp);
 		}
-		if (lexer->ch == '\'')
+		else if (lexer->ch == '\'')
 		{
 			lexer->read_char(lexer); // To advance beyond the opening '
 			const char *temp = read_arg_squotes(lexer).literal;
 			lexer->read_char(lexer); // To advance beyond the closing '
 			ident = ft_strjoin(ident, (char *)temp);
 		}
-		if (lexer->ch == '\\') {
+		else if (lexer->ch == '\\')
+		{
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
@@ -196,12 +197,11 @@ char			peek_char(t_lexer *lexer)
 
 void expand(t_lexer *l, char *ident) {
 	char *var;
-	size_t ident_l;
 	char *new_input;
 	char *temp_sub;
 	char *temp_join;
+	const size_t ident_l = ft_strlen(ident) + 1;
 
-	ident_l = ft_strlen(ident) + 1;
 	// TODO: to free or not to free
 	// TODO: to protect or not to protect
 	var = getenv(ident);
