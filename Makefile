@@ -22,4 +22,6 @@ fclean: clean
 	rm -rf lexer
 	cd libft; make fclean
 
+test: all srcs/lexer_tests.c
+	clang srcs/lexer.c srcs/token/token.c srcs/lexer_tests.c srcs/libs/libft.a -o test && ./test
 re: fclean all
