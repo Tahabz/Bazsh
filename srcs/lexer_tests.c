@@ -4,15 +4,21 @@
 // TODO: Rewrite the tests
 int			main(void)
 {
-	int ok = 0;
-	t_token tok;
-	char *input =  "hello\" world\"!";
-	t_token tests[] = {g_arg, "hello world!"};
+	char *input =  "hello\" world\"!; echo";
 	t_lexer l = new_lexer(input);
+	const t_token tests[] = {
+		new_token(g_arg, "hello world!"),
+		new_token(g_seperator, ";"),
+		new_token(g_space, " "),
+		new_token(g_built_in, "echo"),
+		new_token(g_eof, ""),
+	};
+
+	int ok = 0;
 	unsigned int len = sizeof(tests) / sizeof(*tests);
 	for (unsigned int i = 0; i < len; i++)
 	{
-		tok = next_token(&l);
+		const t_token tok = next_token(&l);
 		if (strcmp(tok.literal, tests[i].literal) != 0) {
 			printf("Test [%d] ERROR: Token Literal mismatch \nExpected:'%s'\nGot\t:'%s'\n\n", i, tests[i].literal, tok.literal);
 			ok = 1;
