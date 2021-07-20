@@ -119,7 +119,6 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 		}
 		else if (lexer->ch == '\"')
 		{
-			puts(ident);
 			tok.type = lookup_ident(ident);
 			tok.literal = ident;
 			return (tok);
@@ -159,14 +158,14 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 			lexer->read_char(lexer); // To advance beyond the closing "
 			ident = ft_strjoin(ident, (char *)temp);
 		}
-		else if (lexer->ch == '\'')
+		if (lexer->ch == '\'')
 		{
 			lexer->read_char(lexer); // To advance beyond the opening '
 			const char *temp = read_arg_squotes(lexer).literal;
 			lexer->read_char(lexer); // To advance beyond the closing '
 			ident = ft_strjoin(ident, (char *)temp);
 		}
-		else if (lexer->ch == '\\')
+		if (lexer->ch == '\\')
 		{
 			lexer->read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
@@ -330,7 +329,7 @@ t_token		new_token(const char *type, const char *literal)
 	return (tok);
 }
 
-void			skip_white_spaces(t_lexer *lexer)
+void		skip_white_spaces(t_lexer *lexer)
 {
 	while (lexer->ch == ' ' || lexer->ch == '\t' || lexer->ch == '\n' || lexer->ch == '\r')
 		lexer->read_char(lexer);
