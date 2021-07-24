@@ -2,6 +2,7 @@
 #include "token/token.h"
 
 // TODO: Rewrite the tests
+// TODO: Test for incomplete quoting mixed with args (e.g. hello'world)
 int			main(void)
 {
 	char *input =  "hello\" world\"!; echo";
