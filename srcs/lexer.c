@@ -233,7 +233,7 @@ t_token		next_token(t_lexer *lexer)
 	
 
 	if (lexer->ch == '$') {
-		if (lexer->peek_char(lexer) == ' ')
+		if (lexer->peek_char(lexer) == ' ') // NOTE: how about a tab or any other separator?
 			tok = new_token(g_arg, "$");
 		else
 		{
