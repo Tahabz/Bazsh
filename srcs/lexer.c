@@ -190,7 +190,8 @@ void			read_char(t_lexer *lexer)
 
 char			peek_char(t_lexer *lexer)
 {
-	if (lexer->read_position <= strlen(lexer->input))
+	// NOTE: a probable bug below. I believe it should be <
+	if (lexer->read_position <= strlen(lexer->input)) 
 		return (lexer->input[lexer->read_position]);
 	return ('\0');
 }
@@ -305,6 +306,7 @@ t_token		next_token(t_lexer *lexer)
 		tok.literal = ">";
 		tok.type = g_r_redirection;
 	}
+	// TODO: Add heredoc redirection operator <<
 	else if (lexer->ch == '<') {
 		tok.literal = "<";
 		tok.type = g_l_redirection;
