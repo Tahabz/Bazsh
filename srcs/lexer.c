@@ -13,6 +13,7 @@
 // TODO: handle double quotes surrounded by tokens with spaces inside (eg: hello"hello " -> "hellohello ")
 // TODO: try to replace str_join with substr wherever it's possible
 // TODO: get rid of method pattern
+// TODO: use onlyone function to handle both ofdouble quotes andsingle quotes
 
 t_lexer		new_lexer(char *input)
 {
@@ -191,7 +192,7 @@ void			read_char(t_lexer *lexer)
 char			peek_char(t_lexer *lexer)
 {
 	// NOTE: a probable bug below. I believe it should be <
-	if (lexer->read_position <= strlen(lexer->input)) 
+	if (lexer->read_position <= strlen(lexer->input))
 		return (lexer->input[lexer->read_position]);
 	return ('\0');
 }
@@ -218,8 +219,8 @@ void expand(t_lexer *l, char *ident) {
 	free(temp_join);
 	printf("NEW INPUT: %s\n", new_input);
 	/* free(l->input); */
-	/* 
-	* NOTE: It's actually a bad idea to free l->input here 
+	/*
+	* NOTE: It's actually a bad idea to free l->input here
 	*		because it will be freed later as line in main.c
 	*/
 	l->input = new_input;
@@ -231,7 +232,7 @@ void expand(t_lexer *l, char *ident) {
 t_token		next_token(t_lexer *lexer)
 {
 	t_token tok;
-	
+
 
 	if (lexer->ch == '$') {
 		if (lexer->peek_char(lexer) == ' ') // NOTE: how about a tab or any other separator?
@@ -332,8 +333,13 @@ t_token		new_token(const char *type, const char *literal)
 	return (tok);
 }
 
+bool	is_white_space(const char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+}
+
 void		skip_white_spaces(t_lexer *lexer)
 {
-	while (lexer->ch == ' ' || lexer->ch == '\t' || lexer->ch == '\n' || lexer->ch == '\r')
+	while (is_white_space(lexer->ch))
 		lexer->read_char(lexer);
 }
