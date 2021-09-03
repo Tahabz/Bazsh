@@ -13,7 +13,7 @@
 // TODO: handle double quotes surrounded by tokens with spaces inside (eg: hello"hello " -> "hellohello ")
 // TODO: try to replace str_join with substr wherever it's possible
 // TODO: get rid of method pattern
-// TODO: use onlyone function to handle both ofdouble quotes andsingle quotes
+// TODO: use only one function to handle both of double quotes and single quotes
 
 t_lexer		new_lexer(char *input)
 {
@@ -191,8 +191,7 @@ void			read_char(t_lexer *lexer)
 
 char			peek_char(t_lexer *lexer)
 {
-	// NOTE: a probable bug below. I believe it should be <
-	if (lexer->read_position <= strlen(lexer->input))
+	if (lexer->read_position < strlen(lexer->input))
 		return (lexer->input[lexer->read_position]);
 	return ('\0');
 }
