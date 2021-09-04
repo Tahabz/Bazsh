@@ -17,6 +17,7 @@ static const char *g_option = "OPTION";
 static const char *g_r_redirection = ">";
 static const char *g_l_redirection = "<";
 static const char *g_a_redirection = ">>";
+static const char *g_heredoc = "<<";
 static const char *g_pipe = "|";
 static const char *g_and = "&&";
 static const char *g_ampersand = "&";

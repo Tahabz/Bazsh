@@ -295,7 +295,12 @@ t_token		next_token(t_lexer *lexer)
 		tok.literal = ">";
 		tok.type = g_r_redirection;
 	}
-	// TODO: Add heredoc redirection operator <<
+	else if (lexer->ch == '<' && lexer->peek_char(lexer) == '<')
+	{
+		lexer->read_char(lexer);
+		tok.literal = "<<";
+		tok.type = g_heredoc;
+	}
 	else if (lexer->ch == '<') {
 		tok.literal = "<";
 		tok.type = g_l_redirection;
