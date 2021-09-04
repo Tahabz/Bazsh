@@ -1,4 +1,5 @@
 #include "token.h"
+#include <stdio.h>
 
 
 // const char *get_key_type(const char *literal) {
@@ -26,7 +27,7 @@ const char *lookup_ident(const char *literal)
 
 	i = 0;
 	len = sizeof(built_ins) / sizeof(*built_ins);
-	while (i < len)
+	while (i < len && literal)
 	{
 		if (strcmp(literal, built_ins[i]) == 0)
 			return (g_built_in);
