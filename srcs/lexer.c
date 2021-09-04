@@ -267,17 +267,6 @@ t_token		next_token(t_lexer *lexer)
 		lexer->read_char(lexer);
 		tok = read_arg_squotes(lexer);
 	}
-	// TO THINK ABOUT: Do I need to include - as option or as argument
-	// else if (lexer->ch == '-') {
-	// 	if (lexer->peek_char(lexer) != ' ') {
-	// 		tok.literal = "-";
-	// 		tok.type = g_option;
-	// 	}
-	// 	else {
-	// 		tok.literal = "-";
-	// 		tok.type = g_arg;
-	// 	}
-	// }
 	else if (lexer->ch == '|') {
 		if (lexer->peek_char(lexer) == '|')
 		{
