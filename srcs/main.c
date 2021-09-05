@@ -1,7 +1,5 @@
 #include "lexer.h"
 
-// TODO: Handle the case of non-closed quotes (eg. "hello, 'hello)
-// TODO: get rid of libft
 int		main(void)
 {
 	int 	i;

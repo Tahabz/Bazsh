@@ -5,14 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// TODO: create a new version of str_join() that consumes its arguments
 // NOTE: almost every call of str_join() causes a memory leak
-// TODO: handle "$VAR" (double quoted variable)
-// TODO: handle "something$VAR" (double quoted variable with a prefixed token)
 // TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
-// TODO: handle double quotes surrounded by tokens with spaces inside (eg: hello"hello " -> "hellohello ")
-// TODO: try to replace str_join with substr wherever it's possible
-// TODO: use only one function to handle both of double quotes and single quotes
 
 t_lexer		new_lexer(char *input)
 {
@@ -204,7 +198,6 @@ t_token		next_token(t_lexer *lexer)
 	}
 
 	if (lexer->ch == '"') {
-		// TODO: Expand
 		read_char(lexer);
 		tok = read_arg_dquotes(lexer);
 	}
