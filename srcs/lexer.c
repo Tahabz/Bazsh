@@ -21,45 +21,8 @@ t_lexer		new_lexer(char *input)
 	l.input = input;
 	l.read_position = 0;
 	l.position = 0;
-	l.skip_white_spaces = &skip_white_spaces;
-	l.peek_char = &peek_char;
-	l.read_arg_dquotes = &read_arg_dquotes;
-	l.read_arg_squotes = &read_arg_squotes;
-	l.read_arg_no_quotes = &read_arg_no_quotes;
-	l.read_number = &read_number;
-	l.read_char = &read_char;
-	l.next_token = &next_token;
-	l.trim = &trim;
-	l.read_char(&l);
+	read_char(&l);
 	return (l);
-}
-
-
-t_return	trim(t_lexer *lexer, const char delim) {
-	int		len;
-	int		i;
-	int		start;
-
-	start = lexer->position;
-	i = 0;
-	len = ft_strlen(lexer->input);
-	while (i < len) {
-		if (lexer->peek_char(lexer) == '\\') {
-			lexer->read_char(lexer);
-			lexer->read_char(lexer);
-		}
-		if (lexer->ch == delim)
-			break ;
-		lexer->read_char(lexer);
-		i++;
-	}
-	t_return ret;
-	ret.data = ft_substr(lexer->input, start, i);
-	if (i == len)
-		ret.state = "INCOMPLETED";
-	else
-		ret.state = "COMPLETED";
-	return ret;
 }
 
 char						*read_number(t_lexer *lexer)
@@ -68,7 +31,7 @@ char						*read_number(t_lexer *lexer)
 
 	position = lexer->position;
 	while (ft_isdigit(lexer->ch))
-		lexer->read_char(lexer);
+		read_char(lexer);
 	return (ft_substr(lexer->input, position, lexer->position - position));
 }
 
@@ -85,7 +48,7 @@ t_token						read_arg_squotes(t_lexer *lexer)
 			word = ft_substr(lexer->input, position, lexer->position - position);
 			return ((t_token) {lookup_ident(word), word});
 		}
-		lexer->read_char(lexer);
+		read_char(lexer);
 	}
 	word = ft_substr(lexer->input, position, lexer->position - position);
 	return ((t_token) {g_invalid, word});
@@ -115,8 +78,8 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	ident = NULL;
 	while (lexer->ch != '\0')
 	{
-		if (lexer->ch == '\\' && is_escapable(lexer->peek_char(lexer))) {
-			lexer->read_char(lexer);
+		if (lexer->ch == '\\' && is_escapable(peek_char(lexer))) {
+			read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
 		else if (lexer->ch == '\"')
@@ -127,7 +90,7 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 		}
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
-		lexer->read_char(lexer);
+		read_char(lexer);
 	}
 	tok.type = g_invalid;
 	tok.literal = ident;
@@ -155,26 +118,26 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 	{
 		if (lexer->ch == '"')
 		{
-			lexer->read_char(lexer); // To advance beyond the opening "
+			read_char(lexer); // To advance beyond the opening "
 			const char *temp = read_arg_dquotes(lexer).literal;
-			lexer->read_char(lexer); // To advance beyond the closing "
+			read_char(lexer); // To advance beyond the closing "
 			ident = ft_strjoin(ident, (char *)temp);
 		}
 		if (lexer->ch == '\'')
 		{
-			lexer->read_char(lexer); // To advance beyond the opening '
+			read_char(lexer); // To advance beyond the opening '
 			const char *temp = read_arg_squotes(lexer).literal;
-			lexer->read_char(lexer); // To advance beyond the closing '
+			read_char(lexer); // To advance beyond the closing '
 			ident = ft_strjoin(ident, (char *)temp);
 		}
 		if (lexer->ch == '\\')
 		{
-			lexer->read_char(lexer);
+			read_char(lexer);
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		}
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
-		lexer->read_char(lexer);
+		read_char(lexer);
 	}
 	return (ident);
 }
@@ -234,18 +197,18 @@ t_token		next_token(t_lexer *lexer)
 
 
 	if (lexer->ch == '$') {
-		if (lexer->peek_char(lexer) == ' ') // NOTE: how about a tab or any other separator?
+		if (peek_char(lexer) == ' ') // NOTE: how about a tab or any other separator?
 			tok = new_token(g_arg, "$");
 		else
 		{
-			lexer->read_char(lexer);
-			expand(lexer, lexer->read_arg_no_quotes(lexer));
+			read_char(lexer);
+			expand(lexer, read_arg_no_quotes(lexer));
 		}
 	}
 
 	if (lexer->ch == '"') {
 		// TODO: Expand
-		lexer->read_char(lexer);
+		read_char(lexer);
 		tok = read_arg_dquotes(lexer);
 	}
 	else if (lexer->ch == '=')
@@ -264,30 +227,30 @@ t_token		next_token(t_lexer *lexer)
 		tok.type = g_tab;
 	}
 	else if (lexer->ch == '\'') {
-		lexer->read_char(lexer);
+		read_char(lexer);
 		tok = read_arg_squotes(lexer);
 	}
 	else if (lexer->ch == '|') {
-		if (lexer->peek_char(lexer) == '|')
+		if (peek_char(lexer) == '|')
 		{
-			lexer->read_char(lexer);
+			read_char(lexer);
 			tok = new_token(g_or, "||");
 		}
 		else
 			tok = new_token(g_pipe, "|");
 	}
 	else if (lexer->ch == '&') {
-		if (lexer->peek_char(lexer) == '&')
+		if (peek_char(lexer) == '&')
 		{
 			tok = new_token(g_and, "&&");
-			lexer->read_char(lexer);
+			read_char(lexer);
 		}
 		else
 			tok = new_token(g_ampersand, "&");
 	}
-	else if (lexer->ch == '>' && lexer->peek_char(lexer) == '>')
+	else if (lexer->ch == '>' && peek_char(lexer) == '>')
 	{
-		lexer->read_char(lexer);
+		read_char(lexer);
 		tok.literal = ">>";
 		tok.type = g_a_redirection;
 	}
@@ -295,9 +258,9 @@ t_token		next_token(t_lexer *lexer)
 		tok.literal = ">";
 		tok.type = g_r_redirection;
 	}
-	else if (lexer->ch == '<' && lexer->peek_char(lexer) == '<')
+	else if (lexer->ch == '<' && peek_char(lexer) == '<')
 	{
-		lexer->read_char(lexer);
+		read_char(lexer);
 		tok.literal = "<<";
 		tok.type = g_heredoc;
 	}
@@ -310,11 +273,11 @@ t_token		next_token(t_lexer *lexer)
 	else if (lexer->ch == ';')
 		tok = new_token(g_seperator, ";");
 	else {
-		tok.literal = lexer->read_arg_no_quotes(lexer);
+		tok.literal = read_arg_no_quotes(lexer);
 		tok.type = lookup_ident(tok.literal);
 		return (tok);
 	}
-	lexer->read_char(lexer);
+	read_char(lexer);
 	return (tok);
 }
 
@@ -334,5 +297,5 @@ bool	is_white_space(const char c)
 void		skip_white_spaces(t_lexer *lexer)
 {
 	while (is_white_space(lexer->ch))
-		lexer->read_char(lexer);
+		read_char(lexer);
 }
