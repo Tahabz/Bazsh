@@ -12,7 +12,6 @@
 // TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
 // TODO: handle double quotes surrounded by tokens with spaces inside (eg: hello"hello " -> "hellohello ")
 // TODO: try to replace str_join with substr wherever it's possible
-// TODO: get rid of method pattern
 // TODO: use only one function to handle both of double quotes and single quotes
 
 t_lexer		new_lexer(char *input)
@@ -113,7 +112,7 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 {
 	char *ident;
 
-	ident = 0;
+	ident = NULL;
 	while (lexer->ch != '\0' && !is_separator(lexer->ch) && lexer->ch != '$')
 	{
 		if (lexer->ch == '"')
@@ -169,7 +168,6 @@ void expand(t_lexer *l, char *ident) {
 	// TODO: to free or not to free
 	// TODO: to protect or not to protect
 	var = getenv(ident);
-	printf("%s\n", var);
 	// TODO: to free or not to free
 	temp_sub = ft_substr(l->input, 0, l->position - ident_l);
 	temp_join = ft_strjoin(temp_sub, var);
@@ -179,7 +177,6 @@ void expand(t_lexer *l, char *ident) {
 	new_input = ft_strjoin(temp_join, temp_sub);
 	free(temp_sub);
 	free(temp_join);
-	printf("NEW INPUT: %s\n", new_input);
 	/* free(l->input); */
 	/*
 	* NOTE: It's actually a bad idea to free l->input here
