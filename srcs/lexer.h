@@ -21,14 +21,12 @@ typedef struct	s_lexer {
 	char			ch;
 }				t_lexer;
 
-t_return					trim(t_lexer *lexer, const char delim);
 void						read_char(t_lexer *lexer);
 t_token						next_token(t_lexer *lexer);
 void						skip_white_spaces(t_lexer *lexer);
 t_token						new_token(const char *type, const char *literal);
 t_lexer						new_lexer(char *input);
 char						peek_char(t_lexer *lexer);
-char						*read_number(t_lexer *lexer);
 char						*read_arg_no_quotes(t_lexer *lexer);
 t_token						read_arg_dquotes(t_lexer *lexer);
 t_token						read_arg_squotes(t_lexer *lexer);

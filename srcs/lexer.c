@@ -18,16 +18,6 @@ t_lexer		new_lexer(char *input)
 	return (l);
 }
 
-char						*read_number(t_lexer *lexer)
-{
-	unsigned int position;
-
-	position = lexer->position;
-	while (ft_isdigit(lexer->ch))
-		read_char(lexer);
-	return (ft_substr(lexer->input, position, lexer->position - position));
-}
-
 t_token						read_arg_squotes(t_lexer *lexer)
 {
 	int position;
