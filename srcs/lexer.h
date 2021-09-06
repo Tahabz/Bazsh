@@ -23,7 +23,6 @@ typedef struct	s_lexer {
 
 void						read_char(t_lexer *lexer);
 t_token						next_token(t_lexer *lexer);
-void						skip_white_spaces(t_lexer *lexer);
 t_token						new_token(const char *type, const char *literal);
 t_lexer						new_lexer(char *input);
 char						peek_char(t_lexer *lexer);

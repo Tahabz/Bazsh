@@ -268,14 +268,3 @@ t_token		new_token(const char *type, const char *literal)
 	tok.type = type;
 	return (tok);
 }
-
-bool	is_white_space(const char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
-}
-
-void		skip_white_spaces(t_lexer *lexer)
-{
-	while (is_white_space(lexer->ch))
-		read_char(lexer);
-}
