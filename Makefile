@@ -17,8 +17,11 @@ clean:
 	rm -rf lexer
 
 fclean: clean
-	rm -rf lexer
 
-test: all srcs/lexer_tests.c
-	clang srcs/lexer_tests.c $(SRCS) -o test && ./test
+build_test: tests/lexer_tests.c
+	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o test
+
+test: build_test
+	./test
+
 re: fclean all
