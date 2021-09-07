@@ -15,8 +15,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <ctype.h>
-# include "../libft/libft.h"
-
+#include "../strtools/strtools.h"
 # define BUFFER_SIZE 32
 
 int			get_next_line(int fd, char **line);

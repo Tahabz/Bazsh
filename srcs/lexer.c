@@ -1,5 +1,4 @@
 #include "lexer.h"
-#include "libft/libft.h"
 #include "token/token.h"
 #include <stddef.h>
 #include <stdio.h>

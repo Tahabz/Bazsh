@@ -1,5 +1,4 @@
-#include "libft.h"
-
+#include "strtools.h"
 /*
 ** CAUTION: returns a new string (heap allocated) which needs to be freed later
 */

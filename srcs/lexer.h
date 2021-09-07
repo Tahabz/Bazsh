@@ -2,12 +2,12 @@
 # define LEXER_H
 
 #include "token/token.h"
-#include "libft/libft.h"
 #include "get_next_line/get_next_line.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "strtools/strtools.h"
 
 typedef struct s_return {
 	const char *data;
