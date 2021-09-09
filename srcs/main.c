@@ -31,7 +31,7 @@ int		main(void)
 // int		main(void)
 // {
 // 	int 	i;
-// 	char	line[] = "$l";
+// 	char	line[] = "echo $e";
 // 	i = 0;
 // 	char *prompt = "BAZ >>$ ";
 // 	ft_putstr_fd(prompt, 0);
@@ -44,7 +44,7 @@ int		main(void)
 // 		t_lexer lexer = new_lexer(line);
 // 		while (1)
 // 		{
-// 			tok = lexer.next_token(&lexer);
+// 			tok = next_token(&lexer);
 // 			printf("Token Type: {%s}\t\r\t\t\t Token Literal: {%s}\n", tok.type, tok.literal);
 // 			if (strcmp(tok.type, "EOF") == 0)
 // 				break ;
@@ -54,5 +54,4 @@ int		main(void)
 // 		free(line);
 // 	}
 // 	close(0);
-// 	free(line);
 // }
