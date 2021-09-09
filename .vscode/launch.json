@@ -8,7 +8,7 @@
 		"name": "(lldb) Launch",
 		"type": "cppdbg",
 		"request": "launch",
-		"program": "${workspaceFolder}/srcs/lexer",
+		"program": "${workspaceFolder}/lexer",
 		"args": [],
 		"stopAtEntry": false,
 		"cwd": "${workspaceFolder}",
