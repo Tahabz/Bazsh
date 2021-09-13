@@ -180,8 +180,12 @@ t_token		next_token(t_lexer *lexer)
 
 
 	if (lexer->ch == '$') {
-		if (peek_char(lexer) == ' ') // NOTE: how about a tab or any other separator?
-			tok = new_token(g_arg, "$");
+		if (peek_char(lexer) == ' ' || peek_char(lexer) == '\0') // NOTE: how about a tab or any other separator?
+		{
+			tok = new_token(g_invalid, "$");
+			read_char(lexer);
+			return (tok);
+		}
 		else
 		{
 			read_char(lexer);
