@@ -4,7 +4,7 @@
 
 typedef struct		s_token {
 	const char *type;
-	const char *literal;
+	char *literal;
 }					t_token;
 
 const char *getKeyType(const char *literal);

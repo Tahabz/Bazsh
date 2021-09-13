@@ -26,7 +26,7 @@ t_token						next_token(t_lexer *lexer);
 t_token						new_token(const char *type, const char *literal);
 t_lexer						new_lexer(char *input);
 char						peek_char(t_lexer *lexer);
-char						*read_arg_no_quotes(t_lexer *lexer);
+t_token						read_arg_no_quotes(t_lexer *lexer);
 t_token						read_arg_dquotes(t_lexer *lexer);
 t_token						read_arg_squotes(t_lexer *lexer);
 #endif

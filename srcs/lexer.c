@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // NOTE: almost every call of str_join() causes a memory leak
 // TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
@@ -60,9 +61,11 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	ident = NULL;
 	while (lexer->ch != '\0')
 	{
-		if (lexer->ch == '\\' && is_escapable(peek_char(lexer))) {
+		if (lexer->ch == '\\') {
+			tok.type = g_invalid;
+			tok.literal = ident;
 			read_char(lexer);
-			ident = ft_strjoin(ident, char_to_string(lexer->ch));
+			return (tok);
 		}
 		else if (lexer->ch == '\"')
 		{
@@ -91,7 +94,7 @@ int		is_separator(const char ch)
 			|| ch == ' ');
 }
 
-char						*read_arg_no_quotes(t_lexer *lexer)
+t_token						read_arg_no_quotes(t_lexer *lexer)
 {
 	char *ident;
 
@@ -115,13 +118,13 @@ char						*read_arg_no_quotes(t_lexer *lexer)
 		if (lexer->ch == '\\')
 		{
 			read_char(lexer);
-			ident = ft_strjoin(ident, char_to_string(lexer->ch));
+			return ((t_token){g_invalid, ident});
 		}
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		read_char(lexer);
 	}
-	return (ident);
+	return ((t_token){lookup_ident(ident), ident});
 }
 
 void			read_char(t_lexer *lexer)
@@ -141,7 +144,7 @@ char			peek_char(t_lexer *lexer)
 	return ('\0');
 }
 
-void expand(t_lexer *l, char *ident) {
+void expand(t_lexer *l, const char *ident) {
 	char *var;
 	char *new_input;
 	char *temp_sub;
@@ -182,7 +185,10 @@ t_token		next_token(t_lexer *lexer)
 		else
 		{
 			read_char(lexer);
-			expand(lexer, read_arg_no_quotes(lexer));
+			t_token ident_tok = read_arg_no_quotes(lexer);
+			if (strcmp(ident_tok.type, g_invalid) != 0)
+				expand(lexer, ident_tok.literal);
+			free(ident_tok.literal);
 		}
 	}
 
@@ -252,8 +258,7 @@ t_token		next_token(t_lexer *lexer)
 	else if (lexer->ch == ';')
 		tok = new_token(g_seperator, ";");
 	else {
-		tok.literal = read_arg_no_quotes(lexer);
-		tok.type = lookup_ident(tok.literal);
+		tok = read_arg_no_quotes(lexer);
 		return (tok);
 	}
 	read_char(lexer);
@@ -263,7 +268,7 @@ t_token		next_token(t_lexer *lexer)
 t_token		new_token(const char *type, const char *literal)
 {
 	t_token tok;
-	tok.literal = literal;
+	tok.literal = ft_strdup(literal);
 	tok.type = type;
 	return (tok);
 }
