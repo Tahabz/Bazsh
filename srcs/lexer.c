@@ -61,13 +61,7 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	ident = NULL;
 	while (lexer->ch != '\0')
 	{
-		if (lexer->ch == '\\') {
-			tok.type = g_invalid;
-			tok.literal = ident;
-			read_char(lexer);
-			return (tok);
-		}
-		else if (lexer->ch == '\"')
+		if (lexer->ch == '\"')
 		{
 			tok.type = lookup_ident(ident);
 			tok.literal = ident;
@@ -114,11 +108,6 @@ t_token						read_arg_no_quotes(t_lexer *lexer)
 			const char *temp = read_arg_squotes(lexer).literal;
 			read_char(lexer); // To advance beyond the closing '
 			ident = ft_strjoin(ident, (char *)temp);
-		}
-		if (lexer->ch == '\\')
-		{
-			read_char(lexer);
-			return ((t_token){g_invalid, ident});
 		}
 		else
 			ident = ft_strjoin(ident, char_to_string(lexer->ch));
