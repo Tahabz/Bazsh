@@ -33,5 +33,5 @@ const char *lookup_ident(const char *literal)
 			return (g_built_in);
 		i++;
 	}
-	return (g_arg);
+	return (NULL);
 }

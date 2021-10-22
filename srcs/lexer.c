@@ -20,21 +20,25 @@ t_lexer		new_lexer(char *input)
 
 t_token						read_arg_squotes(t_lexer *lexer)
 {
-	int position;
-	char *word;
+	t_token tok;
+	const int position = lexer->position;
 
-	position = lexer->position;
 	while (lexer->ch != '\0')
 	{
 		if (lexer->ch == '\'')
 		{
-			word = ft_substr(lexer->input, position, lexer->position - position);
-			return ((t_token) {lookup_ident(word), word});
+			tok.literal = ft_substr(lexer->input, position, lexer->position - position);
+			tok.type = lookup_ident(tok.literal);
+			if (tok.type != NULL)
+				return (tok);
+			tok.type = g_sqarg;
+			return (tok);
 		}
 		read_char(lexer);
 	}
-	word = ft_substr(lexer->input, position, lexer->position - position);
-	return ((t_token) {g_invalid, word});
+	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
+	tok.type = g_invalid;
+	return (tok);
 }
 
 bool						is_escapable(char c)
@@ -55,24 +59,24 @@ bool						is_escapable(char c)
 
 t_token						read_arg_dquotes(t_lexer *lexer)
 {
-	char *ident;
 	t_token tok;
+	const int position = lexer->position;
 
-	ident = NULL;
 	while (lexer->ch != '\0')
 	{
 		if (lexer->ch == '\"')
 		{
-			tok.type = lookup_ident(ident);
-			tok.literal = ident;
+			tok.literal = ft_substr(lexer->input, position, lexer->position - position);
+			tok.type = lookup_ident(tok.literal);
+			if (tok.type != NULL)
+				return (tok);
+			tok.type = g_dqarg;
 			return (tok);
 		}
-		else
-			ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		read_char(lexer);
 	}
+	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
 	tok.type = g_invalid;
-	tok.literal = ident;
 	return (tok);
 }
 
@@ -92,15 +96,19 @@ int		is_separator(const char ch)
 
 t_token						read_arg_no_quotes(t_lexer *lexer)
 {
-	char *ident;
+	t_token tok;
+	const int position = lexer->position;
 
-	ident = NULL;
-	while (lexer->ch != '\0' && !is_separator(lexer->ch))
+	while (lexer->ch != '\0' && is_separator(lexer->ch) == false)
 	{
-		ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		read_char(lexer);
 	}
-	return ((t_token){lookup_ident(ident), ident});
+	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
+	tok.type = lookup_ident(tok.literal);
+	if (tok.type != NULL)
+		return (tok);
+	tok.type = g_arg;
+	return (tok);
 }
 
 void			read_char(t_lexer *lexer)

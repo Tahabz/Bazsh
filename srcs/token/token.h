@@ -35,6 +35,8 @@ static const char *g_tab = "\t";
 static const char *g_or = "||";
 static const char *g_equal = "=";
 static const char *g_invalid = "INVALID";
+static const char *g_sqarg = "SINGLE_Q_ARG";
+static const char *g_dqarg = "DOUBLE_D_ARG";
 
 static const char *built_ins[]		= {
 	"echo",
