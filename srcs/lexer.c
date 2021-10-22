@@ -85,7 +85,9 @@ int		is_separator(const char ch)
 			|| ch == '>'
 			|| ch == '<'
 			|| ch == '='
-			|| ch == ' ');
+			|| ch == ' '
+			|| ch == '\"'
+			|| ch == '\'');
 }
 
 t_token						read_arg_no_quotes(t_lexer *lexer)
@@ -93,24 +95,9 @@ t_token						read_arg_no_quotes(t_lexer *lexer)
 	char *ident;
 
 	ident = NULL;
-	while (lexer->ch != '\0' && !is_separator(lexer->ch) && lexer->ch != '$')
+	while (lexer->ch != '\0' && !is_separator(lexer->ch))
 	{
-		if (lexer->ch == '"')
-		{
-			read_char(lexer); // To advance beyond the opening "
-			const char *temp = read_arg_dquotes(lexer).literal;
-			read_char(lexer); // To advance beyond the closing "
-			ident = ft_strjoin(ident, (char *)temp);
-		}
-		if (lexer->ch == '\'')
-		{
-			read_char(lexer); // To advance beyond the opening '
-			const char *temp = read_arg_squotes(lexer).literal;
-			read_char(lexer); // To advance beyond the closing '
-			ident = ft_strjoin(ident, (char *)temp);
-		}
-		else
-			ident = ft_strjoin(ident, char_to_string(lexer->ch));
+		ident = ft_strjoin(ident, char_to_string(lexer->ch));
 		read_char(lexer);
 	}
 	return ((t_token){lookup_ident(ident), ident});
