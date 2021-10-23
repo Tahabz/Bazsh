@@ -41,22 +41,6 @@ t_token						read_arg_squotes(t_lexer *lexer)
 	return (tok);
 }
 
-bool						is_escapable(char c)
-{
-	const char escapables[] = {'$', '\\', '"', '*', '@'};
-	const size_t n_escapables = sizeof(escapables)/sizeof(escapables[0]);
-	size_t i;
-
-	i = 0;
-	while (i < n_escapables)
-	{
-		if (escapables[i] == c)
-			return (true);
-		i++;
-	}
-	return (false);
-}
-
 t_token						read_arg_dquotes(t_lexer *lexer)
 {
 	t_token tok;
