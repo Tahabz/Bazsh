@@ -170,18 +170,15 @@ t_token		next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '=')
 	{
-		tok.literal = "=";
-		tok.type = g_equal;
+		tok = new_token(g_equal, "=");
 	}
 	else if (lexer->ch == ' ')
 	{
-		tok.literal = " ";
-		tok.type = 	g_space;
+		tok = new_token(g_space, " ");
 	}
 	else if (lexer->ch == '\t')
 	{
-		tok.literal = "\t";
-		tok.type = g_tab;
+		tok = new_token(g_tab, "\t");
 	}
 	else if (lexer->ch == '\'') {
 		read_char(lexer);
@@ -208,27 +205,21 @@ t_token		next_token(t_lexer *lexer)
 	else if (lexer->ch == '>' && peek_char(lexer) == '>')
 	{
 		read_char(lexer);
-		tok.literal = ">>";
-		tok.type = g_a_redirection;
+		tok = new_token(g_a_redirection, ">>");
 	}
 	else if (lexer->ch == '>') {
-		tok.literal = ">";
-		tok.type = g_r_redirection;
+		tok = new_token(g_r_redirection, ">");
 	}
 	else if (lexer->ch == '<' && peek_char(lexer) == '<')
 	{
 		read_char(lexer);
-		tok.literal = "<<";
-		tok.type = g_heredoc;
+		tok = new_token(g_heredoc, "<<");
 	}
 	else if (lexer->ch == '<') {
-		tok.literal = "<";
-		tok.type = g_l_redirection;
+		tok = new_token(g_l_redirection, "<");
 	}
 	else if (lexer->ch == '\0')
 		tok = new_token(g_eof, "\0");
-	else if (lexer->ch == ';')
-		tok = new_token(g_seperator, ";");
 	else {
 		tok = read_arg_no_quotes(lexer);
 		return (tok);
