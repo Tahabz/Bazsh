@@ -84,7 +84,7 @@ t_token	read_arg_no_quotes(t_lexer *lexer)
 
 void	read_char(t_lexer *lexer)
 {
-	if (lexer->read_position >= strlen(lexer->input))
+	if (lexer->read_position >= ft_strlen(lexer->input))
 		lexer->ch = '\0';
 	else
 		lexer->ch = lexer->input[lexer->read_position];
@@ -94,7 +94,7 @@ void	read_char(t_lexer *lexer)
 
 char	peek_char(t_lexer *lexer)
 {
-	if (lexer->read_position < strlen(lexer->input))
+	if (lexer->read_position < ft_strlen(lexer->input))
 		return (lexer->input[lexer->read_position]);
 	return ('\0');
 }
