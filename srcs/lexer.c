@@ -64,20 +64,6 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	return (tok);
 }
 
-int		is_separator(const char ch)
-{
-	return (ch == '|'
-			|| ch == '&'
-			|| ch == ';'
-			|| ch == '\t'
-			|| ch == '>'
-			|| ch == '<'
-			|| ch == '='
-			|| ch == ' '
-			|| ch == '\"'
-			|| ch == '\'');
-}
-
 t_token						read_arg_no_quotes(t_lexer *lexer)
 {
 	t_token tok;
@@ -225,13 +211,5 @@ t_token		next_token(t_lexer *lexer)
 		return (tok);
 	}
 	read_char(lexer);
-	return (tok);
-}
-
-t_token		new_token(const char *type, const char *literal)
-{
-	t_token tok;
-	tok.literal = ft_strdup(literal);
-	tok.type = type;
 	return (tok);
 }

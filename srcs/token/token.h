@@ -1,6 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 #include <string.h>
+#include "../strtools/strtools.h"
 
 typedef struct		s_token {
 	const char *type;
@@ -9,6 +10,7 @@ typedef struct		s_token {
 
 const char *getKeyType(const char *literal);
 const char *lookup_ident(const char *literal);
+int	is_separator(const char ch);
 
 static const char *g_built_in = "BUILT_IN";
 static const char *g_arg = "ARGUMENT";
@@ -37,14 +39,4 @@ static const char *g_equal = "=";
 static const char *g_invalid = "INVALID";
 static const char *g_sqarg = "SINGLE_Q_ARG";
 static const char *g_dqarg = "DOUBLE_D_ARG";
-
-static const char *built_ins[]		= {
-	"echo",
-	"cd",
-	"pwd",
-	"export",
-	"unset",
-	"env",
-	"exit"
-};
 #endif
