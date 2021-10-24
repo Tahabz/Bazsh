@@ -11,8 +11,6 @@ t_token		new_token(const char *type, const char *literal)
 int		is_separator(const char ch)
 {
 	return (ch == '|'
-			|| ch == '&'
-			|| ch == ';'
 			|| ch == '\t'
 			|| ch == '>'
 			|| ch == '<'
