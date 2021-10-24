@@ -41,7 +41,7 @@ const char *lookup_ident(const char *literal)
 	while (i < len && literal)
 	{
 		if (strcmp(literal, built_ins[i]) == 0)
-			return (g_built_in);
+			return (BUILT_IN);
 		i++;
 	}
 	return (NULL);

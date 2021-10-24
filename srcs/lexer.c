@@ -31,13 +31,13 @@ t_token						read_arg_squotes(t_lexer *lexer)
 			tok.type = lookup_ident(tok.literal);
 			if (tok.type != NULL)
 				return (tok);
-			tok.type = g_sqarg;
+			tok.type = SINGLE_Q_ARG;
 			return (tok);
 		}
 		read_char(lexer);
 	}
 	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
-	tok.type = g_invalid;
+	tok.type = INVALID;
 	return (tok);
 }
 
@@ -54,13 +54,13 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 			tok.type = lookup_ident(tok.literal);
 			if (tok.type != NULL)
 				return (tok);
-			tok.type = g_dqarg;
+			tok.type = DOUBLE_Q_ARG;
 			return (tok);
 		}
 		read_char(lexer);
 	}
 	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
-	tok.type = g_invalid;
+	tok.type = INVALID;
 	return (tok);
 }
 
@@ -77,7 +77,7 @@ t_token						read_arg_no_quotes(t_lexer *lexer)
 	tok.type = lookup_ident(tok.literal);
 	if (tok.type != NULL)
 		return (tok);
-	tok.type = g_arg;
+	tok.type = ARG;
 	return (tok);
 }
 
@@ -136,7 +136,7 @@ t_token		next_token(t_lexer *lexer)
 	if (lexer->ch == '$') {
 		if (peek_char(lexer) == ' ' || peek_char(lexer) == '\0') // NOTE: how about a tab or any other separator?
 		{
-			tok = new_token(g_invalid, "$");
+			tok = new_token(INVALID, "$");
 			read_char(lexer);
 			return (tok);
 		}
@@ -144,7 +144,7 @@ t_token		next_token(t_lexer *lexer)
 		{
 			read_char(lexer);
 			t_token ident_tok = read_arg_no_quotes(lexer);
-			if (strcmp(ident_tok.type, g_invalid) != 0)
+			if (strcmp(ident_tok.type, INVALID) != 0)
 				expand(lexer, ident_tok.literal);
 			free(ident_tok.literal);
 		}
@@ -156,15 +156,15 @@ t_token		next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '=')
 	{
-		tok = new_token(g_equal, "=");
+		tok = new_token(EQUAL, "=");
 	}
 	else if (lexer->ch == ' ')
 	{
-		tok = new_token(g_space, " ");
+		tok = new_token(SPACE, " ");
 	}
 	else if (lexer->ch == '\t')
 	{
-		tok = new_token(g_tab, "\t");
+		tok = new_token(TAB, "\t");
 	}
 	else if (lexer->ch == '\'') {
 		read_char(lexer);
@@ -174,38 +174,29 @@ t_token		next_token(t_lexer *lexer)
 		if (peek_char(lexer) == '|')
 		{
 			read_char(lexer);
-			tok = new_token(g_or, "||");
+			tok = new_token(INVALID, "||");
 		}
 		else
-			tok = new_token(g_pipe, "|");
-	}
-	else if (lexer->ch == '&') {
-		if (peek_char(lexer) == '&')
-		{
-			tok = new_token(g_and, "&&");
-			read_char(lexer);
-		}
-		else
-			tok = new_token(g_ampersand, "&");
+			tok = new_token(PIPE, "|");
 	}
 	else if (lexer->ch == '>' && peek_char(lexer) == '>')
 	{
 		read_char(lexer);
-		tok = new_token(g_a_redirection, ">>");
+		tok = new_token(APPEND, ">>");
 	}
 	else if (lexer->ch == '>') {
-		tok = new_token(g_r_redirection, ">");
+		tok = new_token(R_REDIRECTION, ">");
 	}
 	else if (lexer->ch == '<' && peek_char(lexer) == '<')
 	{
 		read_char(lexer);
-		tok = new_token(g_heredoc, "<<");
+		tok = new_token(HEREDOC, "<<");
 	}
 	else if (lexer->ch == '<') {
-		tok = new_token(g_l_redirection, "<");
+		tok = new_token(L_REDIRECTION, "<");
 	}
 	else if (lexer->ch == '\0')
-		tok = new_token(g_eof, "\0");
+		tok = new_token(EOF_, "\0");
 	else {
 		tok = read_arg_no_quotes(lexer);
 		return (tok);

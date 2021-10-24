@@ -1,7 +1,23 @@
 #ifndef TOKEN_H
-#define TOKEN_H
-#include <string.h>
-#include "../strtools/strtools.h"
+# define TOKEN_H
+# include <string.h>
+# include "../strtools/strtools.h"
+# define BUILT_IN "BUILT_IN"
+# define ARG "ARGUMENT"
+# define VAR "VARIABLE"
+# define R_REDIRECTION ">"
+# define L_REDIRECTION "<"
+# define APPEND ">>"
+# define HEREDOC "<<"
+# define PIPE "|"
+# define EXEC "EXECUTABLE"
+# define EOF_ "EOF"
+# define SPACE " "
+# define TAB "\t"
+# define EQUAL "="
+# define INVALID "INVALID"
+# define SINGLE_Q_ARG "SINGLE_Q_ARG"
+# define DOUBLE_Q_ARG "DOUBLE_D_ARG"
 
 typedef struct		s_token {
 	const char *type;
@@ -12,31 +28,4 @@ const char *getKeyType(const char *literal);
 const char *lookup_ident(const char *literal);
 int	is_separator(const char ch);
 
-static const char *g_built_in = "BUILT_IN";
-static const char *g_arg = "ARGUMENT";
-static const char *g_variable = "VARIABLE";
-static const char *g_option = "OPTION";
-static const char *g_r_redirection = ">";
-static const char *g_l_redirection = "<";
-static const char *g_a_redirection = ">>";
-static const char *g_heredoc = "<<";
-static const char *g_pipe = "|";
-static const char *g_and = "&&";
-static const char *g_ampersand = "&";
-static const char *g_exec = "EXECUTABLE";
-static const char *g_lbrace = "{";
-static const char *g_rbrace = "}";
-static const char *g_blash = "\\";
-static const char *g_slash = "/";
-static const char *g_eof = "EOF";
-static const char *g_dquote = "\"";
-static const char *g_squote = "\'";
-static const char *g_seperator = ";";
-static const char *g_space = " ";
-static const char *g_tab = "\t";
-static const char *g_or = "||";
-static const char *g_equal = "=";
-static const char *g_invalid = "INVALID";
-static const char *g_sqarg = "SINGLE_Q_ARG";
-static const char *g_dqarg = "DOUBLE_D_ARG";
 #endif
