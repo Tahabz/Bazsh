@@ -8,7 +8,7 @@
 // NOTE: almost every call of str_join() causes a memory leak
 // TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
 
-t_lexer		new_lexer(const char *input)
+t_lexer	new_lexer(const char *input)
 {
 	t_lexer	l;
 
@@ -19,7 +19,7 @@ t_lexer		new_lexer(const char *input)
 	return (l);
 }
 
-t_token						read_arg_squotes(t_lexer *lexer)
+t_token	read_arg_squotes(t_lexer *lexer)
 {
 	t_token tok;
 	const int position = lexer->position;
@@ -42,7 +42,7 @@ t_token						read_arg_squotes(t_lexer *lexer)
 	return (tok);
 }
 
-t_token						read_arg_dquotes(t_lexer *lexer)
+t_token	read_arg_dquotes(t_lexer *lexer)
 {
 	t_token tok;
 	const int position = lexer->position;
@@ -65,7 +65,7 @@ t_token						read_arg_dquotes(t_lexer *lexer)
 	return (tok);
 }
 
-t_token						read_arg_no_quotes(t_lexer *lexer)
+t_token	read_arg_no_quotes(t_lexer *lexer)
 {
 	t_token tok;
 	const int position = lexer->position;
@@ -82,7 +82,7 @@ t_token						read_arg_no_quotes(t_lexer *lexer)
 	return (tok);
 }
 
-void			read_char(t_lexer *lexer)
+void	read_char(t_lexer *lexer)
 {
 	if (lexer->read_position >= strlen(lexer->input))
 		lexer->ch = '\0';
@@ -92,14 +92,14 @@ void			read_char(t_lexer *lexer)
 	lexer->read_position += 1;
 }
 
-char			peek_char(t_lexer *lexer)
+char	peek_char(t_lexer *lexer)
 {
 	if (lexer->read_position < strlen(lexer->input))
 		return (lexer->input[lexer->read_position]);
 	return ('\0');
 }
 
-void expand(t_lexer *l, const char *ident) {
+void	expand(t_lexer *l, const char *ident) {
 	char *var;
 	char *new_input;
 	char *temp_sub;
@@ -121,7 +121,7 @@ void expand(t_lexer *l, const char *ident) {
 	l->ch = l->input[l->position];
 }
 
-t_token		next_token(t_lexer *lexer)
+t_token	next_token(t_lexer *lexer)
 {
 	t_token tok;
 
