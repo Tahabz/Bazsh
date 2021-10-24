@@ -8,10 +8,11 @@
 // NOTE: almost every call of str_join() causes a memory leak
 // TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
 
-t_lexer		new_lexer(char *input)
+t_lexer		new_lexer(const char *input)
 {
-	t_lexer l;
-	l.input = input;
+	t_lexer	l;
+
+	l.input = ft_strdup(input);
 	l.read_position = 0;
 	l.position = 0;
 	read_char(&l);
@@ -105,23 +106,16 @@ void expand(t_lexer *l, const char *ident) {
 	char *temp_join;
 	const size_t ident_l = ft_strlen(ident) + 1;
 
-	// TODO: to free or not to free
-	// TODO: to protect or not to protect
 	var = getenv(ident);
-	// TODO: to free or not to free
 	temp_sub = ft_substr(l->input, 0, l->position - ident_l);
 	temp_join = ft_strjoin(temp_sub, var);
 	free(temp_sub);
-	// TODO: to free or not to free
+	free(var);
 	temp_sub = ft_substr(l->input,l->position + ident_l - 2, ft_strlen(l->input));
 	new_input = ft_strjoin(temp_join, temp_sub);
 	free(temp_sub);
 	free(temp_join);
-	/* free(l->input); */
-	/*
-	* NOTE: It's actually a bad idea to free l->input here
-	*		because it will be freed later as line in main.c
-	*/
+	free(l->input);
 	l->input = new_input;
 	l->position -= ident_l;
 	l->read_position = l->position + 1;
