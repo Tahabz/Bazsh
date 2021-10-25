@@ -11,8 +11,6 @@ t_token		new_token(const char *type, const char *literal)
 int		is_separator(const char ch)
 {
 	return (ch == '|'
-			|| ch == '&'
-			|| ch == ';'
 			|| ch == '\t'
 			|| ch == '>'
 			|| ch == '<'
@@ -20,7 +18,7 @@ int		is_separator(const char ch)
 			|| ch == ' '
 			|| ch == '\"'
 			|| ch == '\''
-			|| ch == '$');
+			|| ch == '\0');
 }
 
 const char *lookup_ident(const char *literal)
