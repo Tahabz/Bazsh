@@ -70,9 +70,11 @@ t_token	read_arg_no_quotes(t_lexer *lexer)
 	t_token tok;
 	const int position = lexer->position;
 
-	while (lexer->ch != '\0' && is_separator(lexer->ch) == false)
+	while (is_separator(lexer->ch) == false)
 	{
 		read_char(lexer);
+		if (lexer->ch == '$')
+			break ;
 	}
 	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
 	tok.type = lookup_ident(tok.literal);
@@ -127,7 +129,8 @@ t_token	next_token(t_lexer *lexer)
 
 
 	if (lexer->ch == '$') {
-		if (peek_char(lexer) == ' ' || peek_char(lexer) == '\0') // NOTE: how about a tab or any other separator?
+		if (is_separator(peek_char(lexer))
+		&& peek_char(lexer) != '=') // NOTE: how about a tab or any other separator?
 		{
 			tok = new_token(ARG, "$");
 			read_char(lexer);

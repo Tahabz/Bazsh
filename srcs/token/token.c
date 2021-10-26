@@ -18,7 +18,7 @@ int		is_separator(const char ch)
 			|| ch == ' '
 			|| ch == '\"'
 			|| ch == '\''
-			|| ch == '$');
+			|| ch == '\0');
 }
 
 const char *lookup_ident(const char *literal)
