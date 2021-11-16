@@ -18,13 +18,13 @@ enum io_type
 
 typedef struct s_io
 {
-	io_type type;
+	enum io_type type;
 	char *  value;
 } t_io;
 
 typedef struct s_command
 {
-	char *            command_name;
+	char *            name;
 	char **           args;
 	t_io              in;
 	t_io              out;
