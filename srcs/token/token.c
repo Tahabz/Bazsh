@@ -20,28 +20,3 @@ int		is_separator(const char ch)
 			|| ch == '\''
 			|| ch == '\0');
 }
-
-const char *lookup_ident(const char *literal)
-{
-	unsigned int	len;
-	unsigned int	i;
-	const char *built_ins[] = {
-	"echo",
-	"cd",
-	"pwd",
-	"export",
-	"unset",
-	"env",
-	"exit"
-	};
-
-	i = 0;
-	len = sizeof(built_ins) / sizeof(*built_ins);
-	while (i < len && literal)
-	{
-		if (strcmp(literal, built_ins[i]) == 0)
-			return (BUILT_IN);
-		i++;
-	}
-	return (NULL);
-}
