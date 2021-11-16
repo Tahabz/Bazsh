@@ -1,6 +1,5 @@
 #ifndef STRTOOLS_H
 # define STRTOOLS_H
-# include <sys/_types/_size_t.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdbool.h>

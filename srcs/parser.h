@@ -9,10 +9,10 @@ typedef struct s_parser
 
 enum io_type
 {
-	FILE,
-	STDOUT,
 	STDIN,
+	STDOUT,
 	STDERR,
+	FILE,
 	_PIPE
 };
 
@@ -24,7 +24,7 @@ typedef struct s_io
 
 typedef struct s_command
 {
-	char *            command_name;
+	char *            name;
 	char **           args;
 	t_io              in;
 	t_io              out;
