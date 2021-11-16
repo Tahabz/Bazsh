@@ -9,16 +9,16 @@ typedef struct s_parser
 
 enum io_type
 {
-	STDIN,
-	STDOUT,
-	STDERR,
-	FILE,
-	_PIPE
+	IO_FILE,
+	IO_STDOUT,
+	IO_STDIN,
+	IO_STDERR,
+	IO_PIPE
 };
 
 typedef struct s_io
 {
-	io_type type;
+	enum io_type type;
 	char *  value;
 } t_io;
 
@@ -31,7 +31,7 @@ typedef struct s_command
 	struct s_command *next;
 } t_command;
 
-t_command parse_command(t_parser *parser);
+t_command *parse_command(t_parser *parser);
 
 bool curr_tok_is(const t_parser *parser, const char *tok);
 bool peek_tok_is(const t_parser *parser, const char *tok);

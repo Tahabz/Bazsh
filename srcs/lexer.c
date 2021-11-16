@@ -29,9 +29,6 @@ t_token read_arg_squotes(t_lexer *lexer)
 		if (lexer->ch == '\'')
 		{
 			tok.literal = ft_substr(lexer->input, position, lexer->position - position);
-			tok.type = lookup_ident(tok.literal);
-			if (tok.type != NULL)
-				return (tok);
 			tok.type = SINGLE_Q_ARG;
 			return (tok);
 		}
@@ -52,9 +49,6 @@ t_token read_arg_dquotes(t_lexer *lexer)
 		if (lexer->ch == '\"')
 		{
 			tok.literal = ft_substr(lexer->input, position, lexer->position - position);
-			tok.type = lookup_ident(tok.literal);
-			if (tok.type != NULL)
-				return (tok);
 			tok.type = DOUBLE_Q_ARG;
 			return (tok);
 		}
@@ -77,9 +71,6 @@ t_token read_arg_no_quotes(t_lexer *lexer)
 			break;
 	}
 	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
-	tok.type = lookup_ident(tok.literal);
-	if (tok.type != NULL)
-		return (tok);
 	tok.type = ARG;
 	return (tok);
 }

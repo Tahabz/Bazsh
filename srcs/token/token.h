@@ -2,7 +2,6 @@
 # define TOKEN_H
 # include <string.h>
 # include "../strtools/strtools.h"
-# define BUILT_IN "BUILT_IN"
 # define ARG "ARGUMENT"
 # define VAR "VARIABLE"
 # define R_REDIRECTION ">"
@@ -25,7 +24,6 @@ typedef struct		s_token {
 }					t_token;
 
 const char *getKeyType(const char *literal);
-const char *lookup_ident(const char *literal);
 int	is_separator(const char ch);
 
 #endif
