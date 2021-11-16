@@ -9,10 +9,10 @@ typedef struct s_parser
 
 enum io_type
 {
-	IO_FILE,
-	IO_STDOUT,
 	IO_STDIN,
+	IO_STDOUT,
 	IO_STDERR,
+	IO_FILE,
 	IO_PIPE
 };
 
