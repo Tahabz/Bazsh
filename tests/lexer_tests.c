@@ -5,16 +5,12 @@
 // TODO: Test for incomplete quoting mixed with args (e.g. hello'world)
 int			main(void)
 {
-	char *input =  "hello\" world\"!; echo<<>>";
+	char *input =  "hello\" world\"! echo<<>>";
 	t_lexer l = new_lexer(input);
 	const t_token tests[] = {
-		new_token(g_arg, "hello world!"),
-		new_token(g_seperator, ";"),
-		new_token(g_space, " "),
-		new_token(g_built_in, "echo"),
-		new_token(g_heredoc, "<<"),
-		new_token(g_a_redirection, ">>"),
-		new_token(g_eof, ""),
+	    new_token(ARG, "hello world!"), new_token(SPACE, " "),
+	    new_token(ARG, "echo"),         new_token(HEREDOC, "<<"),
+	    new_token(APPEND, ">>"), new_token(EOF_, ""),
 	};
 
 	int ok = 0;
