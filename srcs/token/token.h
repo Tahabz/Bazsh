@@ -15,8 +15,6 @@
 # define TAB "\t"
 # define EQUAL "="
 # define INVALID "INVALID"
-# define SINGLE_Q_ARG "SINGLE_Q_ARG"
-# define DOUBLE_Q_ARG "DOUBLE_D_ARG"
 
 typedef struct		s_token {
 	const char *type;

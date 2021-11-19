@@ -15,6 +15,18 @@
 		"environment": [{"name": "l", "value": "ls -la"}],
 		"externalConsole": false,
 		"MIMode": "lldb"
+	},
+	{
+		"name": "debug test",
+		"type": "cppdbg",
+		"request": "launch",
+		"program": "${workspaceFolder}/test",
+		"args": [],
+		"stopAtEntry": false,
+		"cwd": "${workspaceFolder}",
+		"environment": [],
+		"externalConsole": false,
+		"MIMode": "lldb"
 	}
 	]
 }

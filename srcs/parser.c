@@ -1,6 +1,6 @@
 #include "parser.h"
-#include "strtools/strtools.h"
 #include "lexer.h"
+#include "strtools/strtools.h"
 #include "token/token.h"
 #include <stdlib.h>
 
@@ -19,9 +19,27 @@ void next_tok(t_parser *p)
 	p->peek_tok = next_token(&p->lexer);
 }
 
-t_command parse_command(t_parser *parser)
+t_command *parse_command(t_parser *parser)
 {
-	t_command command;
+	t_command *command;
+
+	command = malloc(sizeof(*command));
+	if (curr_tok_is(parser, ARG))
+		command->name = strdup(parser->curr_tok.literal);
+	else
+		return (NULL);
+	return (command);
+}
+
+t_command *start_parser(t_parser *parser)
+{
+	t_command *command = malloc(sizeof(*command));
+	t_command *current = command;
+
+	while ((current = parse_command(parser)))
+	{
+		current = current->next;
+	}
 
 	return (command);
 }
