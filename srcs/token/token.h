@@ -3,13 +3,11 @@
 # include <string.h>
 # include "../strtools/strtools.h"
 # define ARG "ARGUMENT"
-# define VAR "VARIABLE"
 # define R_REDIRECTION ">"
 # define L_REDIRECTION "<"
 # define APPEND ">>"
 # define HEREDOC "<<"
 # define PIPE "|"
-# define EXEC "EXECUTABLE"
 # define EOF_ "EOF"
 # define SPACE " "
 # define TAB "\t"
