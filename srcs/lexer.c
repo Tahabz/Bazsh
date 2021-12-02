@@ -104,7 +104,7 @@ t_token read_arg_dquotes(t_lexer *lexer)
 t_token read_arg_no_quotes(t_lexer *lexer)
 {
 	t_token   tok;
-	const int position = lexer->position;
+	const unsigned int position = lexer->position;
 
 	while (is_separator(lexer->ch) == false)
 	{
