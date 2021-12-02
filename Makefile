@@ -2,10 +2,18 @@ kFLAGS = -Wall -Wextra -Werror
 DFLAGS = -fsanitize=address -g
 INCLUDES = ../includes
 NAME = lexer
-FILES = lexer.c \
-		token/token.c \
+FILES = lexer.c\
+		token/token.c\
 		get_next_line/get_next_line.c\
-		strtools/*.c
+		strtools/char_to_string.c\
+        strtools/ft_putstr_fd.c\
+        strtools/ft_strcmp.c\
+        strtools/ft_strdup.c\
+        strtools/ft_strjoin.c\
+        strtools/ft_strlen.c\
+        strtools/ft_substr.c\
+        strtools/str_match.c
+
 SRCS = $(patsubst %, srcs/%, $(FILES))
 all : $(NAME)
 
