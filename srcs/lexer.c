@@ -140,10 +140,10 @@ char peek_char(t_lexer *lexer)
 
 void expand(t_lexer *l, const char *ident)
 {
-	char *       var;
-	char *       new_input;
-	char *       temp_sub;
-	char *       temp_join;
+	char        *var;
+	char        *new_input;
+	char        *temp_sub;
+	char        *temp_join;
 	const size_t ident_l = ft_strlen(ident) + 1;
 
 	var = getenv(ident);
@@ -164,6 +164,9 @@ void expand(t_lexer *l, const char *ident)
 t_token next_token(t_lexer *lexer)
 {
 	t_token tok;
+
+	while (lexer->ch == ' ')
+		read_char(lexer);
 
 	if (lexer->ch == '$')
 	{
@@ -191,10 +194,6 @@ t_token next_token(t_lexer *lexer)
 	else if (lexer->ch == '=')
 	{
 		tok = new_token(EQUAL, "=");
-	}
-	else if (lexer->ch == ' ')
-	{
-		tok = new_token(SPACE, " ");
 	}
 	else if (lexer->ch == '\t')
 	{

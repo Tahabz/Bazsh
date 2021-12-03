@@ -9,7 +9,6 @@
 # define HEREDOC "<<"
 # define PIPE "|"
 # define EOF_ "EOF"
-# define SPACE " "
 # define TAB "\t"
 # define EQUAL "="
 # define INVALID "INVALID"
