@@ -150,7 +150,7 @@ void expand(t_lexer *l, const char *ident)
 	temp_sub = ft_substr(l->input, 0, l->position - ident_l);
 	temp_join = ft_strjoin(temp_sub, var);
 	free(temp_sub);
-	temp_sub = ft_substr(l->input, l->position + ident_l - 2, ft_strlen(l->input));
+	temp_sub = ft_substr(l->input, l->position, ft_strlen(l->input));
 	new_input = ft_strjoin(temp_join, temp_sub);
 	free(temp_sub);
 	free(temp_join);
