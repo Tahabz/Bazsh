@@ -17,10 +17,10 @@
 		"MIMode": "lldb"
 	},
 	{
-		"name": "debug test",
+		"name": "test_lexer",
 		"type": "cppdbg",
 		"request": "launch",
-		"program": "${workspaceFolder}/test",
+		"program": "${workspaceFolder}/test_lexer",
 		"args": [],
 		"stopAtEntry": false,
 		"cwd": "${workspaceFolder}",
