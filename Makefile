@@ -26,10 +26,12 @@ clean:
 
 fclean: clean
 
-build_test: tests/lexer_tests.c
-	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o test
+test_lexer: tests/lexer_tests.c
+	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o test_lexer
+	./test_lexer
 
-test: build_test
-	./test
+test_parser: tests/parser_tests.c
+	clang $(DFLAGS) $(FLAGS) tests/parser_tests.c srcs/parser.c $(SRCS) -o test_parser
+	./test_parser
 
 re: fclean all
