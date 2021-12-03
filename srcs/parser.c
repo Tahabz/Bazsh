@@ -17,7 +17,8 @@ t_parser *parser_new(t_lexer l)
 
 void next_tok(t_parser *p)
 {
-	free(p->curr_tok.literal);
+	if (p->curr_tok.literal != NULL)
+		free(p->curr_tok.literal);
 	p->curr_tok = p->peek_tok;
 	p->peek_tok = next_token(&p->lexer);
 }
