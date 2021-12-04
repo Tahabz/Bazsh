@@ -2,6 +2,8 @@ kFLAGS = -Wall -Wextra -Werror
 DFLAGS = -fsanitize=address -g
 INCLUDES = ../includes
 NAME = lexer
+LEXER_TEST = lexer_test
+PARSER_TEST = parser_test
 FILES = lexer.c\
 		token/token.c\
 		get_next_line/get_next_line.c\
@@ -26,12 +28,12 @@ clean:
 
 fclean: clean
 
-test_lexer: tests/lexer_tests.c
-	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o test_lexer
-	./test_lexer
+$(LEXER_TEST): tests/lexer_tests.c
+	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o $(LEXER_TEST)
+	./$(LEXER_TEST)
 
-test_parser: tests/parser_tests.c
-	clang $(DFLAGS) $(FLAGS) tests/parser_tests.c srcs/parser.c $(SRCS) -o test_parser
-	./test_parser
+$PARSER_TEST: tests/parser_tests.c
+	clang $(DFLAGS) $(FLAGS) tests/parser_tests.c srcs/parser.c $(SRCS) -o $(LEXER_TEST)
+	./$(LEXER_TEST)
 
 re: fclean all
