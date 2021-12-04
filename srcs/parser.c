@@ -114,6 +114,8 @@ void parse_arg(t_parser *parser, t_command *cmd)
 		parser->parsing_state = parse_pipe;
 	else if (peek_tok_is(parser, R_REDIRECTION))
 		parser->parsing_state = parse_out_redirect;
+	else if (peek_tok_is(parser, APPEND))
+		parser->parsing_state = parse_append;
 	else
 		parser->parsing_state = NULL;
 }
@@ -141,7 +143,24 @@ void parse_out_redirect(t_parser *parser, t_command *cmd)
 		raise_syntax_error(ARG, parser->peek_tok.literal);
 		exit(EXIT_FAILURE);
 	}
+}
 
+void parse_append(t_parser *parser, t_command *cmd)
+{
+	t_io out_dst;
+	if (peek_tok_is(parser, ARG))
+	{
+		out_dst.type = IO_FILE_APPEND;
+		next_tok(parser);
+		out_dst.value = ft_strdup(parser->curr_tok.literal);
+		out_dst.next = NULL;
+		add_output_dst(&cmd->out_sequence, out_dst);
+	}
+	else
+	{
+		raise_syntax_error(ARG, parser->peek_tok.literal);
+		exit(EXIT_FAILURE);
+	}
 }
 
 t_command *parse_command(t_parser *parser)
