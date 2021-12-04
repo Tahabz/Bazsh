@@ -32,7 +32,7 @@ $(LEXER_TEST): tests/lexer_tests.c $(SRCS)
 	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o $(LEXER_TEST)
 	./$(LEXER_TEST)
 
-$PARSER_TEST: tests/parser_tests.c $(SRCS)
+$(PARSER_TEST): tests/parser_tests.c $(SRCS)
 	clang $(DFLAGS) $(FLAGS) tests/parser_tests.c srcs/parser.c $(SRCS) -o $(LEXER_TEST)
 	./$(LEXER_TEST)
 
