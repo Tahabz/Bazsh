@@ -170,7 +170,7 @@ t_token next_token(t_lexer *lexer)
 
 	if (lexer->ch == '$')
 	{
-		if (is_separator(peek_char(lexer)) && peek_char(lexer) != '=') // NOTE: how about a tab or any other separator?
+		if (is_separator(peek_char(lexer))) // NOTE: how about a tab or any other separator?
 		{
 			tok = new_token(ARG, "$");
 			read_char(lexer);
@@ -190,10 +190,6 @@ t_token next_token(t_lexer *lexer)
 	{
 		read_char(lexer);
 		tok = read_arg_dquotes(lexer);
-	}
-	else if (lexer->ch == '=')
-	{
-		tok = new_token(EQUAL, "=");
 	}
 	else if (lexer->ch == '\t')
 	{

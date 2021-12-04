@@ -10,7 +10,6 @@
 # define PIPE "|"
 # define EOF_ "EOF"
 # define TAB "\t"
-# define EQUAL "="
 # define INVALID "INVALID"
 
 typedef struct		s_token {
