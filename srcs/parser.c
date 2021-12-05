@@ -39,7 +39,7 @@ void append_arg(t_arg **head_arg, const char *value)
 	if (*head_arg == NULL)
 	{
 		*head_arg = new_arg(value);
-		return ;
+		return;
 	}
 	while (tail->next != NULL)
 	{
@@ -53,6 +53,7 @@ t_command *create_command()
 	t_command *command;
 
 	command = malloc(sizeof(*command));
+	// NOTE: should the out take a default value
 	*command = (t_command){
 	    .arg = NULL,
 	    .in = {IO_STDIN, NULL},
@@ -89,14 +90,14 @@ void raise_syntax_error(const char *expected, const char *found)
 
 void add_output_dst(t_io **io_head, t_io value)
 {
-	t_io *new_output_dst = malloc(sizeof (*new_output_dst));
+	t_io *new_output_dst = malloc(sizeof(*new_output_dst));
 	t_io *tail = *io_head;
 
 	*new_output_dst = value;
-	if(*io_head == NULL)
+	if (*io_head == NULL)
 	{
 		*io_head = new_output_dst;
-		return ;
+		return;
 	}
 	while (tail->next != NULL)
 	{
@@ -129,38 +130,38 @@ void parse_pipe(t_parser *parser, t_command *cmd)
 
 void parse_out_redirect(t_parser *parser, t_command *cmd)
 {
-	t_io out_dst;
-	if (peek_tok_is(parser, ARG))
-	{
-		out_dst.type = IO_FILE;
-		next_tok(parser);
-		out_dst.value = ft_strdup(parser->curr_tok.literal);
-		out_dst.next = NULL;
-		add_output_dst(&cmd->out_sequence, out_dst);
-	}
-	else
+	if (peek_tok_is(parser, ARG) == false)
 	{
 		raise_syntax_error(ARG, parser->peek_tok.literal);
 		exit(EXIT_FAILURE);
 	}
+	next_tok(parser);
+	add_output_dst(&cmd->out_sequence,
+	               (t_io){IO_FILE, ft_strdup(parser->curr_tok.literal), NULL});
+	if (peek_tok_is(parser, PIPE))
+		parser->parsing_state = parse_pipe;
+	else if (peek_tok_is(parser, R_REDIRECTION))
+		parser->parsing_state = parse_out_redirect;
+	else if (peek_tok_is(parser, APPEND))
+		parser->parsing_state = parse_append;
 }
 
 void parse_append(t_parser *parser, t_command *cmd)
 {
-	t_io out_dst;
-	if (peek_tok_is(parser, ARG))
-	{
-		out_dst.type = IO_FILE_APPEND;
-		next_tok(parser);
-		out_dst.value = ft_strdup(parser->curr_tok.literal);
-		out_dst.next = NULL;
-		add_output_dst(&cmd->out_sequence, out_dst);
-	}
-	else
+	if (peek_tok_is(parser, ARG) == false)
 	{
 		raise_syntax_error(ARG, parser->peek_tok.literal);
 		exit(EXIT_FAILURE);
 	}
+	next_tok(parser);
+	add_output_dst(&cmd->out_sequence,
+	               (t_io){IO_FILE_APPEND, ft_strdup(parser->curr_tok.literal), NULL});
+	if (peek_tok_is(parser, PIPE))
+		parser->parsing_state = parse_pipe;
+	else if (peek_tok_is(parser, R_REDIRECTION))
+		parser->parsing_state = parse_out_redirect;
+	else if (peek_tok_is(parser, APPEND))
+		parser->parsing_state = parse_append;
 }
 
 t_command *parse_command(t_parser *parser)
@@ -177,7 +178,7 @@ t_command *parse_command(t_parser *parser)
 		parser->parsing_state(parser, command);
 		next_tok(parser);
 		if (curr_tok_is(parser, EOF_))
-			break ;
+			break;
 	}
 	return (command);
 }
@@ -185,7 +186,7 @@ t_command *parse_command(t_parser *parser)
 t_command *start_parser(t_parser *parser)
 {
 	const t_command *command = parse_command(parser);
-	t_command *current = (t_command *)command;
+	t_command       *current = (t_command *) command;
 
 	while ((current->next = parse_command(parser)))
 	{
