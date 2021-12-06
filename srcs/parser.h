@@ -19,7 +19,7 @@ enum io_type
 	IO_STDERR,
 	IO_FILE,
 	IO_FILE_APPEND,
-	IO_FILE_HEREDOC,
+	IO_HEREDOC,
 	IO_PIPE
 };
 
@@ -39,7 +39,7 @@ typedef struct s_arg
 typedef struct s_command
 {
 	t_arg             *arg;
-	t_io              in;
+	t_io              *in_sequence;
 	t_io              *out_sequence;
 	struct s_command *next;
 } t_command;
@@ -55,6 +55,7 @@ void parse_pipe(t_parser *parser, t_command *cmd);
 void parse_out_redirect(t_parser *parser, t_command *cmd);
 void parse_append(t_parser *parser, t_command *cmd);
 void parse_in_redirect(t_parser *parser, t_command *cmd);
+void parse_heredoc(t_parser *parser, t_command *cmd);
 
 void      next_tok(t_parser *p);
 t_parser *parser_new(t_lexer l);

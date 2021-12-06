@@ -54,9 +54,10 @@ t_command *create_command()
 
 	command = malloc(sizeof(*command));
 	// NOTE: should the out take a default value
+	// NOTE: NULL in_squence and out_sequence is another way to say stdin
 	*command = (t_command){
 	    .arg = NULL,
-	    .in = {IO_STDIN, NULL},
+	    .in_sequence = NULL,
 	    .out_sequence = NULL,
 	    .next = NULL,
 	};
@@ -88,27 +89,26 @@ void raise_syntax_error(const char *expected, const char *found)
 	put_error("\n");
 }
 
-void add_output_dst(t_io **io_head, t_io value)
+void add_io(t_io **io_head, t_io value)
 {
-	t_io *new_output_dst = malloc(sizeof(*new_output_dst));
+	t_io *new_io = malloc(sizeof(*new_io));
 	t_io *tail = *io_head;
 
-	*new_output_dst = value;
+	*new_io = value;
 	if (*io_head == NULL)
 	{
-		*io_head = new_output_dst;
+		*io_head = new_io;
 		return;
 	}
 	while (tail->next != NULL)
 	{
 		tail = tail->next;
 	}
-	tail->next = new_output_dst;
+	tail->next = new_io;
 }
 
-void parse_arg(t_parser *parser, t_command *cmd)
+void set_parsing_state(t_parser *parser)
 {
-	append_arg(&cmd->arg, parser->curr_tok.literal);
 	if (peek_tok_is(parser, ARG))
 		parser->parsing_state = parse_arg;
 	else if (peek_tok_is(parser, PIPE))
@@ -119,14 +119,22 @@ void parse_arg(t_parser *parser, t_command *cmd)
 		parser->parsing_state = parse_append;
 	else if (peek_tok_is(parser, L_REDIRECTION))
 		parser->parsing_state = parse_in_redirect;
+	else if (peek_tok_is(parser, HEREDOC))
+		parser->parsing_state = parse_heredoc;
 	else
 		parser->parsing_state = NULL;
+}
+
+void parse_arg(t_parser *parser, t_command *cmd)
+{
+	append_arg(&cmd->arg, parser->curr_tok.literal);
+	set_parsing_state(parser);
 }
 
 void parse_pipe(t_parser *parser, t_command *cmd)
 {
 	if (cmd->out_sequence == NULL)
-		add_output_dst(&cmd->out_sequence, (t_io){IO_PIPE, NULL, NULL});
+		add_io(&cmd->out_sequence, (t_io){IO_PIPE, NULL, NULL});
 	parser->parsing_state = NULL;
 }
 
@@ -138,16 +146,9 @@ void parse_out_redirect(t_parser *parser, t_command *cmd)
 		exit(EXIT_FAILURE);
 	}
 	next_tok(parser);
-	add_output_dst(&cmd->out_sequence,
+	add_io(&cmd->out_sequence,
 	               (t_io){IO_FILE, ft_strdup(parser->curr_tok.literal), NULL});
-	if (peek_tok_is(parser, PIPE))
-		parser->parsing_state = parse_pipe;
-	else if (peek_tok_is(parser, R_REDIRECTION))
-		parser->parsing_state = parse_out_redirect;
-	else if (peek_tok_is(parser, APPEND))
-		parser->parsing_state = parse_append;
-	else if (peek_tok_is(parser, L_REDIRECTION))
-		parser->parsing_state = parse_in_redirect;
+	set_parsing_state(parser);
 }
 
 void parse_append(t_parser *parser, t_command *cmd)
@@ -158,16 +159,9 @@ void parse_append(t_parser *parser, t_command *cmd)
 		exit(EXIT_FAILURE);
 	}
 	next_tok(parser);
-	add_output_dst(&cmd->out_sequence,
+	add_io(&cmd->out_sequence,
 	               (t_io){IO_FILE_APPEND, ft_strdup(parser->curr_tok.literal), NULL});
-	if (peek_tok_is(parser, PIPE))
-		parser->parsing_state = parse_pipe;
-	else if (peek_tok_is(parser, R_REDIRECTION))
-		parser->parsing_state = parse_out_redirect;
-	else if (peek_tok_is(parser, APPEND))
-		parser->parsing_state = parse_append;
-	else if (peek_tok_is(parser, L_REDIRECTION))
-		parser->parsing_state = parse_in_redirect;
+	set_parsing_state(parser);
 }
 
 void parse_in_redirect(t_parser *parser, t_command *cmd)
@@ -177,15 +171,23 @@ void parse_in_redirect(t_parser *parser, t_command *cmd)
 		raise_syntax_error(ARG, parser->peek_tok.literal);
 		exit(EXIT_FAILURE);
 	}
-	while (peek_tok_is(parser, ARG))
-		next_tok(parser);
-	cmd->in = (t_io){IO_FILE, ft_strdup(parser->curr_tok.literal), NULL};
-	if (peek_tok_is(parser, PIPE))
-		parser->parsing_state = parse_pipe;
-	else if (peek_tok_is(parser, R_REDIRECTION))
-		parser->parsing_state = parse_out_redirect;
-	else if (peek_tok_is(parser, APPEND))
-		parser->parsing_state = parse_append;
+	next_tok(parser);
+	add_io(&cmd->in_sequence,
+		   (t_io){IO_FILE, ft_strdup(parser->curr_tok.literal), NULL});
+	set_parsing_state(parser);
+}
+
+void parse_heredoc(t_parser *parser, t_command *cmd)
+{
+	if (peek_tok_is(parser, ARG) == false)
+	{
+		raise_syntax_error(ARG, parser->peek_tok.literal);
+		exit(EXIT_FAILURE);
+	}
+	next_tok(parser);
+	add_io(&cmd->in_sequence,
+		   (t_io){IO_HEREDOC, ft_strdup(parser->curr_tok.literal), NULL});
+	set_parsing_state(parser);
 }
 
 t_command *parse_command(t_parser *parser)
