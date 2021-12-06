@@ -53,8 +53,6 @@ t_command *create_command()
 	t_command *command;
 
 	command = malloc(sizeof(*command));
-	// NOTE: should the out take a default value
-	// NOTE: NULL in_squence and out_sequence is another way to say stdin
 	*command = (t_command){
 	    .arg = NULL,
 	    .in_sequence = NULL,
@@ -128,7 +126,6 @@ void set_parsing_state(t_parser *parser)
 void parse_arg(t_parser *parser, t_command *cmd)
 {
 	append_arg(&cmd->arg, parser->curr_tok.literal);
-	set_parsing_state(parser);
 }
 
 void parse_pipe(t_parser *parser, t_command *cmd)
@@ -148,7 +145,6 @@ void parse_out_redirect(t_parser *parser, t_command *cmd)
 	next_tok(parser);
 	add_io(&cmd->out_sequence,
 	               (t_io){IO_FILE, ft_strdup(parser->curr_tok.literal), NULL});
-	set_parsing_state(parser);
 }
 
 void parse_append(t_parser *parser, t_command *cmd)
@@ -161,7 +157,6 @@ void parse_append(t_parser *parser, t_command *cmd)
 	next_tok(parser);
 	add_io(&cmd->out_sequence,
 	               (t_io){IO_FILE_APPEND, ft_strdup(parser->curr_tok.literal), NULL});
-	set_parsing_state(parser);
 }
 
 void parse_in_redirect(t_parser *parser, t_command *cmd)
@@ -174,7 +169,6 @@ void parse_in_redirect(t_parser *parser, t_command *cmd)
 	next_tok(parser);
 	add_io(&cmd->in_sequence,
 		   (t_io){IO_FILE, ft_strdup(parser->curr_tok.literal), NULL});
-	set_parsing_state(parser);
 }
 
 void parse_heredoc(t_parser *parser, t_command *cmd)
@@ -187,7 +181,6 @@ void parse_heredoc(t_parser *parser, t_command *cmd)
 	next_tok(parser);
 	add_io(&cmd->in_sequence,
 		   (t_io){IO_HEREDOC, ft_strdup(parser->curr_tok.literal), NULL});
-	set_parsing_state(parser);
 }
 
 t_command *parse_command(t_parser *parser)
@@ -202,9 +195,9 @@ t_command *parse_command(t_parser *parser)
 	while (parser->parsing_state)
 	{
 		parser->parsing_state(parser, command);
+		if (parser->parsing_state != NULL)
+			set_parsing_state(parser);
 		next_tok(parser);
-		if (curr_tok_is(parser, EOF_))
-			break;
 	}
 	return (command);
 }

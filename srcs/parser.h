@@ -56,6 +56,7 @@ void parse_out_redirect(t_parser *parser, t_command *cmd);
 void parse_append(t_parser *parser, t_command *cmd);
 void parse_in_redirect(t_parser *parser, t_command *cmd);
 void parse_heredoc(t_parser *parser, t_command *cmd);
+void set_parsing_state(t_parser *parser);
 
 void      next_tok(t_parser *p);
 t_parser *parser_new(t_lexer l);
