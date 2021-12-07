@@ -165,7 +165,7 @@ t_token next_token(t_lexer *lexer)
 {
 	t_token tok;
 
-	while (lexer->ch == ' ')
+	while (lexer->ch == ' ' || lexer->ch == '\t')
 		read_char(lexer);
 
 	if (lexer->ch == '$')
@@ -190,10 +190,6 @@ t_token next_token(t_lexer *lexer)
 	{
 		read_char(lexer);
 		tok = read_arg_dquotes(lexer);
-	}
-	else if (lexer->ch == '\t')
-	{
-		tok = new_token(TAB, "\t");
 	}
 	else if (lexer->ch == '\'')
 	{
