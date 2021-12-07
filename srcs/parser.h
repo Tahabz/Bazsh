@@ -60,3 +60,7 @@ void set_parsing_state(t_parser *parser);
 
 void      next_tok(t_parser *p);
 t_parser *parser_new(t_lexer l);
+void delete_parser(t_parser *p);
+void delete_command(t_command *head);
+void delete_io(t_io *head);
+void delete_args(t_arg *head);
