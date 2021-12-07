@@ -198,13 +198,7 @@ t_token next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '|')
 	{
-		if (peek_char(lexer) == '|')
-		{
-			read_char(lexer);
-			tok = new_token(INVALID, "||");
-		}
-		else
-			tok = new_token(PIPE, "|");
+		tok = new_token(PIPE, "|");
 	}
 	else if (lexer->ch == '>' && peek_char(lexer) == '>')
 	{
