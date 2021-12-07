@@ -194,6 +194,8 @@ t_command *parse_command(t_parser *parser)
 		if (parser->parsing_state != NULL)
 			set_parsing_state(parser);
 		next_tok(parser);
+		if (curr_tok_is(parser, INVALID))
+			raise_syntax_error("VALID TOKEN", parser, command);
 	}
 	return (command);
 }
