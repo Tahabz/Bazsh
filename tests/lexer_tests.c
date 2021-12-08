@@ -1,5 +1,4 @@
-#include "../srcs/lexer.h"
-#include "../srcs/token/token.h"
+#include "../srcs/lexer/lexer.h"
 #include <stdlib.h>
 
 int main(void)

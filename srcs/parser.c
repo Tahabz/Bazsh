@@ -1,5 +1,5 @@
 #include "parser.h"
-#include "lexer.h"
+#include "lexer/lexer.h"
 #include "strtools/strtools.h"
 #include "token/token.h"
 #include <stdarg.h>
