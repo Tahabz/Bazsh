@@ -1,5 +1,6 @@
 #include "../srcs/lexer/lexer.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 int main(void)
 {
@@ -19,14 +20,14 @@ int main(void)
 	for (unsigned int i = 0; i < len; i++)
 	{
 		const t_token tok = next_token(&l);
-		if (strcmp(tok.literal, tests[i].literal) != 0)
+		if (ft_strcmp(tok.literal, tests[i].literal) != 0)
 		{
 			printf("Test [%d] ERROR: Token Literal mismatch "
 			       "\nExpected:'%s'\nGot\t:'%s'\n\n",
 			       i, tests[i].literal, tok.literal);
 			ok = 1;
 		}
-		if (strcmp(tok.type, tests[i].type) != 0)
+		if (ft_strcmp(tok.type, tests[i].type) != 0)
 		{
 			printf("Test [%d] ERROR: Token Type mismatch "
 			       "\nExpected:'%s'\nGot\t:'%s'\n\n",

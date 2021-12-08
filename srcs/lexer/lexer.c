@@ -11,6 +11,14 @@ t_lexer new_lexer(const char *input)
 	return (l);
 }
 
+t_token		new_token(const char *type, const char *literal)
+{
+	t_token tok;
+	tok.literal = ft_strdup(literal);
+	tok.type = type;
+	return (tok);
+}
+
 t_token next_token(t_lexer *lexer)
 {
 	t_token tok;

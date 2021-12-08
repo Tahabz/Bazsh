@@ -24,3 +24,15 @@ void skip_whitespace(t_lexer *lexer)
 		read_char(lexer);
 	}
 }
+
+int		is_separator(const char ch)
+{
+	return (ch == '|'
+			|| ch == '\t'
+			|| ch == '>'
+			|| ch == '<'
+			|| ch == ' '
+			|| ch == '\"'
+			|| ch == '\''
+	        || ch == '\0');
+}

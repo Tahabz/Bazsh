@@ -9,7 +9,6 @@ FILES = lexer/lexer.c\
 		lexer/lexer_helpers.c\
 		lexer/lexer_utils.c\
 		lexer/expanders.c\
-		token/token.c\
 		get_next_line/get_next_line.c\
 		strtools/char_to_string.c\
         strtools/ft_putstr_fd.c\
