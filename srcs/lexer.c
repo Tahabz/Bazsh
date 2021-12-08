@@ -161,63 +161,60 @@ void expand(t_lexer *l, const char *ident)
 	l->ch = l->input[l->position];
 }
 
-t_token next_token(t_lexer *lexer)
+t_token lex_out_redirect_or_append(t_lexer *lexer)
 {
 	t_token tok;
 
-	while (lexer->ch == ' ' || lexer->ch == '\t')
-		read_char(lexer);
-
-	if (lexer->ch == '$')
-	{
-		if (is_separator(peek_char(lexer))) // NOTE: how about a tab or any other separator?
-		{
-			tok = new_token(ARG, "$");
-			read_char(lexer);
-			return (tok);
-		}
-		else
-		{
-			read_char(lexer);
-			t_token ident_tok = read_arg_no_quotes(lexer);
-			if (strcmp(ident_tok.type, INVALID) != 0)
-				expand(lexer, ident_tok.literal);
-			free(ident_tok.literal);
-		}
-	}
-
-	if (lexer->ch == '"')
-	{
-		read_char(lexer);
-		tok = read_arg_dquotes(lexer);
-	}
-	else if (lexer->ch == '\'')
-	{
-		read_char(lexer);
-		tok = read_arg_squotes(lexer);
-	}
-	else if (lexer->ch == '|')
-	{
-		tok = new_token(PIPE, "|");
-	}
-	else if (lexer->ch == '>' && peek_char(lexer) == '>')
+	if (peek_char(lexer) == '>')
 	{
 		read_char(lexer);
 		tok = new_token(APPEND, ">>");
 	}
-	else if (lexer->ch == '>')
-	{
+	else
 		tok = new_token(R_REDIRECTION, ">");
-	}
-	else if (lexer->ch == '<' && peek_char(lexer) == '<')
+	return (tok);
+}
+
+t_token lex_in_redirect_or_heredoc(t_lexer *lexer)
+{
+	t_token tok;
+
+	if (peek_char(lexer) == '<')
 	{
 		read_char(lexer);
 		tok = new_token(HEREDOC, "<<");
 	}
-	else if (lexer->ch == '<')
-	{
+	else
 		tok = new_token(L_REDIRECTION, "<");
-	}
+	return (tok);
+}
+
+t_token lex_double_quotes(t_lexer *lexer)
+{
+	read_char(lexer);
+	return (read_arg_dquotes(lexer));
+}
+
+t_token lex_single_quotes(t_lexer *lexer)
+{
+	read_char(lexer);
+	return (read_arg_squotes(lexer));
+}
+
+t_token lex_token(t_lexer *lexer)
+{
+	t_token tok;
+
+	if (lexer->ch == '"')
+		tok = lex_double_quotes(lexer);
+	else if (lexer->ch == '\'')
+		tok = lex_single_quotes(lexer);
+	else if (lexer->ch == '|')
+		tok = new_token(PIPE, "|");
+	else if (lexer->ch == '>')
+		tok = lex_out_redirect_or_append(lexer);
+	else if (lexer->ch == '<')
+		tok = lex_in_redirect_or_heredoc(lexer);
 	else if (lexer->ch == '\0')
 		tok = new_token(EOF_, "\0");
 	else
@@ -227,4 +224,37 @@ t_token next_token(t_lexer *lexer)
 	}
 	read_char(lexer);
 	return (tok);
+}
+
+void skip_whitespace(t_lexer *lexer)
+{
+	while (lexer->ch == ' ' || lexer->ch == '\t')
+	{
+		read_char(lexer);
+	}
+}
+
+t_token next_token(t_lexer *lexer)
+{
+	t_token tok;
+
+	skip_whitespace(lexer);
+	if (lexer->ch == '$')
+	{
+		if (is_separator(peek_char(lexer)))
+		{
+			tok = new_token(ARG, "$");
+			read_char(lexer);
+			return (tok);
+		}
+		else
+		{
+			read_char(lexer);
+			t_token ident_tok = read_arg_no_quotes(lexer);
+			if (ft_strcmp(ident_tok.type, INVALID) != 0)
+				expand(lexer, ident_tok.literal);
+			free(ident_tok.literal);
+		}
+	}
+	return (lex_token(lexer));
 }
