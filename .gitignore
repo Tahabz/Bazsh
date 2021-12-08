@@ -56,3 +56,5 @@ lexer
 test
 .vscode/
 .DS_Store
+parser_test
+lexer_test

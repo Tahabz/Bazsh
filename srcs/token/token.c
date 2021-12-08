@@ -14,7 +14,6 @@ int		is_separator(const char ch)
 			|| ch == '\t'
 			|| ch == '>'
 			|| ch == '<'
-			|| ch == '='
 			|| ch == ' '
 			|| ch == '\"'
 			|| ch == '\''

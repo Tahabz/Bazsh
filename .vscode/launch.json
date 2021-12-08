@@ -15,6 +15,18 @@
 		"environment": [{"name": "l", "value": "ls -la"}],
 		"externalConsole": false,
 		"MIMode": "lldb"
+	},
+	{
+		"name": "test_lexer",
+		"type": "cppdbg",
+		"request": "launch",
+		"program": "${workspaceFolder}/test_lexer",
+		"args": [],
+		"stopAtEntry": false,
+		"cwd": "${workspaceFolder}",
+		"environment": [],
+		"externalConsole": false,
+		"MIMode": "lldb"
 	}
 	]
 }

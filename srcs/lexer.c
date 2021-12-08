@@ -1,12 +1,10 @@
 #include "lexer.h"
+#include "strtools/strtools.h"
 #include "token/token.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// NOTE: almost every call of str_join() causes a memory leak
-// TOTHINKABOUT: consider expading variables during parsing and calling lexer for each one
 
 t_lexer new_lexer(const char *input)
 {
@@ -19,17 +17,55 @@ t_lexer new_lexer(const char *input)
 	return (l);
 }
 
+static t_token get_next_arg(t_lexer *lexer)
+{
+	t_token next_tok;
+	if (lexer->ch == '"')
+	{
+		read_char(lexer);
+		next_tok = read_arg_dquotes(lexer);
+	}
+	else if (lexer->ch == '\'')
+	{
+		read_char(lexer);
+		next_tok = read_arg_squotes(lexer);
+	}
+	else if (!is_separator(lexer->ch))
+	{
+		next_tok = read_arg_no_quotes(lexer);
+	}
+	return next_tok;
+}
+
+static t_token join_next_arg(t_lexer *lexer, t_token current_tok)
+{
+	t_token     next_tok;
+	const char *temp = current_tok.literal;
+
+	next_tok = get_next_arg(lexer);
+	current_tok.literal = ft_strjoin(current_tok.literal, next_tok.literal);
+	free(next_tok.literal);
+	free((void *) temp);
+	current_tok.type = next_tok.type;
+	return (current_tok);
+}
+
 t_token read_arg_squotes(t_lexer *lexer)
 {
 	t_token   tok;
-	const int position = lexer->position;
+	const unsigned int position = lexer->position;
 
 	while (lexer->ch != '\0')
 	{
 		if (lexer->ch == '\'')
 		{
 			tok.literal = ft_substr(lexer->input, position, lexer->position - position);
-			tok.type = SINGLE_Q_ARG;
+			tok.type = ARG;
+			if (peek_char(lexer) == '\"' || peek_char(lexer) == '\'' || !is_separator(peek_char(lexer)))
+			{
+				read_char(lexer);
+				tok = join_next_arg(lexer, tok);
+			}
 			return (tok);
 		}
 		read_char(lexer);
@@ -42,14 +78,20 @@ t_token read_arg_squotes(t_lexer *lexer)
 t_token read_arg_dquotes(t_lexer *lexer)
 {
 	t_token   tok;
-	const int position = lexer->position;
+	const unsigned int position = lexer->position;
 
 	while (lexer->ch != '\0')
 	{
 		if (lexer->ch == '\"')
 		{
 			tok.literal = ft_substr(lexer->input, position, lexer->position - position);
-			tok.type = DOUBLE_Q_ARG;
+			tok.type = ARG;
+			// TODO expand tok.literal variables
+			if (peek_char(lexer) == '\"' || peek_char(lexer) == '\'' || !is_separator(peek_char(lexer)))
+			{
+				read_char(lexer);
+				tok = join_next_arg(lexer, tok);
+			}
 			return (tok);
 		}
 		read_char(lexer);
@@ -62,7 +104,7 @@ t_token read_arg_dquotes(t_lexer *lexer)
 t_token read_arg_no_quotes(t_lexer *lexer)
 {
 	t_token   tok;
-	const int position = lexer->position;
+	const unsigned int position = lexer->position;
 
 	while (is_separator(lexer->ch) == false)
 	{
@@ -72,6 +114,10 @@ t_token read_arg_no_quotes(t_lexer *lexer)
 	}
 	tok.literal = ft_substr(lexer->input, position, lexer->position - position);
 	tok.type = ARG;
+	if (lexer->ch == '\"' || lexer->ch == '\'')
+	{
+		tok = join_next_arg(lexer, tok);
+	}
 	return (tok);
 }
 
@@ -94,17 +140,17 @@ char peek_char(t_lexer *lexer)
 
 void expand(t_lexer *l, const char *ident)
 {
-	char *       var;
-	char *       new_input;
-	char *       temp_sub;
-	char *       temp_join;
+	char        *var;
+	char        *new_input;
+	char        *temp_sub;
+	char        *temp_join;
 	const size_t ident_l = ft_strlen(ident) + 1;
 
 	var = getenv(ident);
 	temp_sub = ft_substr(l->input, 0, l->position - ident_l);
 	temp_join = ft_strjoin(temp_sub, var);
 	free(temp_sub);
-	temp_sub = ft_substr(l->input, l->position + ident_l - 2, ft_strlen(l->input));
+	temp_sub = ft_substr(l->input, l->position, ft_strlen(l->input));
 	new_input = ft_strjoin(temp_join, temp_sub);
 	free(temp_sub);
 	free(temp_join);
@@ -119,9 +165,12 @@ t_token next_token(t_lexer *lexer)
 {
 	t_token tok;
 
+	while (lexer->ch == ' ' || lexer->ch == '\t')
+		read_char(lexer);
+
 	if (lexer->ch == '$')
 	{
-		if (is_separator(peek_char(lexer)) && peek_char(lexer) != '=') // NOTE: how about a tab or any other separator?
+		if (is_separator(peek_char(lexer))) // NOTE: how about a tab or any other separator?
 		{
 			tok = new_token(ARG, "$");
 			read_char(lexer);
@@ -142,18 +191,6 @@ t_token next_token(t_lexer *lexer)
 		read_char(lexer);
 		tok = read_arg_dquotes(lexer);
 	}
-	else if (lexer->ch == '=')
-	{
-		tok = new_token(EQUAL, "=");
-	}
-	else if (lexer->ch == ' ')
-	{
-		tok = new_token(SPACE, " ");
-	}
-	else if (lexer->ch == '\t')
-	{
-		tok = new_token(TAB, "\t");
-	}
 	else if (lexer->ch == '\'')
 	{
 		read_char(lexer);
@@ -161,13 +198,7 @@ t_token next_token(t_lexer *lexer)
 	}
 	else if (lexer->ch == '|')
 	{
-		if (peek_char(lexer) == '|')
-		{
-			read_char(lexer);
-			tok = new_token(INVALID, "||");
-		}
-		else
-			tok = new_token(PIPE, "|");
+		tok = new_token(PIPE, "|");
 	}
 	else if (lexer->ch == '>' && peek_char(lexer) == '>')
 	{
