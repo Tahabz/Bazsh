@@ -4,7 +4,11 @@ INCLUDES = ../includes
 NAME = lexer
 LEXER_TEST = lexer_test
 PARSER_TEST = parser_test
-FILES = lexer.c\
+FILES = lexer/lexer.c\
+		lexer/arg_readers.c\
+		lexer/lexer_helpers.c\
+		lexer/lexer_utils.c\
+		lexer/expanders.c\
 		token/token.c\
 		get_next_line/get_next_line.c\
 		strtools/char_to_string.c\
