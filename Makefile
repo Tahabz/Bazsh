@@ -17,11 +17,16 @@ FILES = lexer.c\
         strtools/str_match.c
 
 SRCS = $(patsubst %, srcs/%, $(FILES))
+
+
 all : $(NAME)
 
 $(NAME): $(SRCS)
 	@echo "Building up the lexer.."
 	clang $(DFLAGS) $(FLAGS) srcs/main.c $(SRCS) -o $(NAME)
+
+executor: srcs/executor.c $(SRCS)
+	clang $(FLAGS) srcs/executor.c srcs/parser.c $(SRCS) -o executor
 
 clean:
 	rm -rf lexer

@@ -1,32 +1,44 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-	"version": "0.2.0",
-	"configurations": [
-	{
-		"name": "(lldb) Launch",
-		"type": "cppdbg",
-		"request": "launch",
-		"program": "${workspaceFolder}/lexer",
-		"args": [],
-		"stopAtEntry": false,
-		"cwd": "${workspaceFolder}",
-		"environment": [{"name": "l", "value": "ls -la"}],
-		"externalConsole": false,
-		"MIMode": "lldb"
-	},
-	{
-		"name": "test_lexer",
-		"type": "cppdbg",
-		"request": "launch",
-		"program": "${workspaceFolder}/test_lexer",
-		"args": [],
-		"stopAtEntry": false,
-		"cwd": "${workspaceFolder}",
-		"environment": [],
-		"externalConsole": false,
-		"MIMode": "lldb"
-	}
-	]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "(lldb) executor",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/executor",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb"
+    },
+    {
+      "name": "(lldb) parser",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/parser_test",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [{ "name": "l", "value": "ls -la" }],
+      "externalConsole": false,
+      "MIMode": "lldb"
+    },
+    {
+      "name": "test_lexer",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/test_lexer",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb"
+    }
+  ]
 }
