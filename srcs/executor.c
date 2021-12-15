@@ -45,16 +45,32 @@ char *join_path(char *str1, char *str2)
 	return (joined_path);
 }
 
-char *get_command_path(char *command_name)
+char *ft_getenv(const char *var_name, char **env)
+{
+	size_t i;
+	char **tmpenv;
+
+	i = 0;
+	while (env[i])
+	{
+		tmpenv = ft_split(env[i], '=');
+		if (ft_strcmp(tmpenv[0], var_name) == 0 && tmpenv[1])
+			return tmpenv[1];
+		i++;
+	}
+	return (NULL);
+}
+
+char *get_command_path(char *command_name, char **env)
 {
 	char **paths;
 	int    i;
 	char  *command_path;
 
-	command_path = NULL;
-	char *x = getenv("PATH");
-	printf("PATH IS = %s", x);
-	paths = ft_split(x, ':');
+	if (command_name[0] == '/')
+		return (command_name);
+	char *path = ft_getenv("PATH", env);
+	paths = ft_split(path, ':');
 	i = 0;
 	while (paths[i])
 	{
@@ -99,7 +115,8 @@ void dup_and_close(int fd[], int file_no)
 void exec_command(t_command *command, char **env)
 {
 	char **command_args = args_to_arr(command->arg);
-	if (execve(command->arg->val, command_args, env) == -1)
+	char  *command_path = get_command_path(command->arg->val, env);
+	if (execve(command_path, command_args, env) == -1)
 	{
 		perror("execve");
 		exit(1);
@@ -116,9 +133,26 @@ void exec_child_command(t_executor executor_state, char **env)
 	exec_command(executor_state.command, env);
 }
 
+void handle_command(t_executor *executor_state, char **env)
+{
+	if (executor_state->command->next)
+		pipe(executor_state->new_fd);
+	executor_state->pids[executor_state->command_position] = fork();
+	if (executor_state->pids[executor_state->command_position] == 0)
+		exec_child_command(*executor_state, env);
+	if (executor_state->command_position > 0)
+		close_fd(executor_state->old_fd);
+	if (executor_state->command->next)
+	{
+		executor_state->old_fd[0] = executor_state->new_fd[0];
+		executor_state->old_fd[1] = executor_state->new_fd[1];
+	}
+}
+
 int main(int ac, char **av, char **env)
 {
-	const t_lexer lexer = new_lexer("/bin/ls | /bin/cat | /usr/bin/wc -l");
+	int           i = 0;
+	const t_lexer lexer = new_lexer("sh test.sh");
 	t_parser     *parser = parser_new(lexer);
 	t_executor    executor_state;
 	executor_state.command = start_parser(parser);
@@ -126,18 +160,7 @@ int main(int ac, char **av, char **env)
 	executor_state.command_position = 0;
 	while (executor_state.command)
 	{
-		if (executor_state.command->next)
-			pipe(executor_state.new_fd);
-		executor_state.pids[executor_state.command_position] = fork();
-		if (executor_state.pids[executor_state.command_position] == 0)
-			exec_child_command(executor_state, env);
-		if (executor_state.command_position > 0)
-			close_fd(executor_state.old_fd);
-		if (executor_state.command->next)
-		{
-			executor_state.old_fd[0] = executor_state.new_fd[0];
-			executor_state.old_fd[1] = executor_state.new_fd[1];
-		}
+		handle_command(&executor_state, env);
 		executor_state.command_position += 1;
 		executor_state.command = executor_state.command->next;
 	}
