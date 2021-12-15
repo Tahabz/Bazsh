@@ -90,14 +90,12 @@ void closepipes(int *pipes[2])
 
 int main(int ac, char **av, char **env)
 {
-	const t_lexer lexer = new_lexer("/bin/cat srcs/executor.c | /usr/bin/grep main | /usr/bin/wc -l");
+	const t_lexer lexer = new_lexer("/bin/cat");
 	t_parser     *parser = parser_new(lexer);
 	t_command    *command = start_parser(parser);
-
-	// int fd[1024][2];
-	pid_t pid;
 	int   old_fd[2];
 	int   new_fd[2];
+	pid_t pids[1000];
 	int   i;
 
 	i = 0;
@@ -105,8 +103,8 @@ int main(int ac, char **av, char **env)
 	{
 		if (command->next)
 			pipe(new_fd);
-		pid = fork();
-		if (pid == 0)
+		pids[i] = fork();
+		if (pids[i] == 0)
 		{
 			if (i > 0)
 			{
@@ -136,11 +134,17 @@ int main(int ac, char **av, char **env)
 		command = command->next;
 	}
 
-	if (i > 1)
+	i = 0;
+	while (i < 2)
 	{
-		close(old_fd[0]);
-		close(old_fd[1]);
+		int pid = waitpid(pids[i], NULL, 0);
+		if (pid == -1)
+			perror("wait() error");
+		else if (pid == 0)
+		{
+			printf("child is still running at");
+		}
+		i++;
 	}
-
 	return 0;
 }
