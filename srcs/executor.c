@@ -1,4 +1,4 @@
-#include "../srcs/parser.h"
+#include "executor.h"
 #include "lexer.h"
 #include <errno.h>
 #include <stdio.h>
@@ -66,6 +66,36 @@ char *get_command_path(char *command_name)
 	return (command_path);
 }
 
+void waitpids(int pids[], size_t i)
+{
+	while (i--)
+	{
+		int pid = waitpid(pids[i], NULL, 0);
+		if (pid == -1)
+			perror("wait() error");
+		else if (pid == 0)
+		{
+			printf("child is still running at");
+		}
+	}
+}
+
+void close_fd(int fd[])
+{
+	close(fd[0]);
+	close(fd[1]);
+}
+
+void setup_pipes(t_command command, size_t position, int old_fd[], int new_fd[])
+{
+}
+
+void dup_and_close(int fd[], int file_no)
+{
+	dup2(fd[file_no], file_no);
+	close_fd(fd);
+}
+
 void exec_command(t_command *command, char **env)
 {
 	char **command_args = args_to_arr(command->arg);
@@ -77,74 +107,40 @@ void exec_command(t_command *command, char **env)
 	free(command_args);
 }
 
-void closepipes(int *pipes[2])
+void exec_child_command(t_executor executor_state, char **env)
 {
-	int i = 100;
-	while (i)
-	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
-		i--;
-	}
+	if (executor_state.command_position > 0)
+		dup_and_close(executor_state.old_fd, STDIN_FILENO);
+	if (executor_state.command->next)
+		dup_and_close(executor_state.new_fd, STDOUT_FILENO);
+	exec_command(executor_state.command, env);
 }
 
 int main(int ac, char **av, char **env)
 {
-	const t_lexer lexer = new_lexer("/bin/cat");
+	const t_lexer lexer = new_lexer("/bin/ls | /bin/cat | /usr/bin/wc -l");
 	t_parser     *parser = parser_new(lexer);
-	t_command    *command = start_parser(parser);
-	int   old_fd[2];
-	int   new_fd[2];
-	pid_t pids[1000];
-	int   i;
+	t_executor    executor_state;
+	executor_state.command = start_parser(parser);
 
-	i = 0;
-	while (command)
+	executor_state.command_position = 0;
+	while (executor_state.command)
 	{
-		if (command->next)
-			pipe(new_fd);
-		pids[i] = fork();
-		if (pids[i] == 0)
+		if (executor_state.command->next)
+			pipe(executor_state.new_fd);
+		executor_state.pids[executor_state.command_position] = fork();
+		if (executor_state.pids[executor_state.command_position] == 0)
+			exec_child_command(executor_state, env);
+		if (executor_state.command_position > 0)
+			close_fd(executor_state.old_fd);
+		if (executor_state.command->next)
 		{
-			if (i > 0)
-			{
-				dup2(old_fd[0], STDIN_FILENO);
-				close(old_fd[0]);
-				close(old_fd[1]);
-			}
-			if (command->next)
-			{
-				close(new_fd[0]);
-				dup2(new_fd[1], STDOUT_FILENO);
-				close(new_fd[1]);
-			}
-			exec_command(command, env);
+			executor_state.old_fd[0] = executor_state.new_fd[0];
+			executor_state.old_fd[1] = executor_state.new_fd[1];
 		}
-		if (i > 0)
-		{
-			close(old_fd[0]);
-			close(old_fd[1]);
-		}
-		if (command->next)
-		{
-			old_fd[0] = new_fd[0];
-			old_fd[1] = new_fd[1];
-		}
-		i++;
-		command = command->next;
+		executor_state.command_position += 1;
+		executor_state.command = executor_state.command->next;
 	}
-
-	i = 0;
-	while (i < 2)
-	{
-		int pid = waitpid(pids[i], NULL, 0);
-		if (pid == -1)
-			perror("wait() error");
-		else if (pid == 0)
-		{
-			printf("child is still running at");
-		}
-		i++;
-	}
+	waitpids(executor_state.pids, executor_state.command_position);
 	return 0;
 }
