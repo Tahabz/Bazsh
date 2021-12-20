@@ -155,6 +155,7 @@ void exec_child_command(t_executor executor_state, char **env)
 	{
 		fd = open_last_file(executor_state.command->in_sequence);
 		dup2(fd, STDIN_FILENO);
+		close(fd);
 	}
 	else if (executor_state.command_position > 0)
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
@@ -162,6 +163,7 @@ void exec_child_command(t_executor executor_state, char **env)
 	{
 		fd = create_last_file(executor_state.command->out_sequence);
 		dup2(fd, STDOUT_FILENO);
+		close(fd);
 	}
 	else if (executor_state.command->next)
 		dup_and_close(executor_state.new_fd, STDOUT_FILENO);
