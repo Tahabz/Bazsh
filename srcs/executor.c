@@ -1,6 +1,7 @@
 #include "executor.h"
 #include "lexer.h"
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -67,6 +68,8 @@ char *get_command_path(char *command_name, char **env)
 	int    i;
 	char  *command_path;
 
+	if (!*command_name)
+		return "";
 	if (command_name[0] == '/')
 		return (command_name);
 	char *path = ft_getenv("PATH", env);
@@ -126,9 +129,23 @@ void exec_command(t_command *command, char **env)
 
 void exec_child_command(t_executor executor_state, char **env)
 {
-	if (executor_state.command_position > 0)
+	int fd;
+
+	if (executor_state.command->in_sequence)
+	{
+		fd = open(executor_state.command->in_sequence->value, O_RDONLY, 0);
+		dup2(fd, STDIN_FILENO);
+	}
+	else if (executor_state.command_position > 0)
+	{
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
-	if (executor_state.command->next)
+	}
+	if (executor_state.command->out_sequence && executor_state.command->out_sequence->type == IO_FILE)
+	{
+		fd = creat(executor_state.command->out_sequence->value, 0644);
+		dup2(fd, STDOUT_FILENO);
+	}
+	else if (executor_state.command->next)
 		dup_and_close(executor_state.new_fd, STDOUT_FILENO);
 	exec_command(executor_state.command, env);
 }
@@ -152,7 +169,7 @@ void handle_command(t_executor *executor_state, char **env)
 int main(int ac, char **av, char **env)
 {
 	int           i = 0;
-	const t_lexer lexer = new_lexer("sh test.sh");
+	const t_lexer lexer = new_lexer("< srcs/executor.c cat");
 	t_parser     *parser = parser_new(lexer);
 	t_executor    executor_state;
 	executor_state.command = start_parser(parser);
