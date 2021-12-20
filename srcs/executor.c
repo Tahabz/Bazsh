@@ -1,5 +1,4 @@
 #include "executor.h"
-#include "lexer.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -127,22 +126,41 @@ void exec_command(t_command *command, char **env)
 	free(command_args);
 }
 
+int create_last_file(t_io *sequence)
+{
+	int fd;
+	while (sequence->next)
+	{
+		creat(sequence->value, 0644);
+		sequence = sequence->next;
+	}
+	fd = creat(sequence->value, 0644);
+	return (fd);
+}
+
+int open_last_file(t_io *sequence)
+{
+	int fd;
+	while (sequence->next)
+		sequence = sequence->next;
+	fd = open(sequence->value, O_RDONLY, 0);
+	return (fd);
+}
+
 void exec_child_command(t_executor executor_state, char **env)
 {
 	int fd;
 
 	if (executor_state.command->in_sequence)
 	{
-		fd = open(executor_state.command->in_sequence->value, O_RDONLY, 0);
+		fd = open_last_file(executor_state.command->in_sequence);
 		dup2(fd, STDIN_FILENO);
 	}
 	else if (executor_state.command_position > 0)
-	{
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
-	}
 	if (executor_state.command->out_sequence && executor_state.command->out_sequence->type == IO_FILE)
 	{
-		fd = creat(executor_state.command->out_sequence->value, 0644);
+		fd = create_last_file(executor_state.command->out_sequence);
 		dup2(fd, STDOUT_FILENO);
 	}
 	else if (executor_state.command->next)
@@ -169,7 +187,7 @@ void handle_command(t_executor *executor_state, char **env)
 int main(int ac, char **av, char **env)
 {
 	int           i = 0;
-	const t_lexer lexer = new_lexer("< srcs/executor.c cat");
+	const t_lexer lexer = new_lexer("cat < test < file > w < tests/parser_tests.c");
 	t_parser     *parser = parser_new(lexer);
 	t_executor    executor_state;
 	executor_state.command = start_parser(parser);
