@@ -1,6 +1,8 @@
 #include "executor.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <readline/history.h>
+#include <readline/readline.h>
 #include <stdio.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -149,11 +151,24 @@ int open_last_file(t_io *sequence)
 
 void exec_child_command(t_executor executor_state, char **env)
 {
-	int fd;
+	int   fd;
+	char *f = "";
 
 	if (executor_state.command->in_sequence)
 	{
-		fd = open_last_file(executor_state.command->in_sequence);
+		if (executor_state.command->in_sequence->type == IO_HEREDOC)
+		{
+			fd = creat("tmp", 0644);
+			while (ft_strcmp(f, executor_state.command->in_sequence->value))
+			{
+				f = readline("");
+				write(fd, f, ft_strlen(f));
+			}
+		}
+		else
+		{
+			fd = open_last_file(executor_state.command->in_sequence);
+		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
@@ -167,6 +182,7 @@ void exec_child_command(t_executor executor_state, char **env)
 	}
 	else if (executor_state.command->next)
 		dup_and_close(executor_state.new_fd, STDOUT_FILENO);
+	printf("CHECK 00\n");
 	exec_command(executor_state.command, env);
 }
 
@@ -189,7 +205,7 @@ void handle_command(t_executor *executor_state, char **env)
 int main(int ac, char **av, char **env)
 {
 	int           i = 0;
-	const t_lexer lexer = new_lexer("cat < test < file > w < tests/parser_tests.c");
+	const t_lexer lexer = new_lexer("cat << EOF");
 	t_parser     *parser = parser_new(lexer);
 	t_executor    executor_state;
 	executor_state.command = start_parser(parser);
