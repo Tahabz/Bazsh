@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "lexer/lexer.h"
 
 typedef struct s_parser t_parser;
 typedef struct s_command t_command;

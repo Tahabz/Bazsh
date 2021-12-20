@@ -1,7 +1,6 @@
 #include "parser.h"
-#include "lexer.h"
+#include "lexer/lexer.h"
 #include "strtools/strtools.h"
-#include "token/token.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,17 +112,17 @@ void add_io(t_io **io_head, t_io value)
 
 void set_parsing_state(t_parser *parser)
 {
-	if (peek_tok_is(parser, ARG))
+	if (curr_tok_is(parser, ARG))
 		parser->parsing_state = parse_arg;
-	else if (peek_tok_is(parser, PIPE))
+	else if (curr_tok_is(parser, PIPE))
 		parser->parsing_state = parse_pipe;
-	else if (peek_tok_is(parser, R_REDIRECTION))
+	else if (curr_tok_is(parser, R_REDIRECTION))
 		parser->parsing_state = parse_out_redirect;
-	else if (peek_tok_is(parser, APPEND))
+	else if (curr_tok_is(parser, APPEND))
 		parser->parsing_state = parse_append;
-	else if (peek_tok_is(parser, L_REDIRECTION))
+	else if (curr_tok_is(parser, L_REDIRECTION))
 		parser->parsing_state = parse_in_redirect;
-	else if (peek_tok_is(parser, HEREDOC))
+	else if (curr_tok_is(parser, HEREDOC))
 		parser->parsing_state = parse_heredoc;
 	else
 		parser->parsing_state = NULL;
@@ -183,19 +182,18 @@ t_command *parse_command(t_parser *parser)
 {
 	t_command *command;
 
+	set_parsing_state(parser);
+	if (parser->parsing_state == NULL)
+		return (NULL);
 	command = create_command();
-	if (curr_tok_is(parser, ARG))
-		parser->parsing_state = parse_arg;
-	else
-		return NULL;
 	while (parser->parsing_state)
 	{
 		parser->parsing_state(parser, command);
-		if (parser->parsing_state != NULL)
-			set_parsing_state(parser);
 		if (peek_tok_is(parser, INVALID))
 			raise_syntax_error("VALID TOKEN", parser, command);
 		next_tok(parser);
+		if (parser->parsing_state != NULL)
+			set_parsing_state(parser);
 	}
 	return (command);
 }
@@ -206,6 +204,8 @@ t_command *start_parser(t_parser *parser)
 	t_command       *current;
 
 	command = parse_command(parser);
+	if (command == NULL)
+		return (command);
 	current = (t_command *) command;
 	while ((current->next = parse_command(parser)))
 	{
