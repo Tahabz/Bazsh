@@ -30,7 +30,7 @@ $(NAME): $(SRCS)
 	clang $(DFLAGS) $(FLAGS) srcs/main.c $(SRCS) -o $(NAME)
 
 executor: srcs/executor.c $(SRCS)
-	clang $(DFLAGS) $(FLAGS) srcs/executor.c srcs/parser.c $(SRCS) -o executor
+	clang $(DFLAGS) $(FLAGS) srcs/executor.c srcs/parser.c $(SRCS) -lreadline -o executor
 
 clean:
 	rm -rf lexer
