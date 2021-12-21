@@ -140,11 +140,41 @@ int create_last_file(t_io *sequence)
 	return (fd);
 }
 
+void write_line(const char *line, int fd)
+{
+	write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
+}
+
 int open_last_file(t_io *sequence)
 {
-	int fd;
-	while (sequence->next)
+	int   fd;
+	char *f;
+	int   hfd[2];
+	int   tfd;
+
+	tfd = dup(STDIN_FILENO);
+	while (sequence)
+	{
+		if (sequence->type == IO_HEREDOC)
+		{
+			pipe(hfd);
+			f = readline("");
+			while (ft_strcmp(f, sequence->value))
+			{
+				write_line(f, hfd[1]);
+				f = readline("");
+			}
+			dup_and_close(hfd, STDIN_FILENO);
+			dup2(tfd, STDIN_FILENO);
+			close(tfd);
+			if (!sequence->next)
+				return 0;
+		}
+		if (!sequence->next)
+			break;
 		sequence = sequence->next;
+	}
 	fd = open(sequence->value, O_RDONLY, 0);
 	return (fd);
 }
@@ -152,25 +182,17 @@ int open_last_file(t_io *sequence)
 void exec_child_command(t_executor executor_state, char **env)
 {
 	int   fd;
+	int   hfd[2];
 	char *f = "";
 
 	if (executor_state.command->in_sequence)
 	{
-		if (executor_state.command->in_sequence->type == IO_HEREDOC)
+		fd = open_last_file(executor_state.command->in_sequence);
+		if (fd)
 		{
-			fd = creat("tmp", 0644);
-			while (ft_strcmp(f, executor_state.command->in_sequence->value))
-			{
-				f = readline("");
-				write(fd, f, ft_strlen(f));
-			}
+			dup2(fd, STDIN_FILENO);
+			close(fd);
 		}
-		else
-		{
-			fd = open_last_file(executor_state.command->in_sequence);
-		}
-		dup2(fd, STDIN_FILENO);
-		close(fd);
 	}
 	else if (executor_state.command_position > 0)
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
@@ -182,7 +204,6 @@ void exec_child_command(t_executor executor_state, char **env)
 	}
 	else if (executor_state.command->next)
 		dup_and_close(executor_state.new_fd, STDOUT_FILENO);
-	printf("CHECK 00\n");
 	exec_command(executor_state.command, env);
 }
 
@@ -205,7 +226,7 @@ void handle_command(t_executor *executor_state, char **env)
 int main(int ac, char **av, char **env)
 {
 	int           i = 0;
-	const t_lexer lexer = new_lexer("cat << EOF");
+	const t_lexer lexer = new_lexer("cat << EOF > fofa < srcs/executor.c << EOF > llllll | wc -l > x > y > z");
 	t_parser     *parser = parser_new(lexer);
 	t_executor    executor_state;
 	executor_state.command = start_parser(parser);
