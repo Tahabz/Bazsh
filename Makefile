@@ -18,7 +18,8 @@ FILES = lexer/lexer.c\
         strtools/ft_strlen.c\
         strtools/ft_substr.c\
         strtools/ft_split.c\
-        strtools/str_match.c
+        strtools/str_match.c\
+		strtools/ft_itoa.c
 
 SRCS = $(patsubst %, srcs/%, $(FILES))
 
