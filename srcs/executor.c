@@ -116,27 +116,34 @@ void dup_and_close(int fd[], int file_no)
 	close_fd(fd);
 }
 
-void exec_command(t_command *command, char **env)
+void exec_command(t_executor executor_state, char **env)
 {
-	char **command_args = args_to_arr(command->arg);
-	char  *command_path = get_command_path(command->arg->val, env);
+	char **command_args = args_to_arr(executor_state.command->arg);
+	char  *command_path = get_command_path(executor_state.command->arg->val, env);
+	int    command_position = executor_state.command_position;
+
+	executor_state.commands_paths[command_position] = command_path;
+	executor_state.commands_args[command_position] = command_args;
 	if (execve(command_path, command_args, env) == -1)
 	{
 		perror("execve");
 		exit(1);
 	}
-	free(command_args);
 }
 
 int create_last_file(t_io *sequence)
 {
 	int fd;
-	while (sequence->next)
+	while (sequence)
 	{
-		creat(sequence->value, 0644);
+		if (sequence->type == IO_FILE)
+			fd = open(sequence->value,
+			          O_CREAT | O_TRUNC | O_WRONLY, 0644);
+		else
+			fd = open(sequence->value,
+			          O_CREAT | O_APPEND | O_WRONLY, 0644);
 		sequence = sequence->next;
 	}
-	fd = creat(sequence->value, 0644);
 	return (fd);
 }
 
@@ -148,28 +155,14 @@ void write_line(const char *line, int fd)
 
 int open_last_file(t_io *sequence)
 {
-	int   fd;
-	char *f;
-	int   hfd[2];
-	int   tfd;
-
-	tfd = dup(STDIN_FILENO);
+	int fd;
 	while (sequence)
 	{
-		if (sequence->type == IO_HEREDOC)
+		fd = open(sequence->value, O_RDONLY, 0);
+		if (fd == -1)
 		{
-			pipe(hfd);
-			f = readline("");
-			while (ft_strcmp(f, sequence->value))
-			{
-				write_line(f, hfd[1]);
-				f = readline("");
-			}
-			dup_and_close(hfd, STDIN_FILENO);
-			dup2(tfd, STDIN_FILENO);
-			close(tfd);
-			if (!sequence->next)
-				return 0;
+			printf("file does not exist %s\n", sequence->value);
+			exit(0);
 		}
 		if (!sequence->next)
 			break;
@@ -177,6 +170,49 @@ int open_last_file(t_io *sequence)
 	}
 	fd = open(sequence->value, O_RDONLY, 0);
 	return (fd);
+}
+
+void replace_sequence(t_io *sequence, const char *value, enum io_type newtype)
+{
+	free(sequence->value);
+	sequence->value = ft_strdup(value);
+	sequence->type = IO_FILE;
+}
+
+void transform_heredocs(t_command *command)
+{
+	int   fd;
+	int   i;
+	char *line;
+	char *file_name;
+	t_io *sequence;
+
+	i = 0;
+	while (command)
+	{
+		sequence = command->in_sequence;
+		while (sequence)
+		{
+			if (sequence->type == IO_HEREDOC)
+			{
+				file_name = ft_itoa(i);
+				fd = open(sequence->value, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+				while (true)
+				{
+					line = readline(">>");
+					if (!ft_strcmp(line, sequence->value))
+						break;
+					write_line(line, fd);
+				}
+				replace_sequence(sequence, file_name, IO_FILE);
+				free(file_name);
+				close(fd);
+			}
+			i += 1;
+			sequence = sequence->next;
+		}
+		command = command->next;
+	}
 }
 
 void exec_child_command(t_executor executor_state, char **env)
@@ -196,7 +232,7 @@ void exec_child_command(t_executor executor_state, char **env)
 	}
 	else if (executor_state.command_position > 0)
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
-	if (executor_state.command->out_sequence && executor_state.command->out_sequence->type == IO_FILE)
+	if (executor_state.command->out_sequence && (executor_state.command->out_sequence->type == IO_FILE || executor_state.command->out_sequence->type == IO_FILE_APPEND))
 	{
 		fd = create_last_file(executor_state.command->out_sequence);
 		dup2(fd, STDOUT_FILENO);
@@ -204,7 +240,7 @@ void exec_child_command(t_executor executor_state, char **env)
 	}
 	else if (executor_state.command->next)
 		dup_and_close(executor_state.new_fd, STDOUT_FILENO);
-	exec_command(executor_state.command, env);
+	exec_command(executor_state, env);
 }
 
 void handle_command(t_executor *executor_state, char **env)
@@ -226,10 +262,11 @@ void handle_command(t_executor *executor_state, char **env)
 int main(int ac, char **av, char **env)
 {
 	int           i = 0;
-	const t_lexer lexer = new_lexer("cat << EOF > fofa < srcs/executor.c << EOF > llllll | wc -l > x > y > z");
+	const t_lexer lexer = new_lexer("ls -la | cat -n < f1 > f2 < f3 >> f4");
 	t_parser     *parser = parser_new(lexer);
 	t_executor    executor_state;
 	executor_state.command = start_parser(parser);
+	transform_heredocs(executor_state.command);
 
 	executor_state.command_position = 0;
 	while (executor_state.command)
@@ -238,6 +275,8 @@ int main(int ac, char **av, char **env)
 		executor_state.command_position += 1;
 		executor_state.command = executor_state.command->next;
 	}
+	delete_command(executor_state.command);
+	delete_parser(parser);
 	waitpids(executor_state.pids, executor_state.command_position);
 	return 0;
 }
