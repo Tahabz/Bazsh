@@ -9,13 +9,13 @@ typedef struct s_executor
 	char      *commands_paths[1000];
 	char     **commands_args[1000];
 	t_command *command;
-	char     **env;
+	char    ***env;
 } t_executor;
 
 typedef struct s_parent_command
 {
 	bool is_parent_command;
-	void (*handler)(char *, char **);
+	void (*handler)(char *, char ***);
 } t_parent_command;
 typedef struct s_file
 {

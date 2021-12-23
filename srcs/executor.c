@@ -7,6 +7,51 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+void free_double_pointer(char **arr)
+{
+	int i;
+
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
+char arr_length(char **arr)
+{
+	int i;
+
+	i = 0;
+
+	while (arr[i++])
+		;
+	return (i);
+}
+
+char **ft_realloc(char **arr, char *val)
+{
+	int    i;
+	int    length;
+	char **new_arr;
+
+	length = arr_length(arr);
+	new_arr = (char **) malloc((length + 1) + sizeof(char *));
+
+	i = 0;
+	while (i < length)
+	{
+		new_arr[i] = arr[i];
+		i++;
+	}
+	new_arr[i] = val;
+	new_arr[i + 1] = NULL;
+	free_double_pointer(arr);
+	return (new_arr);
+}
+
 int get_var_index(const char *var_name, char **env)
 {
 	size_t i;
@@ -23,14 +68,27 @@ int get_var_index(const char *var_name, char **env)
 	return (i);
 }
 
-void set_env(const char *var_name, char *var_value, char **env)
+char *make_env_name(char *var_name, char *var_value)
 {
-	int i;
+	char *tmp;
+	char *name;
 
-	i = get_var_index(var_name, env);
+	tmp = ft_strjoin(var_name, "=");
+	name = ft_strjoin(tmp, var_value);
+	return (name);
+}
+
+void set_env(char *var_name, char *var_value, char ***env)
+{
+	int   i;
+	char *name;
+
+	name = make_env_name(var_name, var_value);
+	i = get_var_index(var_name, *env);
 	if (i != -1)
-		env[i] = var_value;
-	printf("value = %s\n", env[i]);
+		env[0][i] = name;
+	else
+		*env = ft_realloc(*env, name);
 	// Should add another element to env
 }
 
@@ -52,21 +110,22 @@ char *ft_getenv(const char *var_name, char **env)
 	return (NULL);
 }
 
-void cd(char *arg, char **env)
+void cd(char *arg, char ***env)
 {
 	char arr[100];
 	if (!arg)
-		arg = ft_getenv("HOME", env);
+		arg = ft_getenv("HOME", *env);
 	chdir(arg);
-	set_env("HOME", "chikhrya=chikhrya", env);
-	printf("HOME = %s", ft_getenv("chikhrya", env));
+	free(arg);
+	set_env("pwd", getcwd(arr, 100), env);
+	printf("pwd = %s", ft_getenv("pwd", *env));
 }
 
-void export(char *arg, char **env)
+void export(char *arg, char ***env)
 {
 }
 
-void unset(char *arg, char **env)
+void unset(char *arg, char ***env)
 {
 }
 
@@ -312,7 +371,7 @@ t_parent_command is_parent_command(char *command_name)
 	return (t_parent_command){false, NULL};
 }
 
-void handle_command(t_executor *executor_state, char **env)
+void handle_command(t_executor *executor_state, char ***env)
 {
 	t_parent_command command;
 
@@ -328,7 +387,7 @@ void handle_command(t_executor *executor_state, char **env)
 		pipe(executor_state->new_fd);
 	executor_state->pids[executor_state->command_position] = fork();
 	if (executor_state->pids[executor_state->command_position] == 0)
-		exec_child_command(*executor_state, env);
+		exec_child_command(*executor_state, *env);
 	if (executor_state->command_position > 0)
 		close_fd(executor_state->old_fd);
 	if (executor_state->command->next)
@@ -336,17 +395,6 @@ void handle_command(t_executor *executor_state, char **env)
 		executor_state->old_fd[0] = executor_state->new_fd[0];
 		executor_state->old_fd[1] = executor_state->new_fd[1];
 	}
-}
-
-char arr_length(char **arr)
-{
-	int i;
-
-	i = 0;
-
-	while (arr[i++])
-		;
-	return (i);
 }
 
 char **copy_env(char **env)
@@ -375,8 +423,9 @@ int main(int ac, char **av, char **env)
 	t_parser  *parser;
 	t_executor executor_state;
 
-	executor_state.env = copy_env(env);
-	lexer = new_lexer("cd");
+	executor_state.env = (char ***) malloc(sizeof(char **));
+	*executor_state.env = copy_env(env);
+	lexer = new_lexer("cd ../kabil-api/src/");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
@@ -389,6 +438,7 @@ int main(int ac, char **av, char **env)
 	}
 	delete_command(executor_state.command);
 	delete_parser(parser);
+	free_double_pointer(*executor_state.env);
 	waitpids(executor_state.pids, executor_state.command_position);
 	return 0;
 }
