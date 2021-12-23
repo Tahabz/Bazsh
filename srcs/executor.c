@@ -174,6 +174,41 @@ void cd(char **args, char ***env)
 	printf("pwd = %s\n", ft_getenv("pwd", *env));
 }
 
+int ft_isalpha(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		return (1);
+	else if (c >= 'A' && c <= 'Z')
+		return (1);
+	else if (c == '_')
+		return (1);
+	return (0);
+}
+
+int ft_isalnum(int c)
+{
+	if (ft_isalpha(c))
+		return (1);
+	else if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
+bool is_ident(char *ident)
+{
+	int i;
+
+	if (!ft_isalpha(ident[0]))
+		return (false);
+	i = 1;
+	while (ident[i])
+	{
+		if (!ft_isalnum(ident[i]))
+			return (false);
+		i += 1;
+	}
+	return (true);
+}
+
 void export(char **args, char ***env)
 {
 	char **var;
@@ -190,12 +225,17 @@ void export(char **args, char ***env)
 		else
 		{
 			var = ft_split(args[i], '=');
-			val = ft_substr(args[i], ft_strlen(var[0]) + 1, ft_strlen(args[i]));
-			set_env(var[0], val, env);
-			printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
+			if (!is_ident(var[0]))
+				ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
+			else
+			{
+				val = ft_substr(args[i], ft_strlen(var[0]) + 1, ft_strlen(args[i]));
+				set_env(var[0], val, env);
+				printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
+				free(val);
+			}
 			free(var[0]);
 			free(var[1]);
-			free(val);
 		}
 		i += 1;
 	}
@@ -561,7 +601,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("export '' x=10 y=30 ''");
+	lexer = new_lexer("export '' 1ddd1dd=10 y=30 ''");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
