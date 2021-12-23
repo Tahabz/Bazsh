@@ -31,20 +31,20 @@ char arr_length(char **arr)
 	return (i);
 }
 
-char **ft_realloc(char **arr, char *val)
+char **push(char **arr, char *val)
 {
 	int    i;
 	int    length;
 	char **new_arr;
 
 	length = arr_length(arr);
-	new_arr = (char **) malloc((length + 1) + sizeof(char *));
+	new_arr = (char **) malloc((length + 1) * sizeof(char *));
 
 	i = 0;
-	while (i < length)
+	while (arr[i])
 	{
-		new_arr[i] = arr[i];
-		i++;
+		new_arr[i] = ft_strdup(arr[i]);
+		i += 1;
 	}
 	new_arr[i] = val;
 	new_arr[i + 1] = NULL;
@@ -62,10 +62,10 @@ int get_var_index(const char *var_name, char **env)
 	{
 		tmpenv = ft_split(env[i], '=');
 		if (ft_strcmp(tmpenv[0], var_name) == 0 && tmpenv[1])
-			break;
+			return (i);
 		i++;
 	}
-	return (i);
+	return (-1);
 }
 
 char *make_env_name(char *var_name, char *var_value)
@@ -88,8 +88,7 @@ void set_env(char *var_name, char *var_value, char ***env)
 	if (i != -1)
 		env[0][i] = name;
 	else
-		*env = ft_realloc(*env, name);
-	// Should add another element to env
+		*env = push(*env, name);
 }
 
 char *ft_getenv(const char *var_name, char **env)
@@ -123,10 +122,12 @@ void cd(char *arg, char ***env)
 
 void export(char *arg, char ***env)
 {
-}
+	char **var;
 
-void unset(char *arg, char ***env)
-{
+	var = ft_split(arg, '=');
+	set_env(var[0], var[1], env);
+
+	printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
 }
 
 int get_args_count(t_arg *arg)
@@ -159,6 +160,42 @@ char **args_to_arr(t_arg *arg)
 	}
 	args[i] = NULL;
 	return (args);
+}
+
+char **arr_remove(char **arr, char *val)
+{
+	int    i;
+	char  *var;
+	char **new_arr;
+	int    j;
+	char  *var_val;
+
+	var_val = ft_getenv(val, arr);
+	if (!var_val)
+		return (arr);
+	new_arr = (char **) malloc(arr_length(arr) * sizeof(char *));
+	i = 0;
+	j = 0;
+	var = make_env_name(val, var_val);
+	while (arr[i])
+	{
+		if (ft_strcmp(arr[i], var))
+		{
+			new_arr[j] = ft_strdup(arr[i]);
+			j += 1;
+		}
+		i += 1;
+	}
+	new_arr[j] = val;
+	new_arr[j + 1] = NULL;
+	free_double_pointer(arr);
+	return (new_arr);
+}
+
+void unset(char *arg, char ***env)
+{
+	*env = arr_remove(*env, arg);
+	printf("unset %s=%s\n", arg, ft_getenv(arg, *env));
 }
 
 char *join_path(char *str1, char *str2)
@@ -366,7 +403,7 @@ t_parent_command is_parent_command(char *command_name)
 		return (t_parent_command){true, cd};
 	else if (!ft_strcmp(command_name, "export"))
 		return (t_parent_command){true, export};
-	else if (!ft_strcmp(command_name, "pwd"))
+	else if (!ft_strcmp(command_name, "unset"))
 		return (t_parent_command){true, unset};
 	return (t_parent_command){false, NULL};
 }
@@ -405,11 +442,11 @@ char **copy_env(char **env)
 
 	length = arr_length(env);
 	i = 0;
-	cpy_env = (char **) malloc((length + 1) * sizeof(char *));
+	cpy_env = (char **) malloc((length) * sizeof(char *));
 
-	while (i < length)
+	while (env[i])
 	{
-		cpy_env[i] = env[i];
+		cpy_env[i] = ft_strdup(env[i]);
 		i++;
 	}
 	cpy_env[i] = NULL;
@@ -425,7 +462,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("cd ../kabil-api/src/");
+	lexer = new_lexer("export x=20 | unset x");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
@@ -439,6 +476,7 @@ int main(int ac, char **av, char **env)
 	delete_command(executor_state.command);
 	delete_parser(parser);
 	free_double_pointer(*executor_state.env);
+	free(executor_state.env);
 	waitpids(executor_state.pids, executor_state.command_position);
 	return 0;
 }
