@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-char *ft_getenv(const char *var_name, char **env)
+int get_var_index(const char *var_name, char **env)
 {
 	size_t i;
 	char **tmpenv;
@@ -17,7 +17,36 @@ char *ft_getenv(const char *var_name, char **env)
 	{
 		tmpenv = ft_split(env[i], '=');
 		if (ft_strcmp(tmpenv[0], var_name) == 0 && tmpenv[1])
-			return tmpenv[1];
+			break;
+		i++;
+	}
+	return (i);
+}
+
+void set_env(const char *var_name, char *var_value, char **env)
+{
+	int i;
+
+	i = get_var_index(var_name, env);
+	if (i != -1)
+		env[i] = var_value;
+	printf("value = %s\n", env[i]);
+	// Should add another element to env
+}
+
+char *ft_getenv(const char *var_name, char **env)
+{
+	size_t i;
+	char **tmpenv;
+
+	i = 0;
+	while (env[i])
+	{
+		tmpenv = ft_split(env[i], '=');
+		if (!tmpenv[0])
+			break;
+		if (!ft_strcmp(tmpenv[0], var_name) && tmpenv[1])
+			return (tmpenv[1]);
 		i++;
 	}
 	return (NULL);
@@ -29,7 +58,8 @@ void cd(char *arg, char **env)
 	if (!arg)
 		arg = ft_getenv("HOME", env);
 	chdir(arg);
-	printf("%s\n", getcwd(arr, 100));
+	set_env("HOME", "chikhrya=chikhrya", env);
+	printf("HOME = %s", ft_getenv("chikhrya", env));
 }
 
 void export(char *arg, char **env)
@@ -308,6 +338,36 @@ void handle_command(t_executor *executor_state, char **env)
 	}
 }
 
+char arr_length(char **arr)
+{
+	int i;
+
+	i = 0;
+
+	while (arr[i++])
+		;
+	return (i);
+}
+
+char **copy_env(char **env)
+{
+	int    length;
+	int    i;
+	char **cpy_env;
+
+	length = arr_length(env);
+	i = 0;
+	cpy_env = (char **) malloc((length + 1) * sizeof(char *));
+
+	while (i < length)
+	{
+		cpy_env[i] = env[i];
+		i++;
+	}
+	cpy_env[i] = NULL;
+	return (cpy_env);
+}
+
 int main(int ac, char **av, char **env)
 {
 	int        i = 0;
@@ -315,14 +375,15 @@ int main(int ac, char **av, char **env)
 	t_parser  *parser;
 	t_executor executor_state;
 
-	lexer = new_lexer("dmask");
+	executor_state.env = copy_env(env);
+	lexer = new_lexer("cd");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
 	executor_state.command_position = 0;
 	while (executor_state.command)
 	{
-		handle_command(&executor_state, env);
+		handle_command(&executor_state, executor_state.env);
 		executor_state.command_position += 1;
 		executor_state.command = executor_state.command->next;
 	}
