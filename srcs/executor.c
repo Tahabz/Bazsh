@@ -7,6 +7,39 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+char *ft_getenv(const char *var_name, char **env)
+{
+	size_t i;
+	char **tmpenv;
+
+	i = 0;
+	while (env[i])
+	{
+		tmpenv = ft_split(env[i], '=');
+		if (ft_strcmp(tmpenv[0], var_name) == 0 && tmpenv[1])
+			return tmpenv[1];
+		i++;
+	}
+	return (NULL);
+}
+
+void cd(char *arg, char **env)
+{
+	char arr[100];
+	if (!arg)
+		arg = ft_getenv("HOME", env);
+	chdir(arg);
+	printf("%s\n", getcwd(arr, 100));
+}
+
+void export(char *arg, char **env)
+{
+}
+
+void unset(char *arg, char **env)
+{
+}
+
 int get_args_count(t_arg *arg)
 {
 	int i;
@@ -47,22 +80,6 @@ char *join_path(char *str1, char *str2)
 	return (joined_path);
 }
 
-char *ft_getenv(const char *var_name, char **env)
-{
-	size_t i;
-	char **tmpenv;
-
-	i = 0;
-	while (env[i])
-	{
-		tmpenv = ft_split(env[i], '=');
-		if (ft_strcmp(tmpenv[0], var_name) == 0 && tmpenv[1])
-			return tmpenv[1];
-		i++;
-	}
-	return (NULL);
-}
-
 char *get_command_path(char *command_name, char **env)
 {
 	char **paths;
@@ -88,6 +105,8 @@ char *get_command_path(char *command_name, char **env)
 
 void waitpids(int pids[], size_t i)
 {
+	if (!*pids)
+		return;
 	while (i--)
 	{
 		int pid = waitpid(pids[i], NULL, 0);
@@ -131,18 +150,39 @@ void exec_command(t_executor executor_state, char **env)
 	}
 }
 
-int create_last_file(t_io *sequence)
+int get_last_fd(t_io *sequence, int(callback)(t_io *))
 {
 	int fd;
+
 	while (sequence)
 	{
-		if (sequence->type == IO_FILE)
-			fd = open(sequence->value,
-			          O_CREAT | O_TRUNC | O_WRONLY, 0644);
-		else
-			fd = open(sequence->value,
-			          O_CREAT | O_APPEND | O_WRONLY, 0644);
+		fd = callback(sequence);
 		sequence = sequence->next;
+	}
+	return (fd);
+}
+
+int create_file(t_io *sequence)
+{
+	int fd;
+	if (sequence->type == IO_FILE)
+		fd = open(sequence->value,
+		          O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	else
+		fd = open(sequence->value,
+		          O_CREAT | O_APPEND | O_WRONLY, 0644);
+	return (fd);
+}
+
+int open_file(t_io *sequence)
+{
+	int fd;
+
+	fd = open(sequence->value, O_RDONLY, 0);
+	if (fd == -1)
+	{
+		printf("file does not exist %s\n", sequence->value);
+		exit(0);
 	}
 	return (fd);
 }
@@ -153,25 +193,6 @@ void write_line(const char *line, int fd)
 	write(fd, "\n", 1);
 }
 
-int open_last_file(t_io *sequence)
-{
-	int fd;
-	while (sequence)
-	{
-		fd = open(sequence->value, O_RDONLY, 0);
-		if (fd == -1)
-		{
-			printf("file does not exist %s\n", sequence->value);
-			exit(0);
-		}
-		if (!sequence->next)
-			break;
-		sequence = sequence->next;
-	}
-	fd = open(sequence->value, O_RDONLY, 0);
-	return (fd);
-}
-
 void replace_sequence(t_io *sequence, const char *value, enum io_type newtype)
 {
 	free(sequence->value);
@@ -179,15 +200,33 @@ void replace_sequence(t_io *sequence, const char *value, enum io_type newtype)
 	sequence->type = IO_FILE;
 }
 
-void transform_heredocs(t_command *command)
+void transform_heredoc(t_io *sequence, int file_num)
 {
 	int   fd;
 	int   i;
 	char *line;
 	char *file_name;
-	t_io *sequence;
 
-	i = 0;
+	file_name = ft_itoa(file_num);
+	fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	while (true)
+	{
+		line = readline(">>");
+		if (!ft_strcmp(line, sequence->value))
+			break;
+		write_line(line, fd);
+	}
+	replace_sequence(sequence, file_name, IO_FILE);
+	free(file_name);
+	close(fd);
+}
+
+void handle_heredoc(t_command *command)
+{
+	t_io *sequence;
+	int   file_num;
+
+	file_num = 0;
 	while (command)
 	{
 		sequence = command->in_sequence;
@@ -195,20 +234,9 @@ void transform_heredocs(t_command *command)
 		{
 			if (sequence->type == IO_HEREDOC)
 			{
-				file_name = ft_itoa(i);
-				fd = open(sequence->value, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-				while (true)
-				{
-					line = readline(">>");
-					if (!ft_strcmp(line, sequence->value))
-						break;
-					write_line(line, fd);
-				}
-				replace_sequence(sequence, file_name, IO_FILE);
-				free(file_name);
-				close(fd);
+				transform_heredoc(sequence, file_num);
+				file_num += 1;
 			}
-			i += 1;
 			sequence = sequence->next;
 		}
 		command = command->next;
@@ -223,7 +251,7 @@ void exec_child_command(t_executor executor_state, char **env)
 
 	if (executor_state.command->in_sequence)
 	{
-		fd = open_last_file(executor_state.command->in_sequence);
+		fd = get_last_fd(executor_state.command->in_sequence, open_file);
 		if (fd)
 		{
 			dup2(fd, STDIN_FILENO);
@@ -232,9 +260,9 @@ void exec_child_command(t_executor executor_state, char **env)
 	}
 	else if (executor_state.command_position > 0)
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
-	if (executor_state.command->out_sequence && (executor_state.command->out_sequence->type == IO_FILE || executor_state.command->out_sequence->type == IO_FILE_APPEND))
+	if (executor_state.command->out_sequence && executor_state.command->out_sequence->type != IO_PIPE)
 	{
-		fd = create_last_file(executor_state.command->out_sequence);
+		fd = get_last_fd(executor_state.command->out_sequence, create_file);
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
@@ -243,8 +271,29 @@ void exec_child_command(t_executor executor_state, char **env)
 	exec_command(executor_state, env);
 }
 
+t_parent_command is_parent_command(char *command_name)
+{
+	if (!ft_strcmp(command_name, "cd"))
+		return (t_parent_command){true, cd};
+	else if (!ft_strcmp(command_name, "export"))
+		return (t_parent_command){true, export};
+	else if (!ft_strcmp(command_name, "pwd"))
+		return (t_parent_command){true, unset};
+	return (t_parent_command){false, NULL};
+}
+
 void handle_command(t_executor *executor_state, char **env)
 {
+	t_parent_command command;
+
+	command = is_parent_command(executor_state->command->arg->val);
+	if (command.is_parent_command)
+	{
+		if (executor_state->command->arg->next)
+			return (command.handler(executor_state->command->arg->next->val, env));
+		return (command.handler(NULL, env));
+	}
+
 	if (executor_state->command->next)
 		pipe(executor_state->new_fd);
 	executor_state->pids[executor_state->command_position] = fork();
@@ -261,13 +310,15 @@ void handle_command(t_executor *executor_state, char **env)
 
 int main(int ac, char **av, char **env)
 {
-	int           i = 0;
-	const t_lexer lexer = new_lexer("ls -la | cat -n < f1 > f2 < f3 >> f4");
-	t_parser     *parser = parser_new(lexer);
-	t_executor    executor_state;
-	executor_state.command = start_parser(parser);
-	transform_heredocs(executor_state.command);
+	int        i = 0;
+	t_lexer    lexer;
+	t_parser  *parser;
+	t_executor executor_state;
 
+	lexer = new_lexer("dmask");
+	parser = parser_new(lexer);
+	executor_state.command = start_parser(parser);
+	handle_heredoc(executor_state.command);
 	executor_state.command_position = 0;
 	while (executor_state.command)
 	{

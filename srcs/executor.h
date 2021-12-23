@@ -12,6 +12,11 @@ typedef struct s_executor
 	t_command *command;
 } t_executor;
 
+typedef struct s_parent_command
+{
+	bool is_parent_command;
+	void (*handler)(char *, char **);
+} t_parent_command;
 typedef struct s_file
 {
 	int   fd;
