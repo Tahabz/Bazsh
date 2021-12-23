@@ -104,9 +104,54 @@ char *ft_getenv(const char *var_name, char **env)
 			break;
 		if (!ft_strcmp(tmpenv[0], var_name) && tmpenv[1])
 			return (tmpenv[1]);
-		i++;
+		i += 1;
 	}
 	return (NULL);
+}
+
+void print_2d_arr(char **arr)
+{
+	int i;
+
+	i = 0;
+	while (arr[i])
+	{
+		printf("%s\n", arr[i]);
+		i += 1;
+	}
+}
+
+void pwd(char **args, char **env)
+{
+	printf("%s\n", getcwd(*env, 100));
+}
+
+void env(char **args, char **env)
+{
+	print_2d_arr(env);
+}
+
+void echo(char **args, char **env)
+{
+	int i;
+	int new_line;
+
+	new_line = true;
+	i = 1;
+	if (!ft_strcmp(args[1], "-n"))
+	{
+		i += 1;
+		new_line = false;
+	}
+	while (args[i])
+	{
+		printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
+		i += 1;
+	}
+	if (new_line)
+		printf("\n");
 }
 
 void cd(char *arg, char ***env)
@@ -165,9 +210,9 @@ char **args_to_arr(t_arg *arg)
 char **arr_remove(char **arr, char *val)
 {
 	int    i;
-	char  *var;
-	char **new_arr;
 	int    j;
+	char **new_arr;
+	char  *var;
 	char  *var_val;
 
 	var_val = ft_getenv(val, arr);
@@ -261,11 +306,29 @@ void dup_and_close(int fd[], int file_no)
 	close_fd(fd);
 }
 
+t_child_command is_child_command(char *command_name)
+{
+	if (!ft_strcmp(command_name, "pwd"))
+		return (t_child_command){true, pwd};
+	else if (!ft_strcmp(command_name, "echo"))
+		return (t_child_command){true, echo};
+	else if (!ft_strcmp(command_name, "env"))
+		return (t_child_command){true, env};
+	return (t_child_command){false, NULL};
+}
+
 void exec_command(t_executor executor_state, char **env)
 {
-	char **command_args = args_to_arr(executor_state.command->arg);
-	char  *command_path = get_command_path(executor_state.command->arg->val, env);
-	int    command_position = executor_state.command_position;
+	t_child_command built_in;
+	char          **command_args = args_to_arr(executor_state.command->arg);
+	built_in = is_child_command(command_args[0]);
+	if (built_in.is_child_command)
+	{
+		built_in.handler(command_args, env);
+		exit(1);
+	}
+	char *command_path = get_command_path(executor_state.command->arg->val, env);
+	int   command_position = executor_state.command_position;
 
 	executor_state.commands_paths[command_position] = command_path;
 	executor_state.commands_args[command_position] = command_args;
@@ -462,7 +525,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("export x=20 | unset x");
+	lexer = new_lexer("echo hello world this is me | wc -l");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);

@@ -17,6 +17,12 @@ typedef struct s_parent_command
 	bool is_parent_command;
 	void (*handler)(char *, char ***);
 } t_parent_command;
+
+typedef struct t_child_command
+{
+	bool is_child_command;
+	void (*handler)(char **, char **);
+} t_child_command;
 typedef struct s_file
 {
 	int   fd;
