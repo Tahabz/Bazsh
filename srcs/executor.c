@@ -180,16 +180,23 @@ void export(char **args, char ***env)
 	char  *val;
 	int    i;
 
+	if (!args)
+		return print_2d_arr(*env);
 	i = 1;
 	while (args[i])
 	{
-		var = ft_split(args[i], '=');
-		val = ft_substr(args[i], ft_strlen(var[0]) + 1, ft_strlen(args[i]));
-		set_env(var[0], val, env);
-		printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
-		free(var[0]);
-		free(var[1]);
-		free(val);
+		if (!ft_strcmp(args[i], ""))
+			ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
+		else
+		{
+			var = ft_split(args[i], '=');
+			val = ft_substr(args[i], ft_strlen(var[0]) + 1, ft_strlen(args[i]));
+			set_env(var[0], val, env);
+			printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
+			free(var[0]);
+			free(var[1]);
+			free(val);
+		}
 		i += 1;
 	}
 }
@@ -554,7 +561,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("");
+	lexer = new_lexer("export '' x=10 y=30 ''");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
@@ -570,5 +577,5 @@ int main(int ac, char **av, char **env)
 	free_double_pointer(*executor_state.env);
 	free(executor_state.env);
 	waitpids(executor_state.pids, executor_state.command_position);
-	return 0;
+	return (0);
 }
