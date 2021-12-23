@@ -75,6 +75,7 @@ char *make_env_name(char *var_name, char *var_value)
 
 	tmp = ft_strjoin(var_name, "=");
 	name = ft_strjoin(tmp, var_value);
+	free(tmp);
 	return (name);
 }
 
@@ -95,6 +96,7 @@ char *ft_getenv(const char *var_name, char **env)
 {
 	size_t i;
 	char **tmpenv;
+	char  *val;
 
 	i = 0;
 	while (env[i])
@@ -103,7 +105,10 @@ char *ft_getenv(const char *var_name, char **env)
 		if (!tmpenv[0])
 			break;
 		if (!ft_strcmp(tmpenv[0], var_name) && tmpenv[1])
-			return (tmpenv[1]);
+		{
+			val = ft_substr(env[i], ft_strlen(tmpenv[0]) + 1, ft_strlen(env[i]));
+			return (val);
+		}
 		i += 1;
 	}
 	return (NULL);
@@ -154,25 +159,39 @@ void echo(char **args, char **env)
 		printf("\n");
 }
 
-void cd(char *arg, char ***env)
+void cd(char **args, char ***env)
 {
-	char arr[100];
-	if (!arg)
+	char  arr[100];
+	char *arg;
+
+	if (!args)
 		arg = ft_getenv("HOME", *env);
+	else
+		arg = args[0];
 	chdir(arg);
 	free(arg);
 	set_env("pwd", getcwd(arr, 100), env);
-	printf("pwd = %s", ft_getenv("pwd", *env));
+	printf("pwd = %s\n", ft_getenv("pwd", *env));
 }
 
-void export(char *arg, char ***env)
+void export(char **args, char ***env)
 {
 	char **var;
+	char  *val;
+	int    i;
 
-	var = ft_split(arg, '=');
-	set_env(var[0], var[1], env);
-
-	printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
+	i = 1;
+	while (args[i])
+	{
+		var = ft_split(args[i], '=');
+		val = ft_substr(args[i], ft_strlen(var[0]) + 1, ft_strlen(args[i]));
+		set_env(var[0], val, env);
+		printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
+		free(var[0]);
+		free(var[1]);
+		free(val);
+		i += 1;
+	}
 }
 
 int get_args_count(t_arg *arg)
@@ -237,10 +256,18 @@ char **arr_remove(char **arr, char *val)
 	return (new_arr);
 }
 
-void unset(char *arg, char ***env)
+void unset(char **args, char ***env)
 {
-	*env = arr_remove(*env, arg);
-	printf("unset %s=%s\n", arg, ft_getenv(arg, *env));
+	int i;
+
+	i = 0;
+
+	while (args[i])
+	{
+		*env = arr_remove(*env, args[i]);
+		printf("unset %s=%s\n", args[i], ft_getenv(args[i], *env));
+		i += 1;
+	}
 }
 
 char *join_path(char *str1, char *str2)
@@ -474,12 +501,14 @@ t_parent_command is_parent_command(char *command_name)
 void handle_command(t_executor *executor_state, char ***env)
 {
 	t_parent_command command;
+	char           **command_args;
 
+	command_args = args_to_arr(executor_state->command->arg);
 	command = is_parent_command(executor_state->command->arg->val);
 	if (command.is_parent_command)
 	{
 		if (executor_state->command->arg->next)
-			return (command.handler(executor_state->command->arg->next->val, env));
+			return (command.handler(command_args, env));
 		return (command.handler(NULL, env));
 	}
 
@@ -525,7 +554,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("echo hello world this is me | wc -l");
+	lexer = new_lexer("");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
