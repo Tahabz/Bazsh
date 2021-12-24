@@ -7,6 +7,20 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+bool arr_contain(char *arr, char c)
+{
+	int i;
+
+	i = 0;
+	while (arr[i])
+	{
+		if (arr[i] == c)
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 void free_double_pointer(char **arr)
 {
 	int i;
@@ -114,14 +128,25 @@ char *ft_getenv(const char *var_name, char **env)
 	return (NULL);
 }
 
-void print_2d_arr(char **arr)
+bool is_not_empty_ident(char *str)
+{
+	return (arr_contain(str, '='));
+}
+
+bool is_empty_ident(char *str)
+{
+	return (true);
+}
+
+void print_2d_arr(char **arr, bool(callback)(char *))
 {
 	int i;
 
 	i = 0;
 	while (arr[i])
 	{
-		printf("%s\n", arr[i]);
+		if (callback(arr[i]))
+			printf("%s\n", arr[i]);
 		i += 1;
 	}
 }
@@ -133,7 +158,7 @@ void pwd(char **args, char **env)
 
 void env(char **args, char **env)
 {
-	print_2d_arr(env);
+	print_2d_arr(env, is_not_empty_ident);
 }
 
 void echo(char **args, char **env)
@@ -209,6 +234,59 @@ bool is_ident(char *ident)
 	return (true);
 }
 
+bool keys_cmp(char *str, char *key)
+{
+	char **key_value;
+	char  *str_key;
+	int    is_matching;
+	key_value = ft_split(str, '=');
+	str_key = key_value[0];
+	is_matching = str_match(key, str_key);
+	free(key_value[0]);
+	free(key_value[1]);
+	return (is_matching);
+}
+
+bool arr_2d_contains(char **arr, char *str, bool(comparer)(char *, char *))
+{
+	int i;
+
+	i = 0;
+	while (arr[i])
+	{
+		if (comparer(arr[i], str))
+			return (true);
+		i += 1;
+	}
+	return (false);
+}
+
+char **push_if_not_exists(char **arr, char *str)
+{
+	if (!arr_2d_contains(arr, str, keys_cmp))
+		return (push(arr, str));
+	return (arr);
+}
+
+void set_ident(char *arg, char ***env)
+{
+	char **var;
+	char  *val;
+
+	var = ft_split(arg, '=');
+	if (!*var || !is_ident(var[0]))
+		ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
+	else if (!arr_contain(arg, '='))
+		*env = push_if_not_exists(*env, var[0]);
+	else
+	{
+		val = ft_substr(arg, ft_strlen(var[0]) + 1, ft_strlen(arg));
+		set_env(var[0], val, env);
+		free(val);
+	}
+	free(var);
+}
+
 void export(char **args, char ***env)
 {
 	char **var;
@@ -216,29 +294,19 @@ void export(char **args, char ***env)
 	int    i;
 
 	if (!args)
-		return print_2d_arr(*env);
+		return print_2d_arr(*env, is_empty_ident);
 	i = 1;
+	if (args[i][0] == '=')
+		return (ft_putstr_fd("not a valid identifier \n", STDERR_FILENO));
 	while (args[i])
 	{
 		if (!ft_strcmp(args[i], ""))
 			ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
 		else
-		{
-			var = ft_split(args[i], '=');
-			if (!is_ident(var[0]))
-				ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
-			else
-			{
-				val = ft_substr(args[i], ft_strlen(var[0]) + 1, ft_strlen(args[i]));
-				set_env(var[0], val, env);
-				printf("%s=%s\n", var[0], ft_getenv(var[0], *env));
-				free(val);
-			}
-			free(var[0]);
-			free(var[1]);
-		}
+			set_ident(args[i], env);
 		i += 1;
 	}
+	print_2d_arr(*env, is_empty_ident);
 }
 
 int get_args_count(t_arg *arg)
@@ -601,7 +669,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("export '' 1ddd1dd=10 y=30 ''");
+	lexer = new_lexer("echo $key1$key1");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
