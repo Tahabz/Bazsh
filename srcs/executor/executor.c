@@ -28,6 +28,7 @@ int main(int ac, char **av, char **env)
 	while (true)
 	{
 		cmd = readline("bazsh$ ");
+		add_history(cmd);
 		lexer = new_lexer(cmd);
 		parser = parser_new(lexer);
 		executor.command = start_parser(parser);
