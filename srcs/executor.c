@@ -110,7 +110,7 @@ char **push(char **arr, char *val)
 		new_arr[i] = ft_strdup(arr[i]);
 		i += 1;
 	}
-	new_arr[i] = val;
+	new_arr[i] = ft_strdup(val);
 	new_arr[i + 1] = NULL;
 	free_double_pointer(arr);
 	return (new_arr);
@@ -176,6 +176,7 @@ char *ft_getenv(const char *var_name, char **env)
 		if (!ft_strcmp(tmpenv[0], var_name) && tmpenv[1])
 		{
 			val = ft_substr(env[i], ft_strlen(tmpenv[0]) + 1, ft_strlen(env[i]));
+			free_double_pointer(tmpenv);
 			return (val);
 		}
 		free_double_pointer(tmpenv);
@@ -248,15 +249,15 @@ void cd(t_arg *args, char ***env)
 	if (!args)
 		arg = ft_getenv("HOME", *env);
 	else
-		arg = args->next->val;
+		arg = ft_strdup(args->next->val);
 	if (chdir(arg) == -1)
 	{
-		return (perror("cd"));
 		free(arg);
+		return (perror("cd"));
 	}
 	free(arg);
 	set_env("pwd", getcwd(arr, 100), env);
-	printf("pwd = %s\n", ft_getenv("pwd", *env));
+	// printf("pwd = %s\n", ft_getenv("pwd", *env));
 }
 
 bool is_ident(char *ident)
@@ -345,7 +346,6 @@ void export(t_arg *arg, char ***env)
 			set_ident(arg->val, env);
 		arg = arg->next;
 	}
-	print_2d_arr(*env, is_empty_ident);
 }
 
 int get_args_count(t_arg *arg)
@@ -395,6 +395,7 @@ char **arr_remove(char **arr, char *val)
 	i = 0;
 	j = 0;
 	var = make_env_name(val, var_val);
+	free(var_val);
 	while (arr[i])
 	{
 		if (ft_strcmp(arr[i], var))
@@ -425,7 +426,7 @@ void unset(t_arg *arg, char ***env)
 		else
 		{
 			*env = arr_remove(*env, arg->val);
-			printf("unset %s=%s\n", arg->val, ft_getenv(arg->val, *env));
+			// printf("unset %s=%s\n", arg->val, ft_getenv(arg->val, *env));
 		}
 		arg = arg->next;
 	}
@@ -451,6 +452,7 @@ char *get_command_path(char *command_name, char **env)
 		return (command_name);
 	char *path = ft_getenv("PATH", env);
 	paths = ft_split(path, ':');
+	free(path);
 	i = 0;
 	while (paths[i])
 	{
@@ -740,7 +742,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("echo salam");
+	lexer = new_lexer("cat < file > taha | export taha=baz | unset taha | echo -n watafiin al3awd | ls -la | wc -l");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
