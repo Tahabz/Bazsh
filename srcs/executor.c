@@ -1,11 +1,4 @@
 #include "executor.h"
-#include <errno.h>
-#include <fcntl.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <stdio.h>
-#include <sys/wait.h>
-#include <unistd.h>
 
 bool ft_isalpha(int c)
 {

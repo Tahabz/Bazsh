@@ -1,5 +1,11 @@
 #include "../srcs/parser.h"
 
+#include <errno.h>
+#include <fcntl.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <sys/wait.h>
+
 int code = 0;
 
 typedef struct s_executor
