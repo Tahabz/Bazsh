@@ -110,7 +110,7 @@ char *ft_getenv(const char *var_name, char **env)
 {
 	size_t i;
 	char **tmpenv;
-	char  *val;
+	char * val;
 
 	i = 0;
 	while (env[i])
@@ -237,7 +237,7 @@ bool is_ident(char *ident)
 bool keys_cmp(char *str, char *key)
 {
 	char **key_value;
-	char  *str_key;
+	char * str_key;
 	int    is_matching;
 	key_value = ft_split(str, '=');
 	str_key = key_value[0];
@@ -271,7 +271,7 @@ char **push_if_not_exists(char **arr, char *str)
 void set_ident(char *arg, char ***env)
 {
 	char **var;
-	char  *val;
+	char * val;
 
 	var = ft_split(arg, '=');
 	if (!*var || !is_ident(var[0]))
@@ -290,7 +290,7 @@ void set_ident(char *arg, char ***env)
 void export(char **args, char ***env)
 {
 	char **var;
-	char  *val;
+	char * val;
 	int    i;
 
 	if (!args)
@@ -346,8 +346,8 @@ char **arr_remove(char **arr, char *val)
 	int    i;
 	int    j;
 	char **new_arr;
-	char  *var;
-	char  *var_val;
+	char * var;
+	char * var_val;
 
 	var_val = ft_getenv(val, arr);
 	if (!var_val)
@@ -375,12 +375,18 @@ void unset(char **args, char ***env)
 {
 	int i;
 
-	i = 0;
-
+	if (!args)
+		return;
+	i = 1;
 	while (args[i])
 	{
-		*env = arr_remove(*env, args[i]);
-		printf("unset %s=%s\n", args[i], ft_getenv(args[i], *env));
+		if (!is_ident(args[i]))
+			ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
+		else
+		{
+			*env = arr_remove(*env, args[i]);
+			printf("unset %s=%s\n", args[i], ft_getenv(args[i], *env));
+		}
 		i += 1;
 	}
 }
@@ -397,7 +403,7 @@ char *get_command_path(char *command_name, char **env)
 {
 	char **paths;
 	int    i;
-	char  *command_path;
+	char * command_path;
 
 	if (!*command_name)
 		return "";
@@ -462,7 +468,7 @@ t_child_command is_child_command(char *command_name)
 void exec_command(t_executor executor_state, char **env)
 {
 	t_child_command built_in;
-	char          **command_args = args_to_arr(executor_state.command->arg);
+	char **         command_args = args_to_arr(executor_state.command->arg);
 	built_in = is_child_command(command_args[0]);
 	if (built_in.is_child_command)
 	{
@@ -616,7 +622,7 @@ t_parent_command is_parent_command(char *command_name)
 void handle_command(t_executor *executor_state, char ***env)
 {
 	t_parent_command command;
-	char           **command_args;
+	char **          command_args;
 
 	command_args = args_to_arr(executor_state->command->arg);
 	command = is_parent_command(executor_state->command->arg->val);
@@ -664,12 +670,12 @@ int main(int ac, char **av, char **env)
 {
 	int        i = 0;
 	t_lexer    lexer;
-	t_parser  *parser;
+	t_parser * parser;
 	t_executor executor_state;
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("echo $key1$key1");
+	lexer = new_lexer("cd $khrya");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
