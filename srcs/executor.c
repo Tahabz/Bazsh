@@ -7,6 +7,56 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+bool ft_isalpha(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		return (true);
+	else if (c >= 'A' && c <= 'Z')
+		return (true);
+	else if (c == '_')
+		return (true);
+	return (false);
+}
+
+bool ft_isdigit(int c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+bool ft_isalnum(int c)
+{
+	return (ft_isalpha(c) || ft_isdigit(c));
+}
+
+bool ft_isnum(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (false);
+		i += 1;
+	}
+	return (true);
+}
+
+void ft_exit(t_arg *arg, char **env)
+{
+	arg = arg->next;
+	if (!arg)
+		exit(code);
+	if (!ft_isnum(arg->val))
+	{
+		ft_putstr_fd("exit\bbazsh: exit: f: numeric argument required\n", 2);
+		exit(255);
+	}
+	if (arg->next)
+		ft_putstr_fd("exit\nbazsh: exit: too many arguments\n", 2);
+	exit(atoi(arg->val));
+}
+
 bool arr_contain(char *arr, char c)
 {
 	int i;
@@ -77,7 +127,8 @@ int get_var_index(const char *var_name, char **env)
 		tmpenv = ft_split(env[i], '=');
 		if (ft_strcmp(tmpenv[0], var_name) == 0 && tmpenv[1])
 			return (i);
-		i++;
+		free_double_pointer(tmpenv);
+		i += 1;
 	}
 	return (-1);
 }
@@ -101,9 +152,10 @@ void set_env(char *var_name, char *var_value, char ***env)
 	name = make_env_name(var_name, var_value);
 	i = get_var_index(var_name, *env);
 	if (i != -1)
-		env[0][i] = name;
+		env[0][i] = ft_strdup(name);
 	else
 		*env = push(*env, name);
+	free(name);
 }
 
 char *ft_getenv(const char *var_name, char **env)
@@ -117,12 +169,16 @@ char *ft_getenv(const char *var_name, char **env)
 	{
 		tmpenv = ft_split(env[i], '=');
 		if (!tmpenv[0])
+		{
+			free(tmpenv);
 			break;
+		}
 		if (!ft_strcmp(tmpenv[0], var_name) && tmpenv[1])
 		{
 			val = ft_substr(env[i], ft_strlen(tmpenv[0]) + 1, ft_strlen(env[i]));
 			return (val);
 		}
+		free_double_pointer(tmpenv);
 		i += 1;
 	}
 	return (NULL);
@@ -151,40 +207,40 @@ void print_2d_arr(char **arr, bool(callback)(char *))
 	}
 }
 
-void pwd(char **args, char **env)
+void pwd(t_arg *arg, char **env)
 {
 	printf("%s\n", getcwd(*env, 100));
 }
 
-void env(char **args, char **env)
+void env(t_arg *arg, char **env)
 {
 	print_2d_arr(env, is_not_empty_ident);
 }
 
-void echo(char **args, char **env)
+void echo(t_arg *arg, char **env)
 {
 	int i;
 	int new_line;
 
 	new_line = true;
-	i = 1;
-	if (!ft_strcmp(args[1], "-n"))
+	arg = arg->next;
+	if (!ft_strcmp(arg->val, "-n"))
 	{
-		i += 1;
+		arg = arg->next;
 		new_line = false;
 	}
-	while (args[i])
+	while (arg)
 	{
-		printf("%s", args[i]);
-		if (args[i + 1])
+		printf("%s", arg->val);
+		if (arg->next)
 			printf(" ");
-		i += 1;
+		arg = arg->next;
 	}
 	if (new_line)
 		printf("\n");
 }
 
-void cd(char **args, char ***env)
+void cd(t_arg *args, char ***env)
 {
 	char  arr[100];
 	char *arg;
@@ -192,32 +248,17 @@ void cd(char **args, char ***env)
 	if (!args)
 		arg = ft_getenv("HOME", *env);
 	else
-		arg = args[0];
-	chdir(arg);
+		arg = args->next->val;
+	if (chdir(arg) == -1)
+	{
+		return (perror("cd"));
+		free(arg);
+	}
 	free(arg);
 	set_env("pwd", getcwd(arr, 100), env);
 	printf("pwd = %s\n", ft_getenv("pwd", *env));
 }
 
-int ft_isalpha(int c)
-{
-	if (c >= 'a' && c <= 'z')
-		return (1);
-	else if (c >= 'A' && c <= 'Z')
-		return (1);
-	else if (c == '_')
-		return (1);
-	return (0);
-}
-
-int ft_isalnum(int c)
-{
-	if (ft_isalpha(c))
-		return (1);
-	else if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
-}
 bool is_ident(char *ident)
 {
 	int i;
@@ -242,8 +283,7 @@ bool keys_cmp(char *str, char *key)
 	key_value = ft_split(str, '=');
 	str_key = key_value[0];
 	is_matching = str_match(key, str_key);
-	free(key_value[0]);
-	free(key_value[1]);
+	free_double_pointer(key_value);
 	return (is_matching);
 }
 
@@ -284,27 +324,26 @@ void set_ident(char *arg, char ***env)
 		set_env(var[0], val, env);
 		free(val);
 	}
-	free(var);
+	free_double_pointer(var);
 }
 
-void export(char **args, char ***env)
+void export(t_arg *arg, char ***env)
 {
 	char **var;
 	char * val;
-	int    i;
 
-	if (!args)
+	if (!arg)
 		return print_2d_arr(*env, is_empty_ident);
-	i = 1;
-	if (args[i][0] == '=')
+	arg = arg->next;
+	if (arg->val[0] == '=')
 		return (ft_putstr_fd("not a valid identifier \n", STDERR_FILENO));
-	while (args[i])
+	while (arg)
 	{
-		if (!ft_strcmp(args[i], ""))
+		if (!ft_strcmp(arg->val, ""))
 			ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
 		else
-			set_ident(args[i], env);
-		i += 1;
+			set_ident(arg->val, env);
+		arg = arg->next;
 	}
 	print_2d_arr(*env, is_empty_ident);
 }
@@ -367,27 +406,28 @@ char **arr_remove(char **arr, char *val)
 	}
 	new_arr[j] = val;
 	new_arr[j + 1] = NULL;
+	free(var);
 	free_double_pointer(arr);
 	return (new_arr);
 }
 
-void unset(char **args, char ***env)
+void unset(t_arg *arg, char ***env)
 {
 	int i;
 
-	if (!args)
+	if (!arg)
 		return;
-	i = 1;
-	while (args[i])
+	arg = arg->next;
+	while (arg)
 	{
-		if (!is_ident(args[i]))
+		if (!is_ident(arg->val))
 			ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
 		else
 		{
-			*env = arr_remove(*env, args[i]);
-			printf("unset %s=%s\n", args[i], ft_getenv(args[i], *env));
+			*env = arr_remove(*env, arg->val);
+			printf("unset %s=%s\n", arg->val, ft_getenv(arg->val, *env));
 		}
-		i += 1;
+		arg = arg->next;
 	}
 }
 
@@ -417,8 +457,10 @@ char *get_command_path(char *command_name, char **env)
 		command_path = join_path(paths[i], command_name);
 		if (access(command_path, F_OK) == 0)
 			return (command_path);
-		i++;
+		free(command_path);
+		i += 1;
 	}
+	free_double_pointer(paths);
 	return (command_path);
 }
 
@@ -428,7 +470,7 @@ void waitpids(int pids[], size_t i)
 		return;
 	while (i--)
 	{
-		int pid = waitpid(pids[i], NULL, 0);
+		int pid = waitpid(pids[i], &code, 0);
 		if (pid == -1)
 			perror("wait() error");
 		else if (pid == 0)
@@ -468,16 +510,19 @@ t_child_command is_child_command(char *command_name)
 void exec_command(t_executor executor_state, char **env)
 {
 	t_child_command built_in;
-	char **         command_args = args_to_arr(executor_state.command->arg);
+	char *          command_path;
+	char **         command_args;
+	int             command_position;
+
+	command_args = args_to_arr(executor_state.command->arg);
 	built_in = is_child_command(command_args[0]);
 	if (built_in.is_child_command)
 	{
-		built_in.handler(command_args, env);
+		built_in.handler(executor_state.command->arg, env);
 		exit(1);
 	}
-	char *command_path = get_command_path(executor_state.command->arg->val, env);
-	int   command_position = executor_state.command_position;
-
+	command_path = get_command_path(executor_state.command->arg->val, env);
+	command_position = executor_state.command_position;
 	executor_state.commands_paths[command_position] = command_path;
 	executor_state.commands_args[command_position] = command_args;
 	if (execve(command_path, command_args, env) == -1)
@@ -586,6 +631,9 @@ void exec_child_command(t_executor executor_state, char **env)
 	int   hfd[2];
 	char *f = "";
 
+	char **command_args = args_to_arr(executor_state.command->arg);
+	if (!ft_strcmp(executor_state.command->arg->val, "exit"))
+		ft_exit(executor_state.command->arg, env);
 	if (executor_state.command->in_sequence)
 	{
 		fd = get_last_fd(executor_state.command->in_sequence, open_file);
@@ -622,17 +670,15 @@ t_parent_command is_parent_command(char *command_name)
 void handle_command(t_executor *executor_state, char ***env)
 {
 	t_parent_command command;
-	char **          command_args;
 
-	command_args = args_to_arr(executor_state->command->arg);
 	command = is_parent_command(executor_state->command->arg->val);
 	if (command.is_parent_command)
 	{
-		if (executor_state->command->arg->next)
-			return (command.handler(command_args, env));
-		return (command.handler(NULL, env));
+		executor_state->command_position -= 1;
+		return (command.handler(executor_state->command->arg, env));
 	}
-
+	else if (!ft_strcmp(executor_state->command->arg->val, "exit") && !executor_state->command->next)
+		ft_exit(executor_state->command->arg, *env);
 	if (executor_state->command->next)
 		pipe(executor_state->new_fd);
 	executor_state->pids[executor_state->command_position] = fork();
@@ -666,6 +712,25 @@ char **copy_env(char **env)
 	return (cpy_env);
 }
 
+void delete_executor(t_executor executor)
+{
+	int i;
+
+	i = 0;
+
+	while (executor.commands_paths[i])
+	{
+		free(executor.commands_paths[i]);
+		i += 1;
+	}
+	i = 0;
+	while (executor.commands_args[i])
+	{
+		free_double_pointer(executor.commands_args[i]);
+		i += 1;
+	}
+}
+
 int main(int ac, char **av, char **env)
 {
 	int        i = 0;
@@ -675,7 +740,7 @@ int main(int ac, char **av, char **env)
 
 	executor_state.env = (char ***) malloc(sizeof(char **));
 	*executor_state.env = copy_env(env);
-	lexer = new_lexer("cd $khrya");
+	lexer = new_lexer("echo salam");
 	parser = parser_new(lexer);
 	executor_state.command = start_parser(parser);
 	handle_heredoc(executor_state.command);
@@ -690,6 +755,7 @@ int main(int ac, char **av, char **env)
 	delete_parser(parser);
 	free_double_pointer(*executor_state.env);
 	free(executor_state.env);
+	delete_executor(executor_state);
 	waitpids(executor_state.pids, executor_state.command_position);
 	return (0);
 }
