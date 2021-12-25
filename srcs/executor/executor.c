@@ -2,39 +2,39 @@
 
 int code;
 
-void start_executor(char *cmd, char **env)
+void start_execution(t_executor *executor, char **env)
 {
-	int        i = 0;
-	t_lexer    lexer;
-	t_parser * parser;
-	t_executor executor_state;
-
-	code = 0;
-	executor_state.env = (char ***) malloc(sizeof(char **));
-	*executor_state.env = copy_env(env);
-	lexer = new_lexer(cmd);
-	parser = parser_new(lexer);
-	executor_state.command = start_parser(parser);
-	handle_heredoc(executor_state.command);
-	executor_state.command_position = 0;
-	while (executor_state.command)
+	handle_heredoc(executor->command);
+	executor->command_position = 0;
+	while (executor->command)
 	{
-		handle_command(&executor_state, executor_state.env);
-		executor_state.command_position += 1;
-		executor_state.command = executor_state.command->next;
+		handle_command(executor, executor->env);
+		executor->command_position += 1;
+		executor->command = executor->command->next;
 	}
-	free_all_memory(executor_state, parser);
-	waitpids(executor_state.pids, executor_state.command_position);
 }
 
 int main(int ac, char **av, char **env)
 {
-	char *cmd;
+	char *     cmd;
+	t_lexer    lexer;
+	t_parser * parser;
+	t_executor executor;
+	int        i = 0;
 
+	code = 0;
+	executor.env = (char ***) malloc(sizeof(char **));
+	*executor.env = copy_env(env);
 	while (true)
 	{
 		cmd = readline("bazsh$ ");
-		start_executor(cmd, env);
+		lexer = new_lexer(cmd);
+		parser = parser_new(lexer);
+		executor.command = start_parser(parser);
+		start_execution(&executor, env);
+		free_all_memory(executor, parser);
+		waitpids(executor.pids, executor.command_position);
 	}
+	free_double_pointer(*executor.env);
 	return (0);
 }

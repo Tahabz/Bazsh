@@ -29,8 +29,6 @@ void delete_executor(t_executor executor)
 		free_double_pointer(executor.commands_args[i]);
 		i += 1;
 	}
-	free_double_pointer(*executor.env);
-	free(executor.env);
 }
 
 void free_all_memory(t_executor executor, t_parser *parser)
