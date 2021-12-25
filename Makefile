@@ -2,6 +2,7 @@ kFLAGS = -Wall -Wextra -Werror
 DFLAGS = -fsanitize=address -g
 INCLUDES = ../includes
 NAME = lexer
+EXECUTOR = srcs/executor/executor.c
 LEXER_TEST = lexer_test
 PARSER_TEST = parser_test
 FILES = lexer/lexer.c\
@@ -19,7 +20,30 @@ FILES = lexer/lexer.c\
         strtools/ft_substr.c\
         strtools/ft_split.c\
         strtools/str_match.c\
-		strtools/ft_itoa.c
+		strtools/ft_itoa.c \
+		strtools/char_tools.c \
+		executor/built_ins/exit.c \
+		executor/built_ins/cd.c \
+		executor/built_ins/export.c \
+		executor/built_ins/unset.c \
+		executor/built_ins/echo.c \
+		executor/built_ins/pwd.c \
+		executor/built_ins/env.c \
+		arr_tools/arr_contains.c \
+		arr_tools/arr_length.c \
+		arr_tools/list_to_arr.c \
+		arr_tools/push.c \
+		arr_tools/arr_remove.c \
+		arr_tools/print_arr.c \
+		executor/utils.c \
+		executor/free.c \
+		executor/file.c \
+		executor/command.c \
+		executor/path.c \
+		executor/heredoc.c \
+		executor/fd.c \
+		executor/utils2.c 
+		
 
 SRCS = $(patsubst %, srcs/%, $(FILES))
 
@@ -30,8 +54,8 @@ $(NAME): $(SRCS)
 	@echo "Building up the lexer.."
 	clang $(DFLAGS) $(FLAGS) srcs/main.c $(SRCS) -o $(NAME)
 
-executor: srcs/executor.c $(SRCS)
-	clang $(DFLAGS) $(FLAGS) srcs/executor.c srcs/parser.c $(SRCS) -lreadline -o executor
+executor: $(EXECUTOR) $(SRCS)
+	clang  $(FLAGS)  $(EXECUTOR) srcs/parser.c $(SRCS) -lreadline -o executor
 
 clean:
 	rm -rf lexer
