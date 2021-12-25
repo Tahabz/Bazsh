@@ -719,7 +719,6 @@ void delete_executor(t_executor executor)
 	int i;
 
 	i = 0;
-
 	while (executor.commands_paths[i])
 	{
 		free(executor.commands_paths[i]);
@@ -731,6 +730,9 @@ void delete_executor(t_executor executor)
 		free_double_pointer(executor.commands_args[i]);
 		i += 1;
 	}
+	free_double_pointer(*executor.env);
+	delete_command(executor.command);
+	free(executor.env);
 }
 
 int main(int ac, char **av, char **env)
@@ -753,10 +755,7 @@ int main(int ac, char **av, char **env)
 		executor_state.command_position += 1;
 		executor_state.command = executor_state.command->next;
 	}
-	delete_command(executor_state.command);
 	delete_parser(parser);
-	free_double_pointer(*executor_state.env);
-	free(executor_state.env);
 	delete_executor(executor_state);
 	waitpids(executor_state.pids, executor_state.command_position);
 	return (0);
