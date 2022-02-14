@@ -1,3 +1,5 @@
+#ifndef PARSER_H
+# define PARSER_H
 #include "lexer/lexer.h"
 
 typedef struct s_parser t_parser;
@@ -64,3 +66,4 @@ void delete_parser(t_parser *p);
 void delete_command(t_command *head);
 void delete_io(t_io *head);
 void delete_args(t_arg *head);
+#endif

@@ -16,6 +16,10 @@
         {
           "name": "PATH",
           "value": "/goinfre/mobaz/.brew/bin:/goinfre/mobaz/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/goinfre/mobaz/homebrew/bin:/goinfre/mobaz/.brew/bin:/goinfre/mobaz/.brew/bin"
+        },
+        {
+          "name": "taha",
+          "value": "baz"
         }
       ],
       "externalConsole": false,

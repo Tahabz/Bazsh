@@ -16,9 +16,9 @@ void start_execution(t_executor *executor, char **env)
 
 int main(int ac, char **av, char **env)
 {
-	char *     cmd;
+	char      *cmd;
 	t_lexer    lexer;
-	t_parser * parser;
+	t_parser  *parser;
 	t_executor executor;
 	int        i = 0;
 

@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <stdio.h>
 #include <sys/wait.h>
 
 extern int code;
@@ -17,10 +18,10 @@ typedef struct s_executor
 	int        old_fd[2];
 	int        command_position;
 	int        pids[1000];
-	char *     commands_paths[1000];
-	char **    commands_args[1000];
+	char      *commands_paths[1000];
+	char     **commands_args[1000];
 	t_command *command;
-	char ***   env;
+	char    ***env;
 } t_executor;
 
 typedef struct s_parent_command
@@ -54,23 +55,23 @@ int              list_count(t_arg *arg);
 void             pwd(t_arg *arg, char **env);
 void             echo(t_arg *arg, char **env);
 int              get_var_index(const char *var_name, char **env);
-char *           make_env_name(char *var_name, char *var_value);
+char            *make_env_name(char *var_name, char *var_value);
 void             set_env(char *var_name, char *var_value, char ***env);
-char *           ft_getenv(const char *var_name, char **env);
+char            *ft_getenv(const char *var_name, char **env);
 void             env(t_arg *arg, char **env);
 int              get_last_fd(t_io *sequence, int(callback)(t_io *));
 int              create_file(t_io *sequence);
 int              open_file(t_io *sequence);
 void             write_line(const char *line, int fd);
 void             replace_sequence(t_io *sequence, const char *value, enum io_type newtype);
-char **          copy_env(char **env);
+char           **copy_env(char **env);
 void             exec_child_command(t_executor executor_state, char **env);
 void             handle_command(t_executor *executor_state, char ***env);
 void             exec_command(t_executor executor_state, char **env);
 t_child_command  is_child_command(char *command_name);
 t_parent_command is_parent_command(char *command_name);
-char *           join_path(char *str1, char *str2);
-char *           get_command_path(char *command_name, char **env);
+char            *join_path(char *str1, char *str2);
+char            *get_command_path(char *command_name, char **env);
 void             close_fd(int fd[]);
 void             dup_and_close(int fd[], int file_no);
 void             transform_heredoc(t_io *sequence, int file_num);

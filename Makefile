@@ -5,6 +5,8 @@ NAME = lexer
 EXECUTOR = srcs/executor/executor.c
 LEXER_TEST = lexer_test
 PARSER_TEST = parser_test
+LDFLAGS="-L/goinfre/mobaz/homebrew/opt/readline/lib"
+CPPFLAGS="-I/goinfre/mobaz/homebrew/opt/readline/include"
 FILES = lexer/lexer.c\
 		lexer/arg_readers.c\
 		lexer/lexer_helpers.c\
@@ -55,7 +57,7 @@ $(NAME): $(SRCS)
 	clang $(DFLAGS) $(FLAGS) srcs/main.c $(SRCS) -o $(NAME)
 
 executor: $(EXECUTOR) $(SRCS)
-	clang  $(FLAGS)  $(EXECUTOR) srcs/parser.c $(SRCS) -lreadline -o executor
+	clang $(EXECUTOR) srcs/parser.c $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o executor
 
 clean:
 	rm -rf lexer
