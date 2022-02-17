@@ -57,7 +57,7 @@ $(NAME): $(SRCS)
 	clang $(DFLAGS) $(FLAGS) srcs/main.c $(SRCS) -o $(NAME)
 
 executor: $(EXECUTOR) $(SRCS)
-	clang $(EXECUTOR) srcs/parser.c $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o executor
+	clang $(EXECUTOR)  srcs/parser.c $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o executor
 
 clean:
 	rm -rf lexer

@@ -3,7 +3,7 @@
 bool keys_cmp(char *str, char *key)
 {
 	char **key_value;
-	char * str_key;
+	char  *str_key;
 	int    is_matching;
 	key_value = ft_split(str, '=');
 	str_key = key_value[0];

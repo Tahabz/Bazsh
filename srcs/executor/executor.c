@@ -1,6 +1,26 @@
 #include "executor.h"
+#include <signal.h>
+#include <termios.h>
 
-int code;
+/* Signal Handler for SIGINT */
+int  code;
+bool forked;
+
+void sigintHandler(int sig_num)
+{
+	if (forked)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+	}
+	else
+	{
+		write(1, "\n", 1);
+		rl_replace_line("", 1);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+}
 
 void start_execution(t_executor *executor, char **env)
 {
@@ -14,6 +34,17 @@ void start_execution(t_executor *executor, char **env)
 	}
 }
 
+void ignctl(void)
+{
+	struct termios term;
+
+	if (tcgetattr(STDIN_FILENO, &term) != 0)
+		perror("tcgetattr() error");
+	term.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) != 0)
+		perror("tcsetattr() error");
+}
+
 int main(int ac, char **av, char **env)
 {
 	char      *cmd;
@@ -25,8 +56,11 @@ int main(int ac, char **av, char **env)
 	code = 0;
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
+	ignctl();
+	signal(SIGINT, sigintHandler);
 	while (true)
 	{
+		forked = false;
 		cmd = readline("bazsh$ ");
 		add_history(cmd);
 		lexer = new_lexer(cmd);

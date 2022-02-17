@@ -22,7 +22,7 @@
           "value": "baz"
         }
       ],
-      "externalConsole": false,
+      "externalConsole": true,
       "MIMode": "lldb"
     },
     {
