@@ -4,10 +4,9 @@ extern bool forked;
 
 void exec_child_command(t_executor executor_state, char **env)
 {
-	int   fd;
-	int   hfd[2];
-	char *f = "";
-	printf("\nforked: %d\n\n", forked);
+	int    fd;
+	int    hfd[2];
+	char  *f = "";
 	char **command_args = list_to_arr(executor_state.command->arg);
 	if (!ft_strcmp(executor_state.command->arg->val, "exit"))
 		ft_exit(executor_state.command->arg, env);
@@ -38,7 +37,10 @@ void handle_command(t_executor *executor_state, char ***env)
 	t_parent_command command;
 
 	if (!executor_state->command->arg)
+	{
+		executor_state->command_position -= 1;
 		return;
+	}
 	command = is_parent_command(executor_state->command->arg->val);
 	if (command.is_parent_command)
 	{

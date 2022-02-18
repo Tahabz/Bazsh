@@ -14,13 +14,17 @@ bool keys_cmp(char *str, char *key)
 
 void waitpids(int pids[], size_t i)
 {
+	// dprintf(2, "%zu\n", i);
 	if (!*pids)
 		return;
 	while (i--)
 	{
 		int pid = waitpid(pids[i], &code, 0);
 		if (pid == -1)
+		{
+			ft_putstr_fd("error in main\n", 2);
 			perror("wait() error");
+		}
 		else if (pid == 0)
 		{
 			printf("child is still running at");

@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
+extern int is_heredoc;
 extern int code;
 
 typedef struct s_executor
@@ -75,7 +76,7 @@ char            *get_command_path(char *command_name, char **env);
 void             close_fd(int fd[]);
 void             dup_and_close(int fd[], int file_no);
 void             transform_heredoc(t_io *sequence, int file_num);
-void             handle_heredoc(t_command *command);
+void             handle_heredoc(t_executor *executor);
 bool             keys_cmp(char *str, char *key);
 void             waitpids(int pids[], size_t i);
 void             close_fd(int fd[]);

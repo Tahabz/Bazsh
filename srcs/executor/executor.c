@@ -5,9 +5,14 @@
 /* Signal Handler for SIGINT */
 int  code;
 bool forked;
+int  is_heredoc;
 
 void sigintHandler(int sig_num)
 {
+	if (is_heredoc)
+	{
+		close(0);
+	}
 	if (forked)
 	{
 		write(1, "\n", 1);
@@ -16,7 +21,7 @@ void sigintHandler(int sig_num)
 	else
 	{
 		write(1, "\n", 1);
-		rl_replace_line("", 1);
+		// rl_replace_line("", 1);
 		rl_on_new_line();
 		rl_redisplay();
 	}
@@ -24,8 +29,8 @@ void sigintHandler(int sig_num)
 
 void start_execution(t_executor *executor, char **env)
 {
-	handle_heredoc(executor->command);
 	executor->command_position = 0;
+	handle_heredoc(executor);
 	while (executor->command)
 	{
 		handle_command(executor, executor->env);
@@ -60,6 +65,7 @@ int main(int ac, char **av, char **env)
 	signal(SIGINT, sigintHandler);
 	while (true)
 	{
+		executor.command_position = 0;
 		forked = false;
 		cmd = readline("bazsh$ ");
 		add_history(cmd);
