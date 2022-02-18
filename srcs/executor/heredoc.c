@@ -1,34 +1,40 @@
 #include "executor.h"
 
-void transform_heredoc(t_io *sequence, int file_num)
+void heredocHandler(int sig_num)
 {
-	int   fd;
+	write(1, "\n", 1);
+	exit(10);
+}
+
+void write_to_file(char *delim, int file_numm, int fd)
+{
 	int   i;
 	char *line;
 	char *file_name;
 
 	is_heredoc = 1;
-	file_name = ft_itoa(file_num);
-	fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	while (true)
 	{
-		if (get_next_line(0, &line) < 0)
-			exit(0);
-		if (!ft_strcmp(line, sequence->value))
+		line = readline(">>");
+		if (!ft_strcmp(line, delim))
+		{
 			break;
+		}
 		write_line(line, fd);
 	}
-	replace_sequence(sequence, file_name, IO_FILE);
-	free(file_name);
+	// replace_sequence(sequence, file_name, IO_FILE);
 	close(fd);
-	is_heredoc = 0;
+	exit(1);
 }
 
-void handle_heredoc(t_executor *executor)
+int handle_heredoc(t_executor *executor)
 {
 	t_io      *sequence;
 	int        file_num;
 	t_command *command;
+	int        status;
+	int        ret;
+	int        fd;
 
 	command = executor->command;
 	file_num = 0;
@@ -39,23 +45,35 @@ void handle_heredoc(t_executor *executor)
 		{
 			if (sequence->type == IO_HEREDOC)
 			{
+				// CREATE THE FILE
+				char *file_name = ft_itoa(file_num);
+				fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+				char *delim = ft_strdup(sequence->value);
+				replace_sequence(sequence, file_name, IO_FILE);
+				free(file_name);
 				pid_t pid = fork();
 				if (pid == 0)
-					transform_heredoc(sequence, file_num);
-				file_num += 1;
-				pid = waitpid(pid, &code, 0);
-				if (pid == -1)
 				{
-					ft_putstr_fd("error in heredoc\n", 2);
-					perror("wait() error");
+					signal(SIGINT, heredocHandler);
+					write_to_file(delim, file_num, fd);
+					free(delim);
 				}
-				else if (pid == 0)
+				signal(SIGINT, SIG_IGN);
+				waitpid(pid, &status, 0);
+				file_num += 1;
+				if (WIFEXITED(status))
 				{
-					printf("child is still running at");
+					ret = WEXITSTATUS(status);
+					if (ret == 10)
+					{
+						// REMOVE CREATED FILES
+						return 0;
+					}
 				}
 			}
 			sequence = sequence->next;
 		}
 		command = command->next;
 	}
+	return 1;
 }

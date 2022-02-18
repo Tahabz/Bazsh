@@ -27,7 +27,6 @@ int create_file(t_io *sequence)
 int open_file(t_io *sequence)
 {
 	int fd;
-
 	fd = open(sequence->value, O_RDONLY, 0);
 	if (fd == -1)
 	{

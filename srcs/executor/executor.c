@@ -9,12 +9,9 @@ int  is_heredoc;
 
 void sigintHandler(int sig_num)
 {
-	if (is_heredoc)
-	{
-		close(0);
-	}
 	if (forked)
 	{
+		printf("forked\n");
 		write(1, "\n", 1);
 		rl_on_new_line();
 	}
@@ -30,7 +27,8 @@ void sigintHandler(int sig_num)
 void start_execution(t_executor *executor, char **env)
 {
 	executor->command_position = 0;
-	handle_heredoc(executor);
+	if (!handle_heredoc(executor))
+		return;
 	while (executor->command)
 	{
 		handle_command(executor, executor->env);
