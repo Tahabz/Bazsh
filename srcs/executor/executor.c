@@ -114,6 +114,8 @@ int main(int ac, char **av, char **env)
 			waitpids(executor.pids, executor.command_position);
 			dprintf(2, "code:%s\n", codee);
 		}
+		else
+			exit(atoi(codee));
 	}
 	free_double_pointer(*executor.env);
 	return (0);

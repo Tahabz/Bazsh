@@ -15,7 +15,9 @@ void write_to_file(char *delim, int file_numm, int fd)
 	is_heredoc = 1;
 	while (true)
 	{
-		line = readline(">>");
+		line = readline(">> ");
+		if (!line)
+			break;
 		if (!ft_strcmp(line, delim))
 		{
 			break;
@@ -62,10 +64,7 @@ int handle_heredoc(t_executor *executor)
 				waitpid(pid, &status, 0);
 				file_num += 1;
 				if (WEXITSTATUS(status) == 1)
-				{
 					update_status_code(0);
-					return (0);
-				}
 				else if (WEXITSTATUS(status) == 10)
 				{
 					update_status_code(1);
