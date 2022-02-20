@@ -45,7 +45,8 @@ void handle_command(t_executor *executor_state, char ***env)
 	if (command.is_parent_command)
 	{
 		executor_state->command_position -= 1;
-		return (command.handler(executor_state->command->arg, env));
+		update_status_code(command.handler(executor_state->command->arg, env));
+		return;
 	}
 	else if (!ft_strcmp(executor_state->command->arg->val, "exit") && !executor_state->command->next)
 		ft_exit(executor_state->command->arg, *env);
@@ -54,9 +55,7 @@ void handle_command(t_executor *executor_state, char ***env)
 	forked = true;
 	executor_state->pids[executor_state->command_position] = fork();
 	if (executor_state->pids[executor_state->command_position] == 0)
-	{
 		exec_child_command(*executor_state, *env);
-	}
 	if (executor_state->command_position > 0)
 		close_fd(executor_state->old_fd);
 	if (executor_state->command->next)

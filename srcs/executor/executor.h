@@ -28,13 +28,13 @@ typedef struct s_executor
 typedef struct s_parent_command
 {
 	bool is_parent_command;
-	void (*handler)(t_arg *, char ***);
+	int (*handler)(t_arg *, char ***);
 } t_parent_command;
 
 typedef struct t_child_command
 {
 	bool is_child_command;
-	void (*handler)(t_arg *, char **);
+	int (*handler)(t_arg *, char **);
 } t_child_command;
 typedef struct s_file
 {
@@ -43,23 +43,23 @@ typedef struct s_file
 } t_file;
 
 void ft_exit(t_arg *arg, char **env);
-void cd(t_arg *args, char ***env);
-void export(t_arg *arg, char ***env);
+int  cd(t_arg *args, char ***env);
+int export(t_arg *arg, char ***env);
 bool             is_not_empty_ident(char *str);
 bool             is_empty_ident(char *str);
 bool             is_ident(char *ident);
-void             unset(t_arg *arg, char ***env);
+int              unset(t_arg *arg, char ***env);
 bool             keys_cmp(char *str, char *key);
 void             free_double_pointer(char **arr);
 void             delete_executor(t_executor executor);
 int              list_count(t_arg *arg);
-void             pwd(t_arg *arg, char **env);
-void             echo(t_arg *arg, char **env);
+int              pwd(t_arg *arg, char **env);
+int              echo(t_arg *arg, char **env);
 int              get_var_index(const char *var_name, char **env);
 char            *make_env_name(char *var_name, char *var_value);
 void             set_env(char *var_name, char *var_value, char ***env);
 char            *ft_getenv(const char *var_name, char **env);
-void             env(t_arg *arg, char **env);
+int              env(t_arg *arg, char **env);
 int              get_last_fd(t_io *sequence, int(callback)(t_io *));
 int              create_file(t_io *sequence);
 int              open_file(t_io *sequence);

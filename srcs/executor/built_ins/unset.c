@@ -1,16 +1,19 @@
 #include "../executor.h"
 
-void unset(t_arg *arg, char ***env)
+int unset(t_arg *arg, char ***env)
 {
 	int i;
 
 	if (!arg)
-		return;
+		return (0);
 	arg = arg->next;
 	while (arg)
 	{
 		if (!is_ident(arg->val))
+		{
 			ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
+			return (1);
+		}
 		else
 		{
 			*env = arr_remove(*env, arg->val);
@@ -18,4 +21,5 @@ void unset(t_arg *arg, char ***env)
 		}
 		arg = arg->next;
 	}
+	return (0);
 }

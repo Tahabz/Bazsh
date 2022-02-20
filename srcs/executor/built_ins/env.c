@@ -48,7 +48,7 @@ char *ft_getenv(const char *var_name, char **env)
 {
 	size_t i;
 	char **tmpenv;
-	char * val;
+	char  *val;
 
 	i = 0;
 	while (env[i])
@@ -71,7 +71,8 @@ char *ft_getenv(const char *var_name, char **env)
 	return (NULL);
 }
 
-void env(t_arg *arg, char **env)
+int env(t_arg *arg, char **env)
 {
 	print_2d_arr(env, is_not_empty_ident);
+	return (0);
 }

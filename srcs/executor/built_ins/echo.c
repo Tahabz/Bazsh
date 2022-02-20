@@ -1,6 +1,6 @@
 #include "../executor.h"
 
-void echo(t_arg *arg, char **env)
+int echo(t_arg *arg, char **env)
 {
 	int i;
 	int new_line;
@@ -8,7 +8,10 @@ void echo(t_arg *arg, char **env)
 	new_line = true;
 	arg = arg->next;
 	if (!arg)
-		return ft_putstr_fd("\n", 1);
+	{
+		ft_putstr_fd("\n", 1);
+		return (0);
+	}
 	if (!ft_strcmp(arg->val, "-n"))
 	{
 		arg = arg->next;
@@ -23,4 +26,5 @@ void echo(t_arg *arg, char **env)
 	}
 	if (new_line)
 		printf("\n");
+	return (0);
 }

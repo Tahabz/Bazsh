@@ -14,7 +14,9 @@ bool keys_cmp(char *str, char *key)
 
 void waitpids(int pids[], size_t i)
 {
-	// dprintf(2, "%zu\n", i);
+	int j;
+
+	j = i;
 	if (!*pids)
 		return;
 	while (i--)
@@ -30,4 +32,6 @@ void waitpids(int pids[], size_t i)
 			printf("child is still running at");
 		}
 	}
+	if (j != 0)
+		update_status_code(-1);
 }

@@ -29,7 +29,7 @@ bool is_empty_ident(char *str)
 void set_ident(char *arg, char ***env)
 {
 	char **var;
-	char * val;
+	char  *val;
 
 	var = ft_split(arg, '=');
 	if (!*var || !is_ident(var[0]))
@@ -45,16 +45,22 @@ void set_ident(char *arg, char ***env)
 	free_double_pointer(var);
 }
 
-void export(t_arg *arg, char ***env)
+int export(t_arg *arg, char ***env)
 {
 	char **var;
-	char * val;
+	char  *val;
 
 	if (!arg->next)
-		return print_2d_arr(*env, is_empty_ident);
+	{
+		print_2d_arr(*env, is_empty_ident);
+		return (0);
+	}
 	arg = arg->next;
 	if (arg->val[0] == '=')
-		return (ft_putstr_fd("not a valid identifier \n", STDERR_FILENO));
+	{
+		ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
+		return (1);
+	}
 	while (arg)
 	{
 		if (!ft_strcmp(arg->val, ""))
@@ -63,4 +69,5 @@ void export(t_arg *arg, char ***env)
 			set_ident(arg->val, env);
 		arg = arg->next;
 	}
+	return (0);
 }

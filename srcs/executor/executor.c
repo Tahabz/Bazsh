@@ -3,9 +3,10 @@
 #include <termios.h>
 
 /* Signal Handler for SIGINT */
-int  status;
-bool forked;
-int  is_heredoc;
+int   status;
+bool  forked;
+int   is_heredoc;
+char *codee;
 
 void update_status_code(int code)
 {
@@ -26,9 +27,9 @@ void update_status_code(int code)
 		else
 			code_str = ft_itoa(WEXITSTATUS(status));
 	}
-	printf("code: %s\n", code_str);
-	if (code_str)
-		free(code_str);
+	codee = code_str;
+	// if (code_str)
+	// 	free(code_str);
 }
 
 void sigintHandler(int sig_num)
@@ -96,7 +97,7 @@ int main(int ac, char **av, char **env)
 	ignctl();
 	signal(SIGINT, sigintHandler);
 	signal(SIGQUIT, sigintHandler);
-
+	update_status_code(0);
 	while (true)
 	{
 		executor.command_position = 0;
@@ -109,6 +110,7 @@ int main(int ac, char **av, char **env)
 		start_execution(&executor, env);
 		free_all_memory(executor, parser);
 		waitpids(executor.pids, executor.command_position);
+		dprintf(2, "code:%s\n", codee);
 	}
 	free_double_pointer(*executor.env);
 	return (0);
