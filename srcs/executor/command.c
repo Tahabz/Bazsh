@@ -65,6 +65,43 @@ void handle_command(t_executor *executor_state, char ***env)
 	}
 }
 
+int p_error(const char *arg, const char *arg2, const char *message, int code)
+{
+	write(2, "minishell: ", 11);
+	if (arg)
+	{
+		write(2, arg, ft_strlen(arg));
+		write(2, ": ", 2);
+	}
+	if (arg2)
+	{
+		write(2, arg2, ft_strlen(arg2));
+		write(2, ": ", 2);
+	}
+	if (message)
+		write(2, message, ft_strlen(message));
+	else
+		write(2, strerror(errno), ft_strlen(strerror(errno)));
+	write(2, "\n", 1);
+	return (code);
+}
+
+void handle_errors(char *cmd, char **env)
+{
+	struct stat dir_stat;
+
+	if (stat(cmd, &dir_stat) == 0 && S_ISDIR(dir_stat.st_mode))
+		exit(p_error(cmd, NULL, "is a directory", 126));
+	if (errno == 13)
+		exit(p_error(cmd, NULL, NULL, 126));
+	else if (errno == 8)
+		exit(p_error(cmd, NULL, NULL, 1));
+	else if (ft_getenv("PATH", env) == NULL)
+		exit(p_error(cmd, NULL, NULL, 127));
+	else
+		exit(p_error(cmd, NULL, "command not found", 127));
+}
+
 void exec_command(t_executor executor_state, char **env)
 {
 	t_child_command built_in;
@@ -76,18 +113,14 @@ void exec_command(t_executor executor_state, char **env)
 	built_in = is_child_command(command_args[0]);
 	if (built_in.is_child_command)
 	{
-		built_in.handler(executor_state.command->arg, env);
-		exit(1);
+		update_status_code(built_in.handler(executor_state.command->arg, env));
 	}
 	command_path = get_command_path(executor_state.command->arg->val, env);
 	command_position = executor_state.command_position;
 	executor_state.commands_paths[command_position] = command_path;
 	executor_state.commands_args[command_position] = command_args;
-	if (execve(command_path, command_args, env) == -1)
-	{
-		perror("execve");
-		exit(127);
-	}
+	execve(command_path, command_args, env);
+	handle_errors(command_args[0], env);
 }
 
 t_child_command is_child_command(char *command_name)

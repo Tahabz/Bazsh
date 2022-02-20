@@ -18,5 +18,4 @@ int cd(t_arg *args, char ***env)
 	free(arg);
 	set_env("pwd", getcwd(arr, 100), env);
 	return (0);
-	// printf("pwd = %s\n", ft_getenv("pwd", *env));
 }
