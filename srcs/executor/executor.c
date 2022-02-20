@@ -103,14 +103,17 @@ int main(int ac, char **av, char **env)
 		executor.command_position = 0;
 		forked = false;
 		cmd = readline("bazsh$ ");
-		add_history(cmd);
-		lexer = new_lexer(cmd);
-		parser = parser_new(lexer);
-		executor.command = start_parser(parser);
-		start_execution(&executor, env);
-		free_all_memory(executor, parser);
-		waitpids(executor.pids, executor.command_position);
-		dprintf(2, "code:%s\n", codee);
+		if (cmd)
+		{
+			add_history(cmd);
+			lexer = new_lexer(cmd);
+			parser = parser_new(lexer);
+			executor.command = start_parser(parser);
+			start_execution(&executor, env);
+			free_all_memory(executor, parser);
+			waitpids(executor.pids, executor.command_position);
+			dprintf(2, "code:%s\n", codee);
+		}
 	}
 	free_double_pointer(*executor.env);
 	return (0);

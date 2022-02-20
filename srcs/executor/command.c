@@ -86,7 +86,7 @@ void exec_command(t_executor executor_state, char **env)
 	if (execve(command_path, command_args, env) == -1)
 	{
 		perror("execve");
-		exit(1);
+		exit(127);
 	}
 }
 
