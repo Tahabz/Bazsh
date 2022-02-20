@@ -19,7 +19,7 @@ void waitpids(int pids[], size_t i)
 		return;
 	while (i--)
 	{
-		int pid = waitpid(pids[i], &code, 0);
+		int pid = waitpid(pids[i], &status, 0);
 		if (pid == -1)
 		{
 			ft_putstr_fd("error in main\n", 2);

@@ -61,14 +61,15 @@ int handle_heredoc(t_executor *executor)
 				signal(SIGINT, SIG_IGN);
 				waitpid(pid, &status, 0);
 				file_num += 1;
-				if (WIFEXITED(status))
+				if (WEXITSTATUS(status) == 1)
 				{
-					ret = WEXITSTATUS(status);
-					if (ret == 10)
-					{
-						// REMOVE CREATED FILES
-						return 0;
-					}
+					update_status_code(0);
+					return (0);
+				}
+				else if (WEXITSTATUS(status) == 10)
+				{
+					update_status_code(1);
+					return (0);
 				}
 			}
 			sequence = sequence->next;

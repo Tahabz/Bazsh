@@ -3,24 +3,58 @@
 #include <termios.h>
 
 /* Signal Handler for SIGINT */
-int  code;
+int  status;
 bool forked;
 int  is_heredoc;
 
+void update_status_code(int code)
+{
+	char *code_str;
+
+	code_str = "0";
+	if (code >= 0)
+		code_str = ft_itoa(code);
+	else
+	{
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				code_str = ft_itoa(130);
+			else if (WTERMSIG(status) == SIGQUIT)
+				code_str = ft_itoa(131);
+		}
+		else
+			code_str = ft_itoa(WEXITSTATUS(status));
+	}
+	printf("code: %s\n", code_str);
+	if (code_str)
+		free(code_str);
+}
+
 void sigintHandler(int sig_num)
 {
-	if (forked)
+	if (sig_num == SIGQUIT && forked)
 	{
-		printf("forked\n");
+		write(2, "Quit: 3\n", 8);
+		rl_on_new_line();
+	}
+	if (sig_num == SIGQUIT && !forked)
+	{
+		rl_on_new_line();
+		rl_redisplay();
+	}
+	if (sig_num == SIGINT && forked)
+	{
 		write(1, "\n", 1);
 		rl_on_new_line();
 	}
-	else
+	if (sig_num == SIGINT && !forked)
 	{
 		write(1, "\n", 1);
-		// rl_replace_line("", 1);
+		rl_replace_line("", 1);
 		rl_on_new_line();
 		rl_redisplay();
+		update_status_code(1);
 	}
 }
 
@@ -56,11 +90,13 @@ int main(int ac, char **av, char **env)
 	t_executor executor;
 	int        i = 0;
 
-	code = 0;
+	status = 0;
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
 	ignctl();
 	signal(SIGINT, sigintHandler);
+	signal(SIGQUIT, sigintHandler);
+
 	while (true)
 	{
 		executor.command_position = 0;
