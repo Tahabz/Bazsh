@@ -112,7 +112,6 @@ int main(int ac, char **av, char **env)
 			start_execution(&executor, env);
 			free_all_memory(executor, parser);
 			waitpids(executor.pids, executor.command_position);
-			dprintf(2, "code:%s\n", codee);
 		}
 		else
 			exit(atoi(codee));

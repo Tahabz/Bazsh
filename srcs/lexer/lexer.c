@@ -11,7 +11,7 @@ t_lexer new_lexer(const char *input)
 	return (l);
 }
 
-t_token		new_token(const char *type, const char *literal)
+t_token new_token(const char *type, const char *literal)
 {
 	t_token tok;
 	tok.literal = ft_strdup(literal);
@@ -29,6 +29,12 @@ t_token next_token(t_lexer *lexer)
 		if (is_separator(peek_char(lexer)))
 		{
 			tok = new_token(ARG, "$");
+			read_char(lexer);
+			return (tok);
+		}
+		else if (peek_char(lexer) == '?')
+		{
+			tok = new_token(ARG, "?");
 			read_char(lexer);
 			return (tok);
 		}

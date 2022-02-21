@@ -112,9 +112,7 @@ void exec_command(t_executor executor_state, char **env)
 	command_args = list_to_arr(executor_state.command->arg);
 	built_in = is_child_command(command_args[0]);
 	if (built_in.is_child_command)
-	{
 		update_status_code(built_in.handler(executor_state.command->arg, env));
-	}
 	command_path = get_command_path(executor_state.command->arg->val, env);
 	command_position = executor_state.command_position;
 	executor_state.commands_paths[command_position] = command_path;

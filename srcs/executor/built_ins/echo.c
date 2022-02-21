@@ -1,15 +1,17 @@
 #include "../executor.h"
 
+extern char *codee;
+
 int echo(t_arg *arg, char **env)
 {
-	int i;
-	int new_line;
+	int  i;
+	bool new_line;
 
 	new_line = true;
 	arg = arg->next;
 	if (!arg)
 	{
-		ft_putstr_fd("\n", 1);
+		printf("\n");
 		return (0);
 	}
 	if (!ft_strcmp(arg->val, "-n"))
@@ -17,6 +19,8 @@ int echo(t_arg *arg, char **env)
 		arg = arg->next;
 		new_line = false;
 	}
+	else if (!ft_strcmp(arg->val, "?"))
+		printf("%s", codee);
 	while (arg)
 	{
 		printf("%s", arg->val);
@@ -24,7 +28,5 @@ int echo(t_arg *arg, char **env)
 			printf(" ");
 		arg = arg->next;
 	}
-	if (new_line)
-		printf("\n");
 	return (0);
 }
