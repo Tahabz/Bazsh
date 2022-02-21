@@ -8,6 +8,7 @@ void exec_child_command(t_executor executor_state, char **env)
 	int    hfd[2];
 	char  *f = "";
 	char **command_args = list_to_arr(executor_state.command->arg);
+	signal(SIGINT, SIG_DFL);
 	if (!ft_strcmp(executor_state.command->arg->val, "exit"))
 		ft_exit(executor_state.command->arg, env);
 	if (executor_state.command->in_sequence)

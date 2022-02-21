@@ -12,13 +12,10 @@ int unset(t_arg *arg, char ***env)
 		if (!is_ident(arg->val))
 		{
 			ft_putstr_fd("not a valid identifier \n", STDERR_FILENO);
-			return (1);
+			return (2);
 		}
 		else
-		{
 			*env = arr_remove(*env, arg->val);
-			// printf("unset %s=%s\n", arg->val, ft_getenv(arg->val, *env));
-		}
 		arg = arg->next;
 	}
 	return (0);
