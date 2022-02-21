@@ -36,6 +36,7 @@ t_token next_token(t_lexer *lexer)
 		{
 			tok = new_token(ARG, "?");
 			read_char(lexer);
+			read_char(lexer);
 			return (tok);
 		}
 		else

@@ -20,7 +20,11 @@ int echo(t_arg *arg, char **env)
 		new_line = false;
 	}
 	else if (!ft_strcmp(arg->val, "?"))
-		printf("%s", codee);
+	{
+		arg = arg->next;
+		ft_putstr_fd(codee, 1);
+		fflush(stderr);
+	}
 	while (arg)
 	{
 		printf("%s", arg->val);
@@ -28,5 +32,7 @@ int echo(t_arg *arg, char **env)
 			printf(" ");
 		arg = arg->next;
 	}
+	if (new_line)
+		printf("\n");
 	return (0);
 }
