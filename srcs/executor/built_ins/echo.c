@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:42:05 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:23:44 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 16:41:20 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	echo(t_arg *arg, char **env)
 	else if (!ft_strcmp(arg->val, "?"))
 	{
 		arg = arg->next;
-		ft_putstr_fd(g_code, 1);
+		ft_putstr_fd(g_signal.code, 1);
 		fflush(stderr);
 	}
 	print_args(arg);

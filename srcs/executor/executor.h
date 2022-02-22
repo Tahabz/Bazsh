@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:49:19 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:31:40 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 16:45:15 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,12 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <termios.h>
-
-int		status;
-bool	g_forked;
-char	*g_code;
+typedef struct s_signal
+{
+	int		status;
+	bool	forked;
+	char	*code;
+}				t_signal;
 typedef struct s_executor
 {
 	int			new_fd[2];
@@ -56,6 +58,7 @@ typedef struct s_file
 	char	*error;
 }				t_file;
 
+t_signal			g_signal;
 void				ft_exit(t_arg *arg, char **env);
 int					cd(t_arg *args, char ***env);
 int					export(t_arg *arg, char ***env);

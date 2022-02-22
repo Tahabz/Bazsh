@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:37:00 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:26:19 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 16:45:13 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	read_and_execute(t_executor *executor, char **env)
 
 	while (true)
 	{
-		g_forked = false;
+		g_signal.forked = false;
 		cmd = readline("bazsh$ ");
 		if (cmd)
 		{
@@ -46,7 +46,7 @@ void	read_and_execute(t_executor *executor, char **env)
 			waitpids(executor->pids, executor->command_position);
 		}
 		else
-			exit(atoi(g_code));
+			exit(atoi(g_signal.code));
 	}
 }
 
@@ -54,7 +54,7 @@ int	main(int ac, char **av, char **env)
 {
 	t_executor	executor;
 
-	status = 0;
+	g_signal.status = 0;
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
 	init_signals();

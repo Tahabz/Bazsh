@@ -15,36 +15,36 @@ void set_status_code(int code)
 	code_str = "0";
 	if (code >= 0)
 		code_str = ft_itoa(code);
-	else if (WIFSIGNALED(status))
+	else if (WIFSIGNALED(g_signal.status))
 	{
-		if (WTERMSIG(status) == SIGINT)
+		if (WTERMSIG(g_signal.status) == SIGINT)
 			code_str = ft_itoa(130);
-		else if (WTERMSIG(status) == SIGQUIT)
+		else if (WTERMSIG(g_signal.status) == SIGQUIT)
 			code_str = ft_itoa(131);
 	}
 	else
-		code_str = ft_itoa(WEXITSTATUS(status));
-	g_code = code_str;
+		code_str = ft_itoa(WEXITSTATUS(g_signal.status));
+	g_signal.code = code_str;
 }
 
 void signalHandler(int signal)
 {
-	if (signal == SIGQUIT && g_forked)
+	if (signal == SIGQUIT && g_signal.forked)
 	{
 		write(2, "Quit: 3\n", 8);
 		rl_on_new_line();
 	}
-	if (signal == SIGQUIT && !g_forked)
+	if (signal == SIGQUIT && !g_signal.forked)
 	{
 		rl_on_new_line();
 		rl_redisplay();
 	}
-	if (signal == SIGINT && g_forked)
+	if (signal == SIGINT && g_signal.forked)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
 	}
-	if (signal == SIGINT && !g_forked)
+	if (signal == SIGINT && !g_signal.forked)
 	{
 		write(1, "\n", 1);
 		rl_replace_line("", 1);
