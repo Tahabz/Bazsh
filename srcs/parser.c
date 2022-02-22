@@ -201,6 +201,8 @@ t_command *start_parser(t_parser *parser)
 	t_command *command;
 	t_command       *current;
 
+  if(curr_tok_is(parser, PIPE))
+    raise_syntax_error("other than PIPE", parser, NULL);
 	command = parse_command(parser);
 	if (command == NULL)
 		return (command);
