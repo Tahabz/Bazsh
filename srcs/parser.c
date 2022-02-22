@@ -135,8 +135,6 @@ void parse_arg(t_parser *parser, t_command *cmd)
 
 void parse_pipe(t_parser *parser, t_command *cmd)
 {
-	if (peek_tok_is(parser, ARG) == false && peek_tok_is(parser, EOF_) == false)
-		raise_syntax_error("ARGUMENT or EOF", parser, cmd);
 	if (cmd->out_sequence == NULL)
 		add_io(&cmd->out_sequence, (t_io){IO_PIPE, NULL, NULL});
 	parser->parsing_state = NULL;
