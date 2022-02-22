@@ -56,5 +56,5 @@ t_token	read_arg_dquotes(t_lexer *l);
 t_token	read_arg_squotes(t_lexer *lexer);
 t_token	lex_token(t_lexer *lexer);
 void	expand(t_lexer *l, const char *ident);
-void	expand_quoted(t_lexer *l, unsigned int index);
+void	expand_quoted(t_lexer *l);
 #endif

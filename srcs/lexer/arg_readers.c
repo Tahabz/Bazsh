@@ -82,7 +82,7 @@ t_token	read_arg_dquotes(t_lexer *l)
 	while (l->ch != '\0')
 	{
 		if (l->ch == '$' && !is_separator(peek_char(l)))
-			expand_quoted(l, l->position);
+			expand_quoted(l);
 		if (l->ch == '\"')
 		{
 			tok.literal = ft_substr(l->input, pos, l->position - pos);

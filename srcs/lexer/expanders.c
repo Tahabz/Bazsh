@@ -49,12 +49,12 @@ void	expand(t_lexer *l, const char *ident)
 	l->ch = l->input[l->position];
 }
 
-void	expand_quoted(t_lexer *l, unsigned int index)
+void	expand_quoted(t_lexer *l)
 {
 	char	*ident;
 
 	read_char(l);
-	ident = get_ident(l->input, index);
+	ident = get_ident(l->input, l->position);
 	l->position += ft_strlen(ident);
 	expand(l, ident);
 	free(ident);
