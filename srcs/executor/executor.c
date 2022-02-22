@@ -1,5 +1,5 @@
 #include "executor.h"
-/* Signal Handler for SIGINT */
+
 void start_execution(t_executor *executor, char **env)
 {
 	executor->command_position = 0;
@@ -24,10 +24,7 @@ int main(int ac, char **av, char **env)
 	g_status = 0;
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
-	ignctl();
-	signal(SIGINT, signalHandler);
-	signal(SIGQUIT, signalHandler);
-	set_status_code(0);
+	init_signals();
 	while (true)
 	{
 		executor.command_position = 0;

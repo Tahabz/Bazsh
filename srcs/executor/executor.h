@@ -90,4 +90,5 @@ void             set_status_code(int code);
 void             signalHandler(int signal);
 void             ignctl(void);
 void             set_status_code(int code);
+void             init_signals(void);
 #endif

@@ -1,5 +1,13 @@
 #include "executor.h"
 
+void init_signals(void)
+{
+	ignctl();
+	signal(SIGINT, signalHandler);
+	signal(SIGQUIT, signalHandler);
+	set_status_code(0);
+}
+
 void set_status_code(int code)
 {
 	char *code_str;
