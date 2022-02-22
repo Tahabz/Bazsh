@@ -7,11 +7,15 @@
 #include <fcntl.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <signal.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <termios.h>
 
-extern int status;
+int   g_status;
+bool  g_forked;
+char *g_code;
 
 typedef struct s_executor
 {
@@ -83,5 +87,7 @@ void             close_fd(int fd[]);
 void             dup_and_close(int fd[], int file_no);
 void             free_all_memory(t_executor executor, t_parser *parser);
 void             set_status_code(int code);
-
+void             signalHandler(int signal);
+void             ignctl(void);
+void             set_status_code(int code);
 #endif

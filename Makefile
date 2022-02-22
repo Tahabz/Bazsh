@@ -44,7 +44,8 @@ FILES = lexer/lexer.c\
 		executor/path.c \
 		executor/heredoc.c \
 		executor/fd.c \
-		executor/utils2.c 
+		executor/utils2.c \
+		executor/signal.c
 		
 
 SRCS = $(patsubst %, srcs/%, $(FILES))

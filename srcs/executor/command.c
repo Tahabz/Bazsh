@@ -1,7 +1,5 @@
 #include "executor.h"
 
-extern bool forked;
-
 void exec_child_command(t_executor executor_state, char **env)
 {
 	int    fd;
@@ -46,14 +44,14 @@ void handle_command(t_executor *executor_state, char ***env)
 	if (command.is_parent_command)
 	{
 		executor_state->command_position -= 1;
-		update_status_code(command.handler(executor_state->command->arg, env));
+		set_status_code(command.handler(executor_state->command->arg, env));
 		return;
 	}
 	else if (!ft_strcmp(executor_state->command->arg->val, "exit") && !executor_state->command->next)
 		ft_exit(executor_state->command->arg, *env);
 	if (executor_state->command->next)
 		pipe(executor_state->new_fd);
-	forked = true;
+	g_forked = true;
 	executor_state->pids[executor_state->command_position] = fork();
 	if (executor_state->pids[executor_state->command_position] == 0)
 		exec_child_command(*executor_state, *env);

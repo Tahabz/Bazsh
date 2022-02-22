@@ -1,58 +1,5 @@
 #include "executor.h"
-#include <signal.h>
-#include <termios.h>
-
 /* Signal Handler for SIGINT */
-int   status;
-bool  forked;
-char *g_code;
-
-void set_status_code(int code)
-{
-	char *code_str;
-
-	code_str = "0";
-	if (code >= 0)
-		code_str = ft_itoa(code);
-	else if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) == SIGINT)
-			code_str = ft_itoa(130);
-		else if (WTERMSIG(status) == SIGQUIT)
-			code_str = ft_itoa(131);
-	}
-	else
-		code_str = ft_itoa(WEXITSTATUS(status));
-	g_code = code_str;
-}
-
-void signalHandler(int signal)
-{
-	if (signal == SIGQUIT && forked)
-	{
-		write(2, "Quit: 3\n", 8);
-		rl_on_new_line();
-	}
-	if (signal == SIGQUIT && !forked)
-	{
-		rl_on_new_line();
-		rl_redisplay();
-	}
-	if (signal == SIGINT && forked)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
-	}
-	if (signal == SIGINT && !forked)
-	{
-		write(1, "\n", 1);
-		rl_replace_line("", 1);
-		rl_on_new_line();
-		rl_redisplay();
-		set_status_code(1);
-	}
-}
-
 void start_execution(t_executor *executor, char **env)
 {
 	executor->command_position = 0;
@@ -66,17 +13,6 @@ void start_execution(t_executor *executor, char **env)
 	}
 }
 
-void ignctl(void)
-{
-	struct termios term;
-
-	if (tcgetattr(STDIN_FILENO, &term) != 0)
-		perror("tcgetattr() error");
-	term.c_lflag &= ~ECHOCTL;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) != 0)
-		perror("tcsetattr() error");
-}
-
 int main(int ac, char **av, char **env)
 {
 	char      *cmd;
@@ -85,7 +21,7 @@ int main(int ac, char **av, char **env)
 	t_executor executor;
 	int        i = 0;
 
-	status = 0;
+	g_status = 0;
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
 	ignctl();
@@ -95,7 +31,7 @@ int main(int ac, char **av, char **env)
 	while (true)
 	{
 		executor.command_position = 0;
-		forked = false;
+		g_forked = false;
 		cmd = readline("bazsh$ ");
 		if (cmd)
 		{
