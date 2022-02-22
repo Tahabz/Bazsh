@@ -1,10 +1,6 @@
 FLAGS = -Wall -Wextra -Werror
 DFLAGS = -fsanitize=address -g
 INCLUDES = ../includes
-NAME = lexer
-EXECUTOR = srcs/executor/executor.c
-LEXER_TEST = lexer_test
-PARSER_TEST = parser_test
 #LDFLAGS="-L/goinfre/mobaz/homebrew/opt/readline/lib"
 #CPPFLAGS="-I/goinfre/mobaz/homebrew/opt/readline/include"
 LDFLAGS="-L/goinfre/ael-hach/.brew/opt/readline/lib"
@@ -21,7 +17,6 @@ FILES = lexer/lexer.c\
 		parser/parser_helpers.c\
 		parser/parser_helpers2.c\
 		parser/parser_tools.c\
-		get_next_line/get_next_line.c\
 		strtools/char_to_string.c\
         strtools/ft_putstr_fd.c\
         strtools/ft_strcmp.c\
@@ -46,6 +41,7 @@ FILES = lexer/lexer.c\
 		arr_tools/push.c \
 		arr_tools/arr_remove.c \
 		arr_tools/print_arr.c \
+		executor/executor.c\
 		executor/utils.c \
 		executor/free.c \
 		executor/file.c \
@@ -58,30 +54,18 @@ FILES = lexer/lexer.c\
 		executor/signal.c\
 		executor/error.c
 
-
 SRCS = $(patsubst %, srcs/%, $(FILES))
-
+NAME = bazsh
 
 all : $(NAME)
 
 $(NAME): $(SRCS)
-	@echo "Building up the lexer.."
-	clang $(DFLAGS) $(FLAGS) srcs/main.c $(SRCS) -o $(NAME)
-
-executor: $(EXECUTOR) $(SRCS)
-	clang $(EXECUTOR) $(DFLAGS) $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o executor
+	@echo "Building up bazsh.."
+	clang $(EXECUTOR) $(DFLAGS) $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o $(NAME)
 
 clean:
-	rm -rf lexer
+	rm bazsh
 
 fclean: clean
-
-$(LEXER_TEST): tests/lexer_tests.c $(SRCS)
-	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o $(LEXER_TEST)
-	./$(LEXER_TEST)
-
-$(PARSER_TEST): tests/parser_tests.c srcs/parser/parser.c  $(SRCS)
-	clang $(DFLAGS) $(FLAGS) tests/parser_tests.c srcs/parser.c $(SRCS) -o $(PARSER_TEST)
-	# ./$(PARSER_TEST)
 
 re: fclean all
