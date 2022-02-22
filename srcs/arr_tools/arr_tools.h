@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef AR_TOOLS_H
-# define AR_TOOLS_H
+#ifndef ARR_TOOLS_H
+# define ARR_TOOLS_H
 
 # include "../executor/executor.h"
 

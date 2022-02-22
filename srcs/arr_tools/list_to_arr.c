@@ -12,11 +12,11 @@
 
 #include "arr_tools.h"
 
-char **list_to_arr(t_arg *arg)
+char	**list_to_arr(t_arg *arg)
 {
-	int    args_count;
-	char **args;
-	int    i;
+	int		args_count;
+	char	**args;
+	int		i;
 
 	args_count = list_count(arg);
 	args = (char **) malloc((args_count + 1) * sizeof(char *));

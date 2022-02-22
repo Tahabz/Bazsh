@@ -12,22 +12,21 @@
 
 #include "arr_tools.h"
 
-char **push_if_not_exists(char **arr, char *str)
+char	**push_if_not_exists(char **arr, char *str)
 {
 	if (!arr_2d_contains(arr, str, keys_cmp))
 		return (push(arr, str));
 	return (arr);
 }
 
-char **push(char **arr, char *val)
+char	**push(char **arr, char *val)
 {
-	int    i;
-	int    length;
-	char **new_arr;
+	int		i;
+	int		length;
+	char	**new_arr;
 
 	length = arr_length(arr);
 	new_arr = (char **) malloc((length + 1) * sizeof(char *));
-
 	i = 0;
 	while (arr[i])
 	{

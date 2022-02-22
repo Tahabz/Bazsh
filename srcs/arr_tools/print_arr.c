@@ -12,9 +12,9 @@
 
 #include "arr_tools.h"
 
-void print_2d_arr(char **arr, bool(callback)(char *))
+void	print_2d_arr(char **arr, bool(callback)(char *))
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (arr[i])
