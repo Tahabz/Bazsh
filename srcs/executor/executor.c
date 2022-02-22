@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 15:37:00 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 16:26:19 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
-void start_execution(t_executor *executor, char **env)
+void	start_execution(t_executor *executor, char **env)
 {
 	executor->command_position = 0;
 	if (!handle_heredoc(executor))
-		return;
+		return ;
 	while (executor->command)
 	{
 		handle_command(executor, executor->env);
@@ -13,11 +25,11 @@ void start_execution(t_executor *executor, char **env)
 	}
 }
 
-void read_and_execute(t_executor *executor, char **env)
+void	read_and_execute(t_executor *executor, char **env)
 {
-	char     *cmd;
-	t_lexer   lexer;
-	t_parser *parser;
+	char		*cmd;
+	t_lexer		lexer;
+	t_parser	*parser;
 
 	while (true)
 	{
@@ -38,11 +50,11 @@ void read_and_execute(t_executor *executor, char **env)
 	}
 }
 
-int main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
-	t_executor executor;
+	t_executor	executor;
 
-	g_status = 0;
+	status = 0;
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
 	init_signals();

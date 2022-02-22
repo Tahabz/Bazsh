@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 15:44:29 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 16:25:07 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../executor.h"
 
-bool is_ident(char *ident)
+bool	is_ident(char *ident)
 {
-	int i;
+	int	i;
 
 	if (!ft_isalpha(ident[0]))
 		return (false);
@@ -16,20 +28,20 @@ bool is_ident(char *ident)
 	return (true);
 }
 
-bool is_not_empty_ident(char *str)
+bool	is_not_empty_ident(char *str)
 {
 	return (arr_contains(str, '='));
 }
 
-bool is_empty_ident(char *str)
+bool	is_empty_ident(char *str)
 {
 	return (true);
 }
 
-void set_ident(char *arg, char ***env)
+void	set_ident(char *arg, char ***env)
 {
-	char **var;
-	char  *val;
+	char	**var;
+	char	*val;
 
 	var = ft_split(arg, '=');
 	if (!*var || !is_ident(var[0]))
@@ -45,10 +57,10 @@ void set_ident(char *arg, char ***env)
 	free_double_pointer(var);
 }
 
-int export(t_arg *arg, char ***env)
+int	export(t_arg *arg, char ***env)
 {
-	char **var;
-	char  *val;
+	char	**var;
+	char	*val;
 
 	if (!arg->next)
 	{

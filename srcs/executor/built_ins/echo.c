@@ -1,8 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 15:42:05 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 16:23:44 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../executor.h"
 
-extern char *g_code;
-
-void print_args(t_arg *arg)
+void	print_args(t_arg *arg)
 {
 	while (arg)
 	{
@@ -13,10 +23,10 @@ void print_args(t_arg *arg)
 	}
 }
 
-int echo(t_arg *arg, char **env)
+int	echo(t_arg *arg, char **env)
 {
-	int  i;
-	bool new_line;
+	int	i;
+	bool	new_line;
 
 	new_line = true;
 	arg = arg->next;

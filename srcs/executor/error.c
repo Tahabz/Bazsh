@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 15:45:59 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 16:11:59 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
-int p_error(const char *arg, const char *arg2, const char *message, int code)
+int	p_error(const char *arg, const char *arg2, const char *message, int code)
 {
 	write(2, "minishell: ", 11);
 	if (arg)
@@ -21,9 +33,9 @@ int p_error(const char *arg, const char *arg2, const char *message, int code)
 	return (code);
 }
 
-void handle_errors(char *cmd, char **env)
+void	handle_errors(char *cmd, char **env)
 {
-	struct stat dir_stat;
+	struct stat	dir_stat;
 
 	if (stat(cmd, &dir_stat) == 0 && S_ISDIR(dir_stat.st_mode))
 		exit(p_error(cmd, NULL, "is a directory", 126));
