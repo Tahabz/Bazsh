@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_helpers.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ael-hach <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 21:52:45 by ael-hach          #+#    #+#             */
+/*   Updated: 2022/02/22 21:52:46 by ael-hach         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer.h"
 
-static t_token lex_out_redirect_or_append(t_lexer *lexer)
+static t_token	lex_out_redirect_or_append(t_lexer *lexer)
 {
-	t_token tok;
+	t_token	tok;
 
 	if (peek_char(lexer) == '>')
 	{
@@ -14,9 +26,9 @@ static t_token lex_out_redirect_or_append(t_lexer *lexer)
 	return (tok);
 }
 
-static t_token lex_in_redirect_or_heredoc(t_lexer *lexer)
+static t_token	lex_in_redirect_or_heredoc(t_lexer *lexer)
 {
-	t_token tok;
+	t_token	tok;
 
 	if (peek_char(lexer) == '<')
 	{
@@ -28,21 +40,21 @@ static t_token lex_in_redirect_or_heredoc(t_lexer *lexer)
 	return (tok);
 }
 
-static t_token lex_double_quotes(t_lexer *lexer)
+static t_token	lex_double_quotes(t_lexer *lexer)
 {
 	read_char(lexer);
 	return (read_arg_dquotes(lexer));
 }
 
-static t_token lex_single_quotes(t_lexer *lexer)
+static t_token	lex_single_quotes(t_lexer *lexer)
 {
 	read_char(lexer);
 	return (read_arg_squotes(lexer));
 }
 
-t_token lex_token(t_lexer *lexer)
+t_token	lex_token(t_lexer *lexer)
 {
-	t_token tok;
+	t_token	tok;
 
 	if (lexer->ch == '"')
 		tok = lex_double_quotes(lexer);
