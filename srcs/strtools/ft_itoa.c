@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                 000000000000000000         */
+/*   ft_itoa.c                                     000000000000000000         */
+/*                                                 000000000000000000         */
+/*   By: ael-hach <ael-hach@student.codam.nl>      000000000000000000         */
+/*                                                 000000000000000000         */
+/*   Created: 2022/02/22 22:14:17 by ael-hach      000000000000000000         */
+/*   Updated: 2022/02/22 22:14:17 by ael-hach      000000000000000000         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "strtools.h"
 
-static int ft_count(int n)
+static int	ft_count(int n)
 {
-	unsigned int nbr;
-	int          i;
+	unsigned int	nbr;
+	int				i;
 
 	i = 1;
 	if (n < 0)
@@ -21,15 +33,14 @@ static int ft_count(int n)
 	return (i);
 }
 
-char *ft_itoa(int n)
+char	*ft_itoa(int n)
 {
-	unsigned int nbr;
-	char        *s;
-	int          count;
+	unsigned int	nbr;
+	char			*s;
+	int				count;
 
 	count = ft_count(n);
-	if (!(s = (char *) malloc(count + 1)))
-		return (0);
+	s = malloc(count + 1);
 	if (n == 0)
 		*s = '0';
 	if (n < 0)
@@ -43,7 +54,7 @@ char *ft_itoa(int n)
 	while (nbr > 0)
 	{
 		if (count == 0 && n < 0)
-			break;
+			break ;
 		*(s + count--) = nbr % 10 + '0';
 		nbr = nbr / 10;
 	}
