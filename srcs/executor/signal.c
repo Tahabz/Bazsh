@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 21:01:45 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 21:02:32 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
-void init_signals(void)
+void	init_signals(void)
 {
 	ignctl();
-	signal(SIGINT, signalHandler);
-	signal(SIGQUIT, signalHandler);
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, signal_handler);
 	set_status_code(0);
 }
 
-void set_status_code(int code)
+void	set_status_code(int code)
 {
-	char *code_str;
+	char	*code_str;
 
 	code_str = "0";
 	if (code >= 0)
@@ -27,7 +39,7 @@ void set_status_code(int code)
 	g_signal.code = code_str;
 }
 
-void signalHandler(int signal)
+void	signal_handler(int signal)
 {
 	if (signal == SIGQUIT && g_signal.forked)
 	{
@@ -54,9 +66,9 @@ void signalHandler(int signal)
 	}
 }
 
-void ignctl(void)
+void	ignctl(void)
 {
-	struct termios term;
+	struct termios	term;
 
 	if (tcgetattr(STDIN_FILENO, &term) != 0)
 		perror("tcgetattr() error");

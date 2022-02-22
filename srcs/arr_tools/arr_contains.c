@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   arr_contains.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 21:04:39 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 21:06:50 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "arr_tools.h"
 
-bool arr_contains(char *arr, char c)
+bool	arr_contains(char *arr, char c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (arr[i])
@@ -14,9 +26,9 @@ bool arr_contains(char *arr, char c)
 	return (false);
 }
 
-bool arr_2d_contains(char **arr, char *str, bool(comparer)(char *, char *))
+bool	arr_2d_contains(char **arr, char *str, bool(comparer)(char *, char *))
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (arr[i])

@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:49:19 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 20:34:23 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 21:02:25 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void				close_fd(int fd[]);
 void				dup_and_close(int fd[], int file_no);
 void				free_all_memory(t_executor executor, t_parser *parser);
 void				set_status_code(int code);
-void				signalHandler(int signal);
+void				signal_handler(int signal);
 void				ignctl(void);
 void				set_status_code(int code);
 void				init_signals(void);
