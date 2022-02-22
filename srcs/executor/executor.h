@@ -91,4 +91,10 @@ void             signalHandler(int signal);
 void             ignctl(void);
 void             set_status_code(int code);
 void             init_signals(void);
+int              p_error(const char *arg, const char *arg2, const char *message, int code);
+void             handle_errors(char *cmd, char **env);
+t_child_command  is_child_command(char *command_name);
+t_parent_command is_parent_command(char *command_name);
+void             handle_in_sequence(t_executor executor, int *fd);
+void             handle_out_sequence(t_executor executor, int *fd);
 #endif

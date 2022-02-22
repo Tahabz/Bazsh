@@ -41,11 +41,13 @@ FILES = lexer/lexer.c\
 		executor/free.c \
 		executor/file.c \
 		executor/command.c \
+		executor/command_2.c \
 		executor/path.c \
 		executor/heredoc.c \
 		executor/fd.c \
 		executor/utils2.c \
-		executor/signal.c
+		executor/signal.c\
+		executor/error.c
 		
 
 SRCS = $(patsubst %, srcs/%, $(FILES))

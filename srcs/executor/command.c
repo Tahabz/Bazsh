@@ -1,15 +1,5 @@
 #include "executor.h"
 
-void handle_in_sequence(t_executor executor, int *fd)
-{
-	*fd = get_last_fd(executor.command->in_sequence, open_file);
-	if (*fd)
-	{
-		dup2(*fd, STDIN_FILENO);
-		close(*fd);
-	}
-}
-
 void exec_child_command(t_executor executor_state, char **env)
 {
 	int    fd;
@@ -24,11 +14,7 @@ void exec_child_command(t_executor executor_state, char **env)
 	else if (executor_state.command_position > 0)
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
 	if (executor_state.command->out_sequence && executor_state.command->out_sequence->type != IO_PIPE)
-	{
-		fd = get_last_fd(executor_state.command->out_sequence, create_file);
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
-	}
+		handle_out_sequence(executor_state, &fd);
 	else if (executor_state.command->next)
 		dup_and_close(executor_state.new_fd, STDOUT_FILENO);
 	exec_command(executor_state, env);
@@ -69,43 +55,6 @@ void handle_command(t_executor *executor_state, char ***env)
 	}
 }
 
-int p_error(const char *arg, const char *arg2, const char *message, int code)
-{
-	write(2, "minishell: ", 11);
-	if (arg)
-	{
-		write(2, arg, ft_strlen(arg));
-		write(2, ": ", 2);
-	}
-	if (arg2)
-	{
-		write(2, arg2, ft_strlen(arg2));
-		write(2, ": ", 2);
-	}
-	if (message)
-		write(2, message, ft_strlen(message));
-	else
-		write(2, strerror(errno), ft_strlen(strerror(errno)));
-	write(2, "\n", 1);
-	return (code);
-}
-
-void handle_errors(char *cmd, char **env)
-{
-	struct stat dir_stat;
-
-	if (stat(cmd, &dir_stat) == 0 && S_ISDIR(dir_stat.st_mode))
-		exit(p_error(cmd, NULL, "is a directory", 126));
-	if (errno == 13)
-		exit(p_error(cmd, NULL, NULL, 126));
-	else if (errno == 8)
-		exit(p_error(cmd, NULL, NULL, 1));
-	else if (ft_getenv("PATH", env) == NULL)
-		exit(p_error(cmd, NULL, NULL, 127));
-	else
-		exit(p_error(cmd, NULL, "command not found", 127));
-}
-
 void exec_command(t_executor executor_state, char **env)
 {
 	t_child_command built_in;
@@ -125,26 +74,4 @@ void exec_command(t_executor executor_state, char **env)
 	executor_state.commands_args[command_position] = command_args;
 	execve(command_path, command_args, env);
 	handle_errors(command_args[0], env);
-}
-
-t_child_command is_child_command(char *command_name)
-{
-	if (!ft_strcmp(command_name, "pwd"))
-		return (t_child_command){true, pwd};
-	else if (!ft_strcmp(command_name, "echo"))
-		return (t_child_command){true, echo};
-	else if (!ft_strcmp(command_name, "env"))
-		return (t_child_command){true, env};
-	return (t_child_command){false, NULL};
-}
-
-t_parent_command is_parent_command(char *command_name)
-{
-	if (!ft_strcmp(command_name, "cd"))
-		return (t_parent_command){true, cd};
-	else if (!ft_strcmp(command_name, "export"))
-		return (t_parent_command){true, export};
-	else if (!ft_strcmp(command_name, "unset"))
-		return (t_parent_command){true, unset};
-	return (t_parent_command){false, NULL};
 }
