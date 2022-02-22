@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:42:35 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:24:05 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 20:31:32 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	*ft_getenv(const char *var_name, char **env)
 		if (!ft_strcmp(tmpenv[0], var_name) && tmpenv[1])
 		{
 			val = ft_substr(env[i], ft_strlen(tmpenv[0]) + 1,
-						ft_strlen(env[i]));
+					ft_strlen(env[i]));
 			free_double_pointer(tmpenv);
 			return (val);
 		}

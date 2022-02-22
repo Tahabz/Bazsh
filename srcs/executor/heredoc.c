@@ -1,41 +1,51 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 20:38:52 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 20:42:11 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
-void heredocHandler(int sig_num)
+void	heredocHandler(int sig_num)
 {
 	write(1, "\n", 1);
 	exit(10);
 }
 
-void write_to_file(char *delim, int file_numm, int fd)
+void	write_to_file(char *delim, int file_numm, int fd)
 {
-	int   i;
-	char *line;
-	char *file_name;
+	int		i;
+	char	*line;
+	char	*file_name;
 
 	while (true)
 	{
 		line = readline(">> ");
 		if (!line)
-			break;
+			break ;
 		if (!ft_strcmp(line, delim))
 		{
-			break;
+			break ;
 		}
 		write_line(line, fd);
 	}
-	// replace_sequence(sequence, file_name, IO_FILE);
 	close(fd);
 	exit(1);
 }
 
 int handle_heredoc(t_executor *executor)
 {
-	t_io      *sequence;
-	int        file_num;
-	t_command *command;
-	int        status;
-	int        ret;
-	int        fd;
+	t_io		*sequence;
+	int			file_num;
+	t_command	*command;
+	int			status;
+	int			fd;
 
 	command = executor->command;
 	file_num = 0;
@@ -46,7 +56,6 @@ int handle_heredoc(t_executor *executor)
 		{
 			if (sequence->type == IO_HEREDOC)
 			{
-				// CREATE THE FILE
 				char *file_name = ft_itoa(file_num);
 				fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 				char *delim = ft_strdup(sequence->value);

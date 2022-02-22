@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:49:19 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:45:15 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 20:34:23 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <termios.h>
+
 typedef struct s_signal
 {
 	int		status;
@@ -77,11 +78,12 @@ char				*make_env_name(char *var_name, char *var_value);
 void				set_env(char *var_name, char *var_value, char ***env);
 char				*ft_getenv(const char *var_name, char **env);
 int					env(t_arg *arg, char **env);
-int					get_last_fd(t_io *sequence, int(callback)(t_io *));
+int					get_last_fd(t_io *sequence, int callback(t_io *));
 int					create_file(t_io *sequence);
 int					open_file(t_io *sequence);
 void				write_line(const char *line, int fd);
-void				replace_sequence(t_io *sequence, const char *value, enum io_type newtype);
+void				replace_sequence(t_io *sequence,
+						const char *value, enum io_type newtype);
 char				**copy_env(char **env);
 void				exec_child_command(t_executor executor_state, char **env);
 void				handle_command(t_executor *executor_state, char ***env);
@@ -104,7 +106,8 @@ void				signalHandler(int signal);
 void				ignctl(void);
 void				set_status_code(int code);
 void				init_signals(void);
-int					p_error(const char *arg, const char *arg2, const char *message, int code);
+int					p_error(const char *arg, const char *arg2,
+						const char *message, int code);
 void				handle_errors(char *cmd, char **env);
 t_child_command		is_child_command(char *command_name);
 t_parent_command	is_parent_command(char *command_name);

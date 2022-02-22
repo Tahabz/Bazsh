@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 20:37:05 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 20:37:44 by mobaz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
-void free_double_pointer(char **arr)
+void	free_double_pointer(char **arr)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (arr[i])
@@ -13,9 +25,9 @@ void free_double_pointer(char **arr)
 	free(arr);
 }
 
-void delete_executor(t_executor executor)
+void	delete_executor(t_executor executor)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (executor.commands_paths[i])
@@ -31,7 +43,7 @@ void delete_executor(t_executor executor)
 	// }
 }
 
-void free_all_memory(t_executor executor, t_parser *parser)
+void	free_all_memory(t_executor executor, t_parser *parser)
 {
 	delete_executor(executor);
 	delete_parser(parser);
