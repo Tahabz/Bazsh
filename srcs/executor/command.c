@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:36:27 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:36:12 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 21:50:08 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,5 @@ void	exec_command(t_executor executor_state, char **env)
 	executor_state.commands_paths[command_position] = command_path;
 	executor_state.commands_args[command_position] = command_args;
 	execve(command_path, command_args, env);
-	handle_errors(command_args[0], env);
+	catch_errors(command_args[0], env);
 }

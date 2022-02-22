@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:49:19 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 21:02:25 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 21:50:08 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,8 @@ void				signal_handler(int signal);
 void				ignctl(void);
 void				set_status_code(int code);
 void				init_signals(void);
-int					p_error(const char *arg, const char *arg2,
-						const char *message, int code);
-void				handle_errors(char *cmd, char **env);
+int					ft_perror(char *arg, char *message, int code);
+void				catch_errors(char *cmd, char **env);
 t_child_command		is_child_command(char *command_name);
 t_parent_command	is_parent_command(char *command_name);
 void				handle_in_sequence(t_executor executor, int *fd);

@@ -6,45 +6,40 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:45:59 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:11:59 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/22 21:50:28 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-int	p_error(const char *arg, const char *arg2, const char *message, int code)
+int	ft_perror(char *arg, char *msg, int code)
 {
 	write(2, "minishell: ", 11);
 	if (arg)
 	{
-		write(2, arg, ft_strlen(arg));
-		write(2, ": ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd(": ", 2);
 	}
-	if (arg2)
-	{
-		write(2, arg2, ft_strlen(arg2));
-		write(2, ": ", 2);
-	}
-	if (message)
-		write(2, message, ft_strlen(message));
+	if (msg)
+		ft_putstr_fd(msg, 2);
 	else
-		write(2, strerror(errno), ft_strlen(strerror(errno)));
-	write(2, "\n", 1);
+		ft_putstr_fd(strerror(errno), 2);
+	ft_putstr_fd("\n", 2);
 	return (code);
 }
 
-void	handle_errors(char *cmd, char **env)
+void	catch_errors(char *cmd, char **env)
 {
 	struct stat	dir_stat;
 
 	if (stat(cmd, &dir_stat) == 0 && S_ISDIR(dir_stat.st_mode))
-		exit(p_error(cmd, NULL, "is a directory", 126));
+		exit(ft_perror(cmd, "is a directory", 126));
 	if (errno == 13)
-		exit(p_error(cmd, NULL, NULL, 126));
+		exit(ft_perror(cmd, NULL, 126));
 	else if (errno == 8)
-		exit(p_error(cmd, NULL, NULL, 1));
+		exit(ft_perror(cmd, NULL, 1));
 	else if (ft_getenv("PATH", env) == NULL)
-		exit(p_error(cmd, NULL, NULL, 127));
+		exit(ft_perror(cmd, NULL, 127));
 	else
-		exit(p_error(cmd, NULL, "command not found", 127));
+		exit(ft_perror(cmd, "command not found", 127));
 }
