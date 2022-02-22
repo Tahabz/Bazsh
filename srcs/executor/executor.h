@@ -11,7 +11,6 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
-extern int is_heredoc;
 extern int status;
 
 typedef struct s_executor

@@ -5,7 +5,6 @@
 /* Signal Handler for SIGINT */
 int   status;
 bool  forked;
-int   is_heredoc;
 char *codee;
 
 void update_status_code(int code)

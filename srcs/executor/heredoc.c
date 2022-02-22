@@ -12,7 +12,6 @@ void write_to_file(char *delim, int file_numm, int fd)
 	char *line;
 	char *file_name;
 
-	is_heredoc = 1;
 	while (true)
 	{
 		line = readline(">> ");
