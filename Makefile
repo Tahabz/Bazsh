@@ -1,4 +1,4 @@
-kFLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 DFLAGS = -fsanitize=address -g
 INCLUDES = ../includes
 NAME = lexer
@@ -48,7 +48,7 @@ FILES = lexer/lexer.c\
 		executor/utils2.c \
 		executor/signal.c\
 		executor/error.c
-		
+
 
 SRCS = $(patsubst %, srcs/%, $(FILES))
 
