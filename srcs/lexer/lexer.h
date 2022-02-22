@@ -4,6 +4,7 @@
 #include "../get_next_line/get_next_line.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "../strtools/strtools.h"
 # define ARG "ARGUMENT"
 # define R_REDIRECTION ">"
@@ -42,4 +43,5 @@ t_token						read_arg_dquotes(t_lexer *lexer);
 t_token						read_arg_squotes(t_lexer *lexer);
 t_token						lex_token(t_lexer *lexer);
 void						expand(t_lexer *l, const char *ident);
+void expand_quoted(t_lexer *l, unsigned int index);
 #endif

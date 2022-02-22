@@ -1,5 +1,20 @@
 #include "lexer.h"
 
+static char *get_ident(char *input, unsigned int index)
+{
+	char        *ident;
+	unsigned int end;
+
+	end = index;
+
+	while (!is_separator(input[end]))
+	{
+		end++;
+	}
+	ident = ft_substr(input, index, end - index);
+	return (ident);
+}
+
 void expand(t_lexer *l, const char *ident)
 {
 	char        *var;
@@ -21,4 +36,12 @@ void expand(t_lexer *l, const char *ident)
 	l->position -= ident_l;
 	l->read_position = l->position + 1;
 	l->ch = l->input[l->position];
+}
+
+void expand_quoted(t_lexer *l, unsigned int index)
+{
+	char *ident = get_ident(l->input, index);
+	l->position += ft_strlen(ident);
+	expand(l, ident);
+	free(ident);
 }

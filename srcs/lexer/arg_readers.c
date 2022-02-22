@@ -3,6 +3,8 @@
 static t_token get_next_arg(t_lexer *lexer)
 {
 	t_token next_tok;
+
+  next_tok= (t_token){};
 	if (lexer->ch == '"')
 	{
 		read_char(lexer);
@@ -35,7 +37,7 @@ static t_token join_next_arg(t_lexer *lexer, t_token current_tok)
 
 t_token read_arg_squotes(t_lexer *lexer)
 {
-	t_token   tok;
+	t_token            tok;
 	const unsigned int position = lexer->position;
 
 	while (lexer->ch != '\0')
@@ -60,16 +62,20 @@ t_token read_arg_squotes(t_lexer *lexer)
 
 t_token read_arg_dquotes(t_lexer *lexer)
 {
-	t_token   tok;
-	const unsigned int position = lexer->position;
+	t_token            tok;
+	unsigned int position = lexer->position;
 
 	while (lexer->ch != '\0')
 	{
+		if (lexer->ch == '$' && !is_separator(peek_char(lexer)))
+		{
+			read_char(lexer);
+			expand_quoted(lexer, lexer->position);
+		}
 		if (lexer->ch == '\"')
 		{
 			tok.literal = ft_substr(lexer->input, position, lexer->position - position);
 			tok.type = ARG;
-			// TODO expand tok.literal variables
 			if (peek_char(lexer) == '\"' || peek_char(lexer) == '\'' || !is_separator(peek_char(lexer)))
 			{
 				read_char(lexer);
@@ -86,7 +92,7 @@ t_token read_arg_dquotes(t_lexer *lexer)
 
 t_token read_arg_no_quotes(t_lexer *lexer)
 {
-	t_token   tok;
+	t_token            tok;
 	const unsigned int position = lexer->position;
 
 	while (is_separator(lexer->ch) == false)
