@@ -1,6 +1,17 @@
 #include "../executor.h"
 
-extern char *codee;
+extern char *g_code;
+
+void print_args(t_arg *arg)
+{
+	while (arg)
+	{
+		printf("%s", arg->val);
+		if (arg->next)
+			printf(" ");
+		arg = arg->next;
+	}
+}
 
 int echo(t_arg *arg, char **env)
 {
@@ -22,16 +33,10 @@ int echo(t_arg *arg, char **env)
 	else if (!ft_strcmp(arg->val, "?"))
 	{
 		arg = arg->next;
-		ft_putstr_fd(codee, 1);
+		ft_putstr_fd(g_code, 1);
 		fflush(stderr);
 	}
-	while (arg)
-	{
-		printf("%s", arg->val);
-		if (arg->next)
-			printf(" ");
-		arg = arg->next;
-	}
+	print_args(arg);
 	if (new_line)
 		printf("\n");
 	return (0);

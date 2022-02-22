@@ -82,6 +82,6 @@ void             waitpids(int pids[], size_t i);
 void             close_fd(int fd[]);
 void             dup_and_close(int fd[], int file_no);
 void             free_all_memory(t_executor executor, t_parser *parser);
-void             update_status_code(int code);
+void             set_status_code(int code);
 
 #endif

@@ -5,56 +5,51 @@
 /* Signal Handler for SIGINT */
 int   status;
 bool  forked;
-char *codee;
+char *g_code;
 
-void update_status_code(int code)
+void set_status_code(int code)
 {
 	char *code_str;
 
 	code_str = "0";
 	if (code >= 0)
 		code_str = ft_itoa(code);
-	else
+	else if (WIFSIGNALED(status))
 	{
-		if (WIFSIGNALED(status))
-		{
-			if (WTERMSIG(status) == SIGINT)
-				code_str = ft_itoa(130);
-			else if (WTERMSIG(status) == SIGQUIT)
-				code_str = ft_itoa(131);
-		}
-		else
-			code_str = ft_itoa(WEXITSTATUS(status));
+		if (WTERMSIG(status) == SIGINT)
+			code_str = ft_itoa(130);
+		else if (WTERMSIG(status) == SIGQUIT)
+			code_str = ft_itoa(131);
 	}
-	codee = code_str;
-	// if (code_str)
-	// 	free(code_str);
+	else
+		code_str = ft_itoa(WEXITSTATUS(status));
+	g_code = code_str;
 }
 
-void sigintHandler(int sig_num)
+void signalHandler(int signal)
 {
-	if (sig_num == SIGQUIT && forked)
+	if (signal == SIGQUIT && forked)
 	{
 		write(2, "Quit: 3\n", 8);
 		rl_on_new_line();
 	}
-	if (sig_num == SIGQUIT && !forked)
+	if (signal == SIGQUIT && !forked)
 	{
 		rl_on_new_line();
 		rl_redisplay();
 	}
-	if (sig_num == SIGINT && forked)
+	if (signal == SIGINT && forked)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
 	}
-	if (sig_num == SIGINT && !forked)
+	if (signal == SIGINT && !forked)
 	{
 		write(1, "\n", 1);
 		rl_replace_line("", 1);
 		rl_on_new_line();
 		rl_redisplay();
-		update_status_code(1);
+		set_status_code(1);
 	}
 }
 
@@ -94,9 +89,9 @@ int main(int ac, char **av, char **env)
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
 	ignctl();
-	signal(SIGINT, sigintHandler);
-	signal(SIGQUIT, sigintHandler);
-	update_status_code(0);
+	signal(SIGINT, signalHandler);
+	signal(SIGQUIT, signalHandler);
+	set_status_code(0);
 	while (true)
 	{
 		executor.command_position = 0;
@@ -113,7 +108,7 @@ int main(int ac, char **av, char **env)
 			waitpids(executor.pids, executor.command_position);
 		}
 		else
-			exit(atoi(codee));
+			exit(atoi(g_code));
 	}
 	free_double_pointer(*executor.env);
 	return (0);

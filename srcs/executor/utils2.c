@@ -33,5 +33,5 @@ void waitpids(int pids[], size_t i)
 		}
 	}
 	if (j != 0)
-		update_status_code(-1);
+		set_status_code(-1);
 }

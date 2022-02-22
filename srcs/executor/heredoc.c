@@ -63,10 +63,10 @@ int handle_heredoc(t_executor *executor)
 				waitpid(pid, &status, 0);
 				file_num += 1;
 				if (WEXITSTATUS(status) == 1)
-					update_status_code(0);
+					set_status_code(0);
 				else if (WEXITSTATUS(status) == 10)
 				{
-					update_status_code(1);
+					set_status_code(1);
 					return (0);
 				}
 			}
