@@ -32,7 +32,7 @@ void	write_line(const char *line, int fd)
 }
 
 void	replace_sequence(t_io *sequence,
-			const char *value, enum io_type newtype)
+			const char *value, enum e_io_type newtype)
 {
 	free(sequence->value);
 	sequence->value = ft_strdup(value);

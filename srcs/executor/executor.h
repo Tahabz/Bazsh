@@ -13,7 +13,7 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-# include "../../srcs/parser.h"
+# include "../parser/parser.h"
 # include "../arr_tools/arr_tools.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -83,7 +83,7 @@ int					create_file(t_io *sequence);
 int					open_file(t_io *sequence);
 void				write_line(const char *line, int fd);
 void				replace_sequence(t_io *sequence,
-						const char *value, enum io_type newtype);
+						const char *value, enum e_io_type newtype);
 char				**copy_env(char **env);
 void				exec_child_command(t_executor executor_state, char **env);
 void				handle_command(t_executor *executor_state, char ***env);

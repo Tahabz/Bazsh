@@ -5,13 +5,22 @@ NAME = lexer
 EXECUTOR = srcs/executor/executor.c
 LEXER_TEST = lexer_test
 PARSER_TEST = parser_test
-LDFLAGS="-L/goinfre/mobaz/homebrew/opt/readline/lib"
-CPPFLAGS="-I/goinfre/mobaz/homebrew/opt/readline/include"
+#LDFLAGS="-L/goinfre/mobaz/homebrew/opt/readline/lib"
+#CPPFLAGS="-I/goinfre/mobaz/homebrew/opt/readline/include"
+LDFLAGS="-L/goinfre/ael-hach/.brew/opt/readline/lib"
+CPPFLAGS="-I/goinfre/ael-hach/.brew/opt/readline/include"
 FILES = lexer/lexer.c\
 		lexer/arg_readers.c\
 		lexer/lexer_helpers.c\
 		lexer/lexer_utils.c\
 		lexer/expanders.c\
+		parser/parser.c\
+		parser/parser_cmd_ops.c\
+		parser/parser_destroy.c\
+		parser/parser_error.c\
+		parser/parser_helpers.c\
+		parser/parser_helpers2.c\
+		parser/parser_tools.c\
 		get_next_line/get_next_line.c\
 		strtools/char_to_string.c\
         strtools/ft_putstr_fd.c\
@@ -60,7 +69,7 @@ $(NAME): $(SRCS)
 	clang $(DFLAGS) $(FLAGS) srcs/main.c $(SRCS) -o $(NAME)
 
 executor: $(EXECUTOR) $(SRCS)
-	clang $(EXECUTOR) $(DFLAGS) srcs/parser.c $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o executor
+	clang $(EXECUTOR) $(DFLAGS) $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o executor
 
 clean:
 	rm -rf lexer
@@ -71,7 +80,7 @@ $(LEXER_TEST): tests/lexer_tests.c $(SRCS)
 	clang $(DFLAGS) $(FLAGS) tests/lexer_tests.c $(SRCS) -o $(LEXER_TEST)
 	./$(LEXER_TEST)
 
-$(PARSER_TEST): tests/parser_tests.c srcs/parser.c  $(SRCS)
+$(PARSER_TEST): tests/parser_tests.c srcs/parser/parser.c  $(SRCS)
 	clang $(DFLAGS) $(FLAGS) tests/parser_tests.c srcs/parser.c $(SRCS) -o $(PARSER_TEST)
 	# ./$(PARSER_TEST)
 
