@@ -1,23 +1,26 @@
 #include "executor.h"
 
+void handle_in_sequence(t_executor executor, int *fd)
+{
+	*fd = get_last_fd(executor.command->in_sequence, open_file);
+	if (*fd)
+	{
+		dup2(*fd, STDIN_FILENO);
+		close(*fd);
+	}
+}
+
 void exec_child_command(t_executor executor_state, char **env)
 {
 	int    fd;
-	int    hfd[2];
-	char  *f = "";
-	char **command_args = list_to_arr(executor_state.command->arg);
+	char **command_args;
+
+	command_args = list_to_arr(executor_state.command->arg);
 	signal(SIGINT, SIG_DFL);
 	if (!ft_strcmp(executor_state.command->arg->val, "exit"))
 		ft_exit(executor_state.command->arg, env);
 	if (executor_state.command->in_sequence)
-	{
-		fd = get_last_fd(executor_state.command->in_sequence, open_file);
-		if (fd)
-		{
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-		}
-	}
+		handle_in_sequence(executor_state, &fd);
 	else if (executor_state.command_position > 0)
 		dup_and_close(executor_state.old_fd, STDIN_FILENO);
 	if (executor_state.command->out_sequence && executor_state.command->out_sequence->type != IO_PIPE)
@@ -31,6 +34,12 @@ void exec_child_command(t_executor executor_state, char **env)
 	exec_command(executor_state, env);
 }
 
+void exec_parent_command(t_executor *executor, t_parent_command command, char ***env)
+{
+	executor->command_position -= 1;
+	set_status_code(command.handler(executor->command->arg, env));
+}
+
 void handle_command(t_executor *executor_state, char ***env)
 {
 	t_parent_command command;
@@ -42,11 +51,7 @@ void handle_command(t_executor *executor_state, char ***env)
 	}
 	command = is_parent_command(executor_state->command->arg->val);
 	if (command.is_parent_command)
-	{
-		executor_state->command_position -= 1;
-		set_status_code(command.handler(executor_state->command->arg, env));
-		return;
-	}
+		return exec_parent_command(executor_state, command, env);
 	else if (!ft_strcmp(executor_state->command->arg->val, "exit") && !executor_state->command->next)
 		ft_exit(executor_state->command->arg, *env);
 	if (executor_state->command->next)
