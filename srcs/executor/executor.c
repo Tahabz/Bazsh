@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:37:00 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 15:15:36 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 15:22:03 by ael-hach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	read_and_execute(t_executor *executor)
 		{
 			add_history(cmd);
 			lexer = new_lexer(cmd);
+			free(cmd);
 			parser = parser_new(lexer);
 			executor->command = start_parser(parser);
 			start_execution(executor);
