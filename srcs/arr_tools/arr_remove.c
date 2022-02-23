@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 21:04:45 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 18:56:05 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 18:59:13 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ char	**dup_arr(char **arr, char *var)
 	j = 0;
 	i = 0;
 	new_arr = (char **) malloc(arr_length(arr) * sizeof(char *));
-	
 	while (arr[i])
 	{
 		if (!arr_contains(arr[i], '='))
