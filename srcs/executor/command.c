@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:36:27 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 15:50:22 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 16:27:09 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	handle_command(t_executor *executor_state, char ***env)
 		return (exec_parent_command(executor_state, command, env));
 	else if (!ft_strcmp(executor_state->command->arg->val, "exit")
 		&& !executor_state->command->next)
-		ft_exit(executor_state->command->arg, *env);
+		return (ft_exit(executor_state->command->arg, *env));
 	if (executor_state->command->next)
 		pipe(executor_state->new_fd);
 	g_signal.forked = true;
