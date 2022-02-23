@@ -55,16 +55,16 @@ FILES = lexer/lexer.c\
 		executor/error.c
 
 SRCS = $(patsubst %, srcs/%, $(FILES))
-NAME = bazsh
+NAME = minishell
 
 all : $(NAME)
 
 $(NAME): $(SRCS)
-	@echo "Building up bazsh.."
+	@echo "Building up minishell.."
 	clang $(EXECUTOR) $(FLAGS) $(DFLAGS) $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o $(NAME)
 
 clean:
-	rm bazsh
+	rm minishell
 
 fclean: clean
 
