@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:37:05 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 20:37:44 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 15:06:06 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ void	delete_executor(t_executor executor)
 		free(executor.commands_paths[i]);
 		i += 1;
 	}
-	// i = 0;
-	// while (executor.commands_args[i])
-	// {
-	// 	free_double_pointer(executor.commands_args[i]);
-	// 	i += 1;
-	// }
+	i = 0;
+	while (executor.commands_args[i])
+	{
+		free_double_pointer(executor.commands_args[i]);
+		i += 1;
+	}
 }
 
 void	free_all_memory(t_executor executor, t_parser *parser)

@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:37:00 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:30:28 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 15:15:36 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	main(int ac, char **av, char **env)
 {
 	t_executor	executor;
 
+	executor = (t_executor){{0}, {0}, 0, {0}, {0}, {0}, 0, 0};
 	ac = 0;
 	av = NULL;
 	g_signal.status = 0;

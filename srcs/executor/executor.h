@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:49:19 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:33:04 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 15:11:51 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ typedef struct s_executor
 	int			old_fd[2];
 	int			command_position;
 	int			pids[1000];
-	char		*commands_paths[1000];
-	char		**commands_args[1000];
+	char		*(commands_paths)[1000];
+	char		**(commands_args)[1000];
 	t_command	*command;
 	char		***env;
 }				t_executor;
