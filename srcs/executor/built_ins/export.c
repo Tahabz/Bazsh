@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:44:29 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:29:09 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 16:41:58 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ bool	is_not_empty_ident(char *str)
 bool	is_empty_ident(char *str)
 {
 	str = NULL;
+	printf("declare -x ");
 	return (true);
 }
 
