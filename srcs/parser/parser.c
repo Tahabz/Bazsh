@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                 000000000000000000         */
-/*   parser.c                                      000000000000000000         */
-/*                                                 000000000000000000         */
-/*   By: ael-hach <ael-hach@student.codam.nl>      000000000000000000         */
-/*                                                 000000000000000000         */
-/*   Created: 2022/02/22 22:32:48 by ael-hach      000000000000000000         */
-/*   Updated: 2022/02/22 22:32:48 by ael-hach      000000000000000000         */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 22:32:48 by ael-hach          #+#    #+#             */
+/*   Updated: 2022/02/23 14:39:33 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_command	*start_parser(t_parser *parser)
 	t_command	*current;
 
 	if (curr_tok_is(parser, PIPE))
-		raise_syntax_error("other than PIPE", parser, NULL);
+		raise_syntax_error("other than PIPE", parser);
 	command = parse_command(parser);
 	if (command == NULL)
 		return (command);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                 000000000000000000         */
-/*   parser_error.c                                000000000000000000         */
-/*                                                 000000000000000000         */
-/*   By: ael-hach <ael-hach@student.codam.nl>      000000000000000000         */
-/*                                                 000000000000000000         */
-/*   Created: 2022/02/22 23:17:02 by ael-hach      000000000000000000         */
-/*   Updated: 2022/02/22 23:17:02 by ael-hach      000000000000000000         */
+/*                                                        :::      ::::::::   */
+/*   parser_helpers2.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 23:17:02 by ael-hach          #+#    #+#             */
+/*   Updated: 2022/02/23 14:39:21 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	set_parsing_state(t_parser *parser)
 void	parse_heredoc(t_parser *parser, t_command *cmd)
 {
 	if (peek_tok_is(parser, ARG) == false)
-		raise_syntax_error(ARG, parser, cmd);
+		raise_syntax_error(ARG, parser);
 	next_tok(parser);
 	add_io(&cmd->in_sequence,
 		(t_io){IO_HEREDOC, ft_strdup(parser->curr_tok.literal), NULL});
@@ -51,7 +51,7 @@ t_command	*parse_command(t_parser *parser)
 	{
 		parser->parsing_state(parser, command);
 		if (peek_tok_is(parser, INVALID))
-			raise_syntax_error("VALID TOKEN", parser, command);
+			raise_syntax_error("VALID TOKEN", parser);
 		next_tok(parser);
 		if (parser->parsing_state != NULL)
 			set_parsing_state(parser);
