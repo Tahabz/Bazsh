@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-hach <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 21:52:36 by ael-hach          #+#    #+#             */
-/*   Updated: 2022/02/22 21:52:40 by ael-hach         ###   ########.fr       */
+/*   Updated: 2022/02/23 13:40:28 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ t_token	next_token(t_lexer *lexer)
 	if (lexer->ch == '$')
 	{
 		read_char(lexer);
-		if (is_separator(peek_char(lexer)))
+		if (is_separator(lexer->ch))
 		{
 			return (new_token(ARG, "$"));
 		}
-		else if (peek_char(lexer) == '?')
+		else if (lexer->ch == '?')
 		{
 			read_char(lexer);
 			return (new_token(ARG, "?"));
