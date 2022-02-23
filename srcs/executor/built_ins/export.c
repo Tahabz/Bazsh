@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:44:29 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 16:41:58 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 16:50:44 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	set_ident(char *arg, char ***env)
 		*env = push_if_not_exists(*env, var[0]);
 	else
 	{
+		dprintf(2, "here\n");
 		val = ft_substr(arg, ft_strlen(var[0]) + 1, ft_strlen(arg));
 		set_env(var[0], val, env);
 		free(val);

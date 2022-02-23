@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 21:04:45 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:27:42 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 17:04:57 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ char	**dup_arr(char **arr, char *var, char *val)
 	j = 0;
 	i = 0;
 	new_arr = (char **) malloc(arr_length(arr) * sizeof(char *));
+	printf("var=%s\n", var);
+	printf("val=%s\n", val);
 	while (arr[i])
 	{
 		if (ft_strcmp(arr[i], var))
@@ -30,8 +32,8 @@ char	**dup_arr(char **arr, char *var, char *val)
 		}
 		i += 1;
 	}
-	new_arr[j] = val;
-	new_arr[j + 1] = NULL;
+	new_arr[j] = NULL;
+	// new_arr[j + 1] = NULL;
 	return (new_arr);
 }
 
