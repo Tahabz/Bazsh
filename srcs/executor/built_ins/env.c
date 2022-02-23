@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:42:35 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:33:20 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 16:04:10 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,8 @@ char	*ft_getenv(const char *var_name, char **env)
 
 int	env(t_arg *arg, char **env)
 {
-	env = NULL;
-	arg = NULL;
+	(void) arg;
+	(void) env;
 	print_2d_arr(env, is_not_empty_ident);
 	return (0);
 }

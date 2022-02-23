@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:44:15 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:52:20 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 16:04:17 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_exit(t_arg *arg, char **env)
 {
-	env = NULL;
+	(void) env;
 	arg = arg->next;
 	if (!arg)
 		exit(g_signal.status);
