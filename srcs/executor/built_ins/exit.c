@@ -6,13 +6,13 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:44:15 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:21:28 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:52:20 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../executor.h"
 
-void	ft_exit(t_arg *arg, char **	env)
+void	ft_exit(t_arg *arg, char **env)
 {
 	env = NULL;
 	arg = arg->next;
