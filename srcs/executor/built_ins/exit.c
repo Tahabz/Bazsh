@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/23 16:17:20 by mobaz             #+#    #+#             */
-/*   Updated: 2020/11/18 18:11:22 by mobaz            ###   ########.fr       */
+/*   Created: 2022/02/22 15:44:15 by mobaz             #+#    #+#             */
+/*   Updated: 2022/02/22 16:45:13 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include <stdlib.h>
-# include <unistd.h>
-# include <ctype.h>
-#include "../strtools/strtools.h"
-# define BUFFER_SIZE 32
+#include "../executor.h"
 
-int			get_next_line(int fd, char **line);
-void		*ft_char_calloc(size_t i);
-#endif
+void	ft_exit(t_arg *arg, char **env)
+{
+	arg = arg->next;
+	if (!arg)
+		exit(g_signal.status);
+	if (!ft_isnum(arg->val))
+	{
+		ft_putstr_fd("exit\bbazsh: exit: f: numeric argument required\n", 2);
+		exit(255);
+	}
+	if (arg->next)
+		ft_putstr_fd("exit\nbazsh: exit: too many arguments\n", 2);
+	exit(atoi(arg->val));
+}
