@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:59:37 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 16:14:14 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 19:21:17 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ char	*get_command_path(char *command_name, char **env)
 	if (command_name[0] == '/')
 		return (command_name);
 	path = ft_getenv("PATH", env);
+	if (!path)
+		return (NULL);
 	paths = ft_split(path, ':');
 	free(path);
 	i = 0;
