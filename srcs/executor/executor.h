@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:49:19 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 21:50:08 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:33:04 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,7 @@ int					get_last_fd(t_io *sequence, int callback(t_io *));
 int					create_file(t_io *sequence);
 int					open_file(t_io *sequence);
 void				write_line(const char *line, int fd);
-void				replace_sequence(t_io *sequence,
-						const char *value, enum e_io_type newtype);
+void				replace_sequence(t_io *sequence, const char *value);
 char				**copy_env(char **env);
 void				exec_child_command(t_executor executor_state, char **env);
 void				handle_command(t_executor *executor_state, char ***env);
@@ -94,7 +93,7 @@ char				*join_path(char *str1, char *str2);
 char				*get_command_path(char *command_name, char **env);
 void				close_fd(int fd[]);
 void				dup_and_close(int fd[], int file_no);
-void				write_to_file(char *delim, int file_num, int fd);
+void				write_to_file(char *delim, int fd);
 int					handle_heredoc(t_executor *executor);
 bool				keys_cmp(char *str, char *key);
 void				waitpids(int pids[], size_t i);

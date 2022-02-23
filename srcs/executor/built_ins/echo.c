@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:42:05 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 20:31:58 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:36:51 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	print_args(t_arg *arg)
 
 int	echo(t_arg *arg, char **env)
 {
-	int		i;
 	bool	new_line;
 
+	env = NULL;
 	new_line = true;
 	arg = arg->next;
 	if (!arg)

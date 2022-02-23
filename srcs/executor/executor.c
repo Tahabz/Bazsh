@@ -6,13 +6,13 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:37:00 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 16:45:13 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:30:28 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-void	start_execution(t_executor *executor, char **env)
+void	start_execution(t_executor *executor)
 {
 	executor->command_position = 0;
 	if (!handle_heredoc(executor))
@@ -25,7 +25,7 @@ void	start_execution(t_executor *executor, char **env)
 	}
 }
 
-void	read_and_execute(t_executor *executor, char **env)
+void	read_and_execute(t_executor *executor)
 {
 	char		*cmd;
 	t_lexer		lexer;
@@ -41,7 +41,7 @@ void	read_and_execute(t_executor *executor, char **env)
 			lexer = new_lexer(cmd);
 			parser = parser_new(lexer);
 			executor->command = start_parser(parser);
-			start_execution(executor, env);
+			start_execution(executor);
 			free_all_memory(*executor, parser);
 			waitpids(executor->pids, executor->command_position);
 		}
@@ -54,11 +54,13 @@ int	main(int ac, char **av, char **env)
 {
 	t_executor	executor;
 
+	ac = 0;
+	av = NULL;
 	g_signal.status = 0;
 	executor.env = (char ***) malloc(sizeof(char **));
 	*executor.env = copy_env(env);
 	init_signals();
-	read_and_execute(&executor, env);
+	read_and_execute(&executor);
 	free_double_pointer(*executor.env);
 	return (0);
 }

@@ -6,14 +6,15 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:38:52 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 20:59:21 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:33:59 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 
-void	heredoc_handler(int sig_num)
+void	heredoc_handler(int signum)
 {
+	signum = 0;
 	write(1, "\n", 1);
 	exit(10);
 }
@@ -35,11 +36,9 @@ int	set_signals(int pid)
 	return (1);
 }
 
-void	write_to_file(char *delim, int file_numm, int fd)
+void	write_to_file(char *delim, int fd)
 {
-	int		i;
 	char	*line;
-	char	*file_name;
 
 	while (true)
 	{
@@ -59,7 +58,6 @@ void	write_to_file(char *delim, int file_numm, int fd)
 int	execute_heredoc(t_io *sequence, int file_num)
 {
 	int		fd;
-	int		status;
 	pid_t	pid;
 	char	*file_name;
 	char	*delim;
@@ -67,13 +65,13 @@ int	execute_heredoc(t_io *sequence, int file_num)
 	file_name = ft_itoa(file_num);
 	fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	delim = ft_strdup(sequence->value);
-	replace_sequence(sequence, file_name, IO_FILE);
+	replace_sequence(sequence, file_name);
 	free(file_name);
 	pid = fork();
 	if (pid == 0)
 	{
 		signal(SIGINT, heredoc_handler);
-		write_to_file(delim, file_num, fd);
+		write_to_file(delim, fd);
 		free(delim);
 	}
 	return (set_signals(pid));

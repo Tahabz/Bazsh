@@ -1,10 +1,10 @@
 FLAGS = -Wall -Wextra -Werror
 DFLAGS = -fsanitize=address -g
 INCLUDES = ../includes
-#LDFLAGS="-L/goinfre/mobaz/homebrew/opt/readline/lib"
-#CPPFLAGS="-I/goinfre/mobaz/homebrew/opt/readline/include"
-LDFLAGS="-L/goinfre/ael-hach/.brew/opt/readline/lib"
-CPPFLAGS="-I/goinfre/ael-hach/.brew/opt/readline/include"
+LDFLAGS="-L/goinfre/mobaz/homebrew/opt/readline/lib"
+CPPFLAGS="-I/goinfre/mobaz/homebrew/opt/readline/include"
+# LDFLAGS="-L/goinfre/ael-hach/.brew/opt/readline/lib"
+# CPPFLAGS="-I/goinfre/ael-hach/.brew/opt/readline/include"
 FILES = lexer/lexer.c\
 		lexer/arg_readers.c\
 		lexer/lexer_helpers.c\
@@ -61,7 +61,7 @@ all : $(NAME)
 
 $(NAME): $(SRCS)
 	@echo "Building up bazsh.."
-	clang $(EXECUTOR) $(DFLAGS) $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o $(NAME)
+	clang $(EXECUTOR) $(FLAGS) $(DFLAGS) $(SRCS) -lreadline  $(LDFLAGS) $(CPPFLAGS) -o $(NAME)
 
 clean:
 	rm bazsh

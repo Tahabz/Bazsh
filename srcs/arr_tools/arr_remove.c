@@ -6,13 +6,13 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 21:04:45 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 21:16:41 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:27:42 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "arr_tools.h"
 
-char	**dup_arr(char **arr, char *var, char *var_val, char *val)
+char	**dup_arr(char **arr, char *var, char *val)
 {
 	int		i;
 	int		j;
@@ -46,7 +46,7 @@ char	**arr_remove(char **arr, char *val)
 		return (arr);
 	var = make_env_name(val, var_val);
 	free(var_val);
-	new_arr = dup_arr(arr, var, var_val, val);
+	new_arr = dup_arr(arr, var, val);
 	free(var);
 	free_double_pointer(arr);
 	return (new_arr);

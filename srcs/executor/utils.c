@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 21:02:46 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 21:03:27 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:26:24 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,7 @@ void	write_line(const char *line, int fd)
 	write(fd, "\n", 1);
 }
 
-void	replace_sequence(t_io *sequence,
-			const char *value, enum e_io_type newtype)
+void	replace_sequence(t_io *sequence, const char *value)
 {
 	free(sequence->value);
 	sequence->value = ft_strdup(value);

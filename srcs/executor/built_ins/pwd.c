@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:45:24 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 15:45:29 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:31:08 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	pwd(t_arg *arg, char **env)
 {
+	env = NULL;
+	arg = NULL;
 	printf("%s\n", getcwd(*env, 100));
 	return (0);
 }

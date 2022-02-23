@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                 000000000000000000         */
-/*   ft_split.c                                    000000000000000000         */
-/*                                                 000000000000000000         */
-/*   By: ael-hach <ael-hach@student.codam.nl>      000000000000000000         */
-/*                                                 000000000000000000         */
-/*   Created: 2022/02/22 22:14:50 by ael-hach      000000000000000000         */
-/*   Updated: 2022/02/22 22:14:50 by ael-hach      000000000000000000         */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 22:14:50 by ael-hach          #+#    #+#             */
+/*   Updated: 2022/02/23 13:28:09 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int	letter_count(const char *str, char c)
 	return (count);
 }
 
-static char	*get_word(const char *str, char a, char **arr, int k)
+static char	*get_word(const char *str, char a)
 {
 	int		i;
 	char	*c;
@@ -86,7 +86,7 @@ char	**ft_split(char const *str, char c)
 	{
 		if (!is_split(str[i], c) && (i == 0 || is_split(str[i - 1], c)))
 		{
-			array[k] = get_word(&str[i], c, array, k);
+			array[k] = get_word(&str[i], c);
 			if (!array[k])
 				return (0);
 			k++;
