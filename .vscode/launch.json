@@ -8,7 +8,7 @@
       "name": "(lldb) executor",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bazsh",
+      "program": "${workspaceFolder}/minishell",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
