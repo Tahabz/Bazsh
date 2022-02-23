@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:59:37 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 21:00:50 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 16:14:14 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,5 @@ char	*get_command_path(char *command_name, char **env)
 		i += 1;
 	}
 	free_double_pointer(paths);
-	return (command_path);
+	return (command_name);
 }
