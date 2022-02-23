@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:49:19 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 15:11:51 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 15:48:43 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,5 @@ t_child_command		is_child_command(char *command_name);
 t_parent_command	is_parent_command(char *command_name);
 void				handle_in_sequence(t_executor executor, int *fd);
 void				handle_out_sequence(t_executor executor, int *fd);
+void				expand_signal(char **cmd_args);
 #endif

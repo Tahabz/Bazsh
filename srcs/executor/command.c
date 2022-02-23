@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 15:36:27 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 21:50:08 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 15:50:22 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	exec_command(t_executor executor_state, char **env)
 	built_in = is_child_command(command_args[0]);
 	if (built_in.is_child_command)
 		exit(built_in.handler(executor_state.command->arg, env));
+	expand_signal(command_args);
 	command_path = get_command_path(executor_state.command->arg->val, env);
 	command_position = executor_state.command_position;
 	executor_state.commands_paths[command_position] = command_path;

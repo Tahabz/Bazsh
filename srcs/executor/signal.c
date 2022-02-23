@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 21:01:45 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/22 21:02:32 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 15:48:19 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,22 @@ void	ignctl(void)
 	term.c_lflag &= ~ECHOCTL;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) != 0)
 		perror("tcsetattr() error");
+}
+
+void	expand_signal(char **cmd_args)
+{
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	while (cmd_args[i])
+	{
+		if (str_match(cmd_args[i], "?"))
+		{
+			tmp = cmd_args[i];
+			cmd_args[i] = ft_strdup(g_signal.code);
+			free(tmp);
+		}
+		i++;
+	}
 }
