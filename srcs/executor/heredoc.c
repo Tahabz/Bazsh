@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 20:38:52 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:33:59 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 13:50:32 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,12 @@ int	execute_heredoc(t_io *sequence, int file_num)
 	int		fd;
 	pid_t	pid;
 	char	*file_name;
+	char	*tmp_name;
 	char	*delim;
 
-	file_name = ft_itoa(file_num);
+	tmp_name = ft_itoa(file_num);
+	file_name = join_path("/tmp", tmp_name);
+	free(tmp_name);
 	fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	delim = ft_strdup(sequence->value);
 	replace_sequence(sequence, file_name);
