@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 22:32:48 by ael-hach          #+#    #+#             */
-/*   Updated: 2022/02/23 14:39:33 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 20:40:54 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ t_command	*start_parser(t_parser *parser)
 	while (current->next)
 	{
 		current = current->next;
+		current->next = parse_command(parser);
 	}
 	return (command);
 }
