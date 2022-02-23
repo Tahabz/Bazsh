@@ -6,7 +6,7 @@
 /*   By: mobaz <mobaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 21:02:46 by mobaz             #+#    #+#             */
-/*   Updated: 2022/02/23 13:26:24 by mobaz            ###   ########.fr       */
+/*   Updated: 2022/02/23 18:56:49 by mobaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	get_var_index(const char *var_name, char **env)
 	while (env[i])
 	{
 		tmpenv = ft_split(env[i], '=');
-		if (ft_strcmp(tmpenv[0], var_name) == 0 && tmpenv[1])
+		if (ft_strcmp(tmpenv[0], var_name) == 0)
 			return (i);
 		free_double_pointer(tmpenv);
 		i += 1;
